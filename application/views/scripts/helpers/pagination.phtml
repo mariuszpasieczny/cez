@@ -1,0 +1,60 @@
+<?php
+$urlParams = isset($this->urlParams) ? $this->urlParams : array();
+?>
+
+<?php if ($this->pageCount): ?>
+    <nav>
+        
+        <ul class="pagination">
+            <li>
+                
+            </li>
+            <!-- Previous page link -->
+            <?php if (isset($this->previous)): ?>
+                <li><a href="<?= $this->url(array_merge($urlParams, array('page' => $this->previous))); ?>" aria-label="Previous" class="content-load"><span aria-hidden="true">&laquo;</span></a></li>
+            <?php else: ?>
+                <li class="disabled"><a aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+            <?php endif; ?>
+
+            <!-- Numbered page links -->
+            <?php foreach ($this->pagesInRange as $page): ?>
+                <?php if ($page != $this->current): ?>
+                    <li><a href="<?= $this->url(array_merge($urlParams, array('page' => $page))); ?>" class="content-load"><?php echo $page; ?></a></li>
+                <?php else: ?>
+                    <li class="active"><a href="<?= $this->url(array_merge($urlParams, array('page' => $page))); ?>" class="content-load"><?php echo $page; ?> <span class="sr-only">(current)</span></a></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+
+            <!-- Next page link -->
+            <?php if (isset($this->next)): ?>
+                <li><a href="<?= $this->url(array_merge($urlParams, array('page' => $this->next))); ?>" aria-label="Next" class="content-load"><span aria-hidden="true">&raquo;</span></a></li>
+            <?php else: ?>
+                <li class="disabled"><a aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                <?php endif; ?>
+            <li>
+                <select id="count" class="form-control form-inline" href="<?= $this->url($urlParams); ?>" >
+                    <option value="10" <?php if (!empty($urlParams['count']) && $urlParams['count'] == 10): echo 'selected'; endif; ?>>10</option>
+                    <option value="25" <?php if (!empty($urlParams['count']) && $urlParams['count'] == 25): echo 'selected'; endif; ?>>25</option>
+                    <option value="50" <?php if (!empty($urlParams['count']) && $urlParams['count'] == 50): echo 'selected'; endif; ?>>50</option>
+                    <option value="100" <?php if (!empty($urlParams['count']) && $urlParams['count'] == 100): echo 'selected'; endif; ?>>100</option>
+                    <option value="-1" <?php if (!empty($urlParams['count']) && $urlParams['count'] == -1): echo 'selected'; endif; ?>>all</option>
+                </select>
+            </li>
+        </ul>
+        Wyświetlono <?php echo $this->firstItemNumber;?> do <?php echo $this->lastItemNumber;?>
+        z <?php echo $this->totalItemCount;?>
+        <ul class="pagination">
+        </ul>
+    </nav>
+<?php endif; ?>
+
+<script>
+    paginator = {"pageCount": "<?php echo $this->pageCount; ?>", 
+        "itemCountPerPage": "<?php echo $this->itemCountPerPage; ?>",
+        "first": "<?php echo $this->first; ?>",
+        "current": "<?php echo $this->current; ?>",
+        "last": "<?php echo $this->last; ?>",
+        "currentItemCount": "<?php echo $this->currentItemCount; ?>",
+        "totalItemCount": "<?php echo $this->totalItemCount; ?>"};
+    
+</script>

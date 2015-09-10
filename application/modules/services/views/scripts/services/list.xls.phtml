@@ -1,0 +1,150 @@
+<?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/../library/PHPExcel/PHPExcel.php';
+
+$filename = !empty($vars['filepath']) ? $_SERVER['DOCUMENT_ROOT'] . $vars['filepath'] : '';
+$filename .= !empty($vars['filename']) ? $vars['filename'] : 'document.xlsx';
+$template = !empty($vars['template']) ? $vars['template'] : '';
+
+if (!empty($template) && file_exists($template)) {
+    $objPHPExcel = PHPExcel_IOFactory::load($template);
+    //$objPHPExcel = PHPExcel_IOFactory::createReaderForFile($template);
+    //$objPHPExcel->load($template);
+    PHPExcel_Calculation::getInstance($objPHPExcel)->clearCalculationCache();
+    PHPExcel_Calculation::getInstance()->setCalculationCacheEnabled(FALSE);
+} else {
+    $objPHPExcel = new PHPExcel();
+}
+$objPHPExcel->setActiveSheetIndex(0);
+
+$rowNo = $vars['rowNo'];
+foreach ($vars['services'] as $service) {
+    foreach ($service->toXlsArray() as $key => $value) {
+        /*if ($key == 'AN' && !empty($value)) {
+            list($error, $solution) = explode('-', $value);
+            $value = $solution;
+        }
+        if ($key == 'AL' && !empty($service->technicianid)) {
+            $value = $service->getTechnician()->symbol;
+        }*/
+        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, trim($value,', '));
+    }
+    /*if ($vars['typeid'] == $vars['types']->find('service', 'acronym')->id) {
+        list($error, $solution) = explode('-', $value);var_dump($error, $solution);
+        $value = $solution;
+        $column = 'COLUMN_SOLUTIONCODE';
+        $key = constant("Application_Model_Services_XLS_Service::$column");
+        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+    }*/
+    
+    if ($vars['typeid'] == $vars['types']->find('installation', 'acronym')->id) {
+        if ($technician = $service->getTechnician()) {
+            $value = $service->getTechnician()->symbol;
+            $column = 'COLUMN_TECHNICIANCODE';
+            $key = constant("Application_Model_Services_XLS_Installation::$column");
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        }
+        if ($value = $service->datefinished) {
+            $value = date('Y-m-d', strtotime($value));
+            $key = Application_Model_Services_XLS_Installation::COLUMN_DATEFINISHED;
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        }
+        if ($value = $service->timefrom) {
+            $value = date('Gi', strtotime($value));
+            $key = Application_Model_Services_XLS_Installation::COLUMN_TIMEFROM;
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        }
+        if ($value = $service->timetill) {
+            $value = date('Gi', strtotime($value));
+            $key = Application_Model_Services_XLS_Installation::COLUMN_TIMETILL;
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        }
+    }
+    if ($vars['typeid'] == $vars['types']->find('service', 'acronym')->id) {
+        if ($technician = $service->getTechnician()) {
+            $value = $technician->symbol;
+            $column = 'COLUMN_TECHNICIANCODE';
+            $key = constant("Application_Model_Services_XLS_Service::$column");
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        }
+        $value = 'UNP';
+        $column = 'COLUMN_TECHNICIAN';
+        $key = constant("Application_Model_Services_XLS_Service::$column");
+        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        if ($value = $service->datefinished) {
+            $value = date('H:i', strtotime($value));
+            $key = Application_Model_Services_XLS_Service::COLUMN_DATEFINISHED;
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        }
+        if ($value = $service->timefrom) {
+            $value = date('Gi', strtotime($value));
+            $key = Application_Model_Services_XLS_Service::COLUMN_TIMEFROM;
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        }
+        if ($value = $service->timetill) {
+            $value = date('Gi', strtotime($value));
+            $key = Application_Model_Services_XLS_Service::COLUMN_TIMETILL;
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        }
+        if ($value = $service->getProductsreleased()) {
+            $key = Application_Model_Services_XLS_Service::COLUMN_PRODUCTSRELEASED;
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        }
+        if ($value = $service->technicalcommentsrequired) {
+            //$objPHPExcel->getActiveSheet()->getCell()->getStyle()->getFill()->applyFromArray(array('startcolor'=>'aabbcc'));
+            $objPHPExcel->getActiveSheet()->getStyle("A$rowNo:AC$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('ffff00');
+        }
+        if ($value = $service->isHorizon()) {
+            //$objPHPExcel->getActiveSheet()->getCell()->getStyle()->getFill()->applyFromArray(array('startcolor'=>'aabbcc'));
+            $objPHPExcel->getActiveSheet()->getStyle("A$rowNo:AC$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('89e0ff');
+        }
+        if ($value = $service->isDCI()) {
+            //$objPHPExcel->getActiveSheet()->getCell()->getStyle()->getFill()->applyFromArray(array('startcolor'=>'aabbcc'));
+            $objPHPExcel->getActiveSheet()->getStyle("A$rowNo:AC$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('92d050');
+        }
+        //$objPHPExcel->getActiveSheet()->getStyle("AO$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('A1A1A1');
+    }
+    //var_dump($vars['codeTypes']);
+    foreach ($vars['codeTypes'] as $type) {
+        $code = $vars['dictionary']->find($type . 'code', 'acronym');
+        $attributeId = $code->id;
+        if ($codes = $service->getCodes()->filter(array('attributeid' => $attributeId))) {
+            $column = 'COLUMN_' . strtoupper($type . 'code');
+            if ($vars['typeid'] == $vars['types']->find('installation', 'acronym')->id) {
+                $key = constant("Application_Model_Services_XLS_Installation::$column");
+            } elseif ($vars['typeid'] == $vars['types']->find('service', 'acronym')->id) {
+                $key = constant("Application_Model_Services_XLS_Service::$column");
+            }
+            $values = array();
+            $errors = array();
+            foreach ($codes as $v) {
+                $v = $v->toArray();
+                if ($type == 'solution') {
+                    list($error, $solution) = explode('-', $v['codeacronym']);
+                    $values[] = $solution;
+                    $errors[] = $error;
+                } else {
+                    $values[] = $v['codeacronym'];
+                }
+            }//var_dump($column,$key,$v,$values);
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',', $values));
+            if ($errors) {
+                $key = Application_Model_Services_XLS_Service::COLUMN_ERRORCODE;
+                $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',', $errors));
+            }
+        }
+    }
+    $rowNo++;
+}
+
+//$objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+$objWriter->setPreCalculateFormulas(false);
+
+//$objWriter->save('php://output');
+$objWriter->save($filename);
+//$result = $_SERVER['DOCUMENT_ROOT'] . '/some_excel_file.xlsx';
+//header('Content-Description: File Transfer');
+//header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//header('Content-Disposition: attachment; filename=' . ($vars['filename'] ? $vars['filename'] : 'document.xlsx'));
+?>

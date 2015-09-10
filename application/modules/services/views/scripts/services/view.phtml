@@ -1,0 +1,127 @@
+<h2 class="sub-header">
+    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+        Instalacja
+    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+        Serwis
+    <?php endif; ?>
+    - <?php echo $this->service->client; ?>
+</h2>
+
+<div class="ibox-content inspinia-timeline">
+
+    <div class="timeline-item">
+        <div class="row">
+            <div class="col-xs-3 date">
+                <i class="fa"></i>
+                Numer
+            </div>
+            <div class="col-xs-7 content no-top-border">
+                <p><?php echo $this->service->number; ?></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 date">
+                <i class="fa"></i>
+                Status
+            </div>
+            <div class="col-xs-7 content no-top-border">
+                <p><?php echo $this->service->getStatus(); ?></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 date">
+                <i class="fa"></i>
+                Planowana data
+            </div>
+            <div class="col-xs-7 content no-top-border">
+                <p><?php echo $this->service->getPlanneddate(); ?></p>
+                <p>godz. <?php echo date('H', strtotime($this->service->timefrom)); ?> - <?php echo date('H', strtotime($this->service->timetill)); ?></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 date">
+                <i class="fa"></i>
+                Klient
+            </div>
+            <div class="col-xs-7 content no-top-border">
+                <p><?php echo $this->service->getClient()->number; ?></p>
+                <p><?php echo $this->service->getClient()->city; ?></p>
+                <p><?php echo $this->service->getClient()->street; ?> <?php echo $this->service->getClient()->streetno; ?> / <?php echo $this->service->getClient()->apartmentno; ?></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 date">
+                <i class="fa"></i>
+                Kalendarz
+            </div>
+            <div class="col-xs-7 content no-top-border">
+                <p><?php echo $this->service->getCalendar(); ?></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 date">
+                <i class="fa"></i>
+                Typ
+            </div>
+            <div class="col-xs-7 content no-top-border">
+                <p><?php echo $this->service->getServicetype(); ?></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 date">
+                <i class="fa"></i>
+                Technik
+            </div>
+            <div class="col-xs-7 content no-top-border">
+                <p><?php
+                    $technician = $this->service->getTechnician();
+                    echo $technician ? $technician : 'nieprzypisany';
+                    ?>
+                    <?php if($technician): ?>
+                    <!--<?php echo $technician->phoneno; ?>-->
+                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
+                    <?php endif; ?>
+                </p>
+                <p>
+                    
+                </p>
+            </div>
+        </div>
+        <!--<div class="row">
+            <div class="col-xs-3 date">
+                <i class="fa"></i>
+                Data zakończenia
+            </div>
+            <div class="col-xs-7 content no-top-border">
+                <p><?php echo $this->service->datefinished ? $this->service->datefinished : 'brak'; ?></p>
+            </div>
+        </div>-->
+        <?php echo $this->partial('services/details.phtml', array('service' => $this->service, 'request' => $this->request, 'types' => $this->types)); ?>
+    </div>
+
+    <?php if ($this->auth && $this->service->isAssigned() && $this->HasAccess($this->auth->role, 'services', 'edit') && (in_array($this->auth->role, array('coordinator', 'admin')) || $this->service->isFinished() || $this->service->isAssigned())): ?>
+        <input type="button" value="Edytuj" class="btn btn-primary popup-load" href="<?php echo $this->baseUrl; ?>/services/services/edit/id/<?php echo $this->service->id; ?>/typeid/<?php echo $this->service->typeid; ?>" data-target=".modal-body">
+    <?php endif; ?>
+    <?php if ($this->service->isNew() && $this->auth && $this->HasAccess($this->auth->role, 'services', 'assign')): ?>
+        <input type="button" value="Przypisz" class="btn btn-primary popup-load" href="<?php echo $this->baseUrl; ?>/services/services/assign/id/<?php echo $this->service->id; ?>/typeid/<?php echo $this->service->typeid; ?>" data-target=".modal-body">
+    <?php endif; ?>
+    <?php if ($this->service->isAssigned() && $this->auth && $this->HasAccess($this->auth->role, 'services', 'finish')): ?>
+        <input type="button" value="Zakończ" class="btn btn-primary popup-load" href="<?php echo $this->baseUrl; ?>/services/services/finish/id/<?php echo $this->service->id; ?>/typeid/<?php echo $this->service->typeid; ?>" data-target=".modal-body">
+    <?php endif; ?>
+    <?php if ($this->service->isFinished() && $this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+        <input type="button" value="Cofnij" class="btn btn-primary popup-load" href="<?php echo $this->baseUrl; ?>/services/services/return/id/<?php echo $this->service->id; ?>/typeid/<?php echo $this->service->typeid; ?>" data-target=".modal-body">
+        <input type="button" value="Zamknij" class="btn btn-primary popup-load" href="<?php echo $this->baseUrl; ?>/services/services/close/id/<?php echo $this->service->id; ?>/typeid/<?php echo $this->service->typeid; ?>" data-target=".modal-body">
+    <?php endif; ?>
+    <input type="button" id="cancel" value="Powrót" class="btn btn-defalt back">
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip({
+            html: true,
+            content: function () {
+                return $(this).attr('title').replace(/\[br\]/g,"<br />");
+            }
+        });
+    })
+</script>

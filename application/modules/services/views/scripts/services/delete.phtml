@@ -1,0 +1,30 @@
+<h2 class="sub-header">
+    Usunięcie zlecenia
+    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+        instalacyjnego
+    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+        serwisowego
+    <?php endif; ?>
+</h2>
+
+<?php if ($this->success): ?>
+    <div class="alert alert-success"><?php echo $this->success; ?></div> 
+    <button type="button" class="btn btn-success">Powrót</button>
+<?php else: ?> 
+    <?php if ($this->form->getDescription()): ?>
+        <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+    <?php endif; ?>
+
+    <?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+    ;
+    ?>
+
+<?php endif; ?> 
+
+<script>
+    $(function() {
+        $('.chosen-select').chosen({allow_single_deselect: true});
+    });
+</script>

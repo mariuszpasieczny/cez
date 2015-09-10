@@ -1,0 +1,9 @@
+<h1>An Error Has Occurred</h1>    
+<h2><?php echo $this->message ?></h2>
+
+<?php if ('production' != APPLICATION_ENV): ?>
+
+<h3>Request Parameters:</h3>
+<pre><?php echo var_export($this->request->getParams(), 1) ?>
+</pre>
+<?php endif ?>

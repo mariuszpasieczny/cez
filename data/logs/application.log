@@ -1,0 +1,160 @@
+2015-09-10T17:27:06+01:00 INFO (6): Zend_Mail Object
+(
+    [_charset:protected] => UTF-8
+    [_headers:protected] => Array
+        (
+            [From] => Array
+                (
+                    [0] => 
+                    [append] => 1
+                )
+
+            [To] => Array
+                (
+                    [0] => koordynatorzy.lublin@nplay.pl
+                    [append] => 1
+                )
+
+            [Bcc] => Array
+                (
+                    [0] => mpasieczny@gmail.com
+                    [append] => 1
+                )
+
+            [Subject] => Array
+                (
+                    [0] => ID: 2478763 WO: 36178132
+                )
+
+        )
+
+    [_headerEncoding:protected] => quoted-printable
+    [_from:protected] => 
+    [_to:protected] => Array
+        (
+            [0] => koordynatorzy.lublin@nplay.pl
+        )
+
+    [_recipients:protected] => Array
+        (
+            [koordynatorzy.lublin@nplay.pl] => 1
+            [mpasieczny@gmail.com] => 1
+        )
+
+    [_returnPath:protected] => 
+    [_subject:protected] => ID: 2478763 WO: 36178132
+    [_date:protected] => 
+    [_messageId:protected] => 
+    [_bodyText:protected] => 
+    [_bodyHtml:protected] => Zend_Mime_Part Object
+        (
+            [type] => text/html
+            [encoding] => quoted-printable
+            [id] => 
+            [disposition] => inline
+            [filename] => 
+            [description] => 
+            [charset] => UTF-8
+            [boundary] => 
+            [location] => 
+            [language] => 
+            [_content:protected] => ID: 2478763 WO: 36178132<br />
+2015-02-26<br />
+KARBOŃSKA 5/63 KIELCE
+            [_isStream:protected] => 
+        )
+
+    [_mimeBoundary:protected] => 
+    [_type:protected] => 
+    [hasAttachments] => 
+    [_parts:protected] => Array
+        (
+        )
+
+    [_mime:protected] => 
+)
+
+2015-09-10T17:27:06+01:00 ERR (3): Could not open socket
+2015-09-10T17:27:06+01:00 DEBUG (7): #0 D:\WebServ\httpd\esoz\library\Zend\Mail\Protocol\Smtp.php(167): Zend_Mail_Protocol_Abstract->_connect('ssl://darkmail....')
+#1 D:\WebServ\httpd\esoz\library\Zend\Mail\Transport\Smtp.php(195): Zend_Mail_Protocol_Smtp->connect()
+#2 D:\WebServ\httpd\esoz\library\Zend\Mail\Transport\Abstract.php(348): Zend_Mail_Transport_Smtp->_sendMail()
+#3 D:\WebServ\httpd\esoz\library\Zend\Mail.php(960): Zend_Mail_Transport_Abstract->send(Object(Zend_Mail))
+#4 D:\WebServ\httpd\esoz\application\modules\services\controllers\ServicesController.php(2040): Zend_Mail->send()
+#5 D:\WebServ\httpd\esoz\library\Zend\Controller\Action.php(512): Services_ServicesController->sendCommentsAction()
+#6 D:\WebServ\httpd\esoz\library\Zend\Controller\Dispatcher\Standard.php(288): Zend_Controller_Action->dispatch('sendCommentsAct...')
+#7 D:\WebServ\httpd\esoz\library\Zend\Controller\Front.php(945): Zend_Controller_Dispatcher_Standard->dispatch(Object(Zend_Controller_Request_Http), Object(Zend_Controller_Response_Http))
+#8 D:\WebServ\httpd\esoz\library\Zend\Application\Bootstrap\Bootstrap.php(77): Zend_Controller_Front->dispatch()
+#9 D:\WebServ\httpd\esoz\library\Zend\Application.php(328): Zend_Application_Bootstrap_Bootstrap->run()
+#10 D:\WebServ\httpd\esoz\public\index.php(38): Zend_Application->run()
+#11 {main}
+2015-09-10T17:27:06+01:00 DEBUG (7): array
+2015-09-10T17:31:07+01:00 ERR (3): Resource 'css' not found
+2015-09-10T17:31:07+01:00 DEBUG (7): #0 D:\WebServ\httpd\esoz\library\Zend\Acl.php(691): Zend_Acl->get('css')
+#1 D:\WebServ\httpd\esoz\library\Application\Controller\Plugin\Acl.php(34): Zend_Acl->isAllowed('guest', 'css', 'bootstrap-chose...')
+#2 D:\WebServ\httpd\esoz\library\Zend\Controller\Plugin\Broker.php(286): Application_Controller_Plugin_Acl->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#3 D:\WebServ\httpd\esoz\library\Zend\Controller\Front.php(919): Zend_Controller_Plugin_Broker->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#4 D:\WebServ\httpd\esoz\library\Zend\Application\Bootstrap\Bootstrap.php(77): Zend_Controller_Front->dispatch()
+#5 D:\WebServ\httpd\esoz\library\Zend\Application.php(328): Zend_Application_Bootstrap_Bootstrap->run()
+#6 D:\WebServ\httpd\esoz\public\index.php(38): Zend_Application->run()
+#7 {main}
+2015-09-10T17:31:07+01:00 DEBUG (7): array
+2015-09-10T17:31:16+01:00 ERR (3): Resource 'css' not found
+2015-09-10T17:31:16+01:00 DEBUG (7): #0 D:\WebServ\httpd\esoz\library\Zend\Acl.php(691): Zend_Acl->get('css')
+#1 D:\WebServ\httpd\esoz\library\Application\Controller\Plugin\Acl.php(34): Zend_Acl->isAllowed('admin', 'css', 'bootstrap-chose...')
+#2 D:\WebServ\httpd\esoz\library\Zend\Controller\Plugin\Broker.php(286): Application_Controller_Plugin_Acl->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#3 D:\WebServ\httpd\esoz\library\Zend\Controller\Front.php(919): Zend_Controller_Plugin_Broker->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#4 D:\WebServ\httpd\esoz\library\Zend\Application\Bootstrap\Bootstrap.php(77): Zend_Controller_Front->dispatch()
+#5 D:\WebServ\httpd\esoz\library\Zend\Application.php(328): Zend_Application_Bootstrap_Bootstrap->run()
+#6 D:\WebServ\httpd\esoz\public\index.php(38): Zend_Application->run()
+#7 {main}
+2015-09-10T17:31:16+01:00 DEBUG (7): array
+2015-09-10T19:02:53+01:00 ERR (3): Resource 'css' not found
+2015-09-10T19:02:53+01:00 DEBUG (7): #0 D:\WebServ\httpd\esoz\library\Zend\Acl.php(691): Zend_Acl->get('css')
+#1 D:\WebServ\httpd\esoz\library\Application\Controller\Plugin\Acl.php(34): Zend_Acl->isAllowed('admin', 'css', 'images')
+#2 D:\WebServ\httpd\esoz\library\Zend\Controller\Plugin\Broker.php(286): Application_Controller_Plugin_Acl->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#3 D:\WebServ\httpd\esoz\library\Zend\Controller\Front.php(919): Zend_Controller_Plugin_Broker->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#4 D:\WebServ\httpd\esoz\library\Zend\Application\Bootstrap\Bootstrap.php(77): Zend_Controller_Front->dispatch()
+#5 D:\WebServ\httpd\esoz\library\Zend\Application.php(328): Zend_Application_Bootstrap_Bootstrap->run()
+#6 D:\WebServ\httpd\esoz\public\index.php(38): Zend_Application->run()
+#7 {main}
+2015-09-10T19:02:53+01:00 DEBUG (7): array
+2015-09-10T19:02:55+01:00 ERR (3): SQLSTATE[42S22]: Column not found: 1054 Unknown column '' in 'order clause'
+2015-09-10T19:02:55+01:00 DEBUG (7): #0 D:\WebServ\httpd\esoz\library\Zend\Db\Statement.php(283): Zend_Db_Statement_Pdo->_execute(Array)
+#1 D:\WebServ\httpd\esoz\library\Zend\Db\Adapter\Abstract.php(464): Zend_Db_Statement->execute(Array)
+#2 D:\WebServ\httpd\esoz\library\Zend\Db\Adapter\Pdo\Abstract.php(232): Zend_Db_Adapter_Abstract->query(Object(Zend_Db_Table_Select), Array)
+#3 D:\WebServ\httpd\esoz\library\Zend\Db\Table\Abstract.php(1393): Zend_Db_Adapter_Pdo_Abstract->query(Object(Zend_Db_Table_Select))
+#4 D:\WebServ\httpd\esoz\library\Zend\Db\Table\Abstract.php(1212): Zend_Db_Table_Abstract->_fetch(Object(Zend_Db_Table_Select))
+#5 D:\WebServ\httpd\esoz\library\Zend\Paginator\Adapter\DbTableSelect.php(46): Zend_Db_Table_Abstract->fetchAll(Object(Zend_Db_Table_Select))
+#6 D:\WebServ\httpd\esoz\library\Zend\Paginator.php(704): Zend_Paginator_Adapter_DbTableSelect->getItems(0, 50)
+#7 D:\WebServ\httpd\esoz\library\Zend\Paginator.php(540): Zend_Paginator->getItemsByPage(1)
+#8 D:\WebServ\httpd\esoz\library\Application\Db\Table.php(177): Zend_Paginator->getCurrentItems()
+#9 D:\WebServ\httpd\esoz\application\modules\warehouse\models\Orders\Lines\Table.php(66): Application_Db_Table->getAll(Array, NULL, NULL)
+#10 D:\WebServ\httpd\esoz\application\modules\warehouse\controllers\OrdersController.php(123): Application_Model_Orders_Lines_Table->getAll(Array)
+#11 D:\WebServ\httpd\esoz\library\Zend\Controller\Action.php(512): Warehouse_OrdersController->productsListAction()
+#12 D:\WebServ\httpd\esoz\library\Zend\Controller\Dispatcher\Standard.php(288): Zend_Controller_Action->dispatch('productsListAct...')
+#13 D:\WebServ\httpd\esoz\library\Zend\Controller\Front.php(945): Zend_Controller_Dispatcher_Standard->dispatch(Object(Zend_Controller_Request_Http), Object(Zend_Controller_Response_Http))
+#14 D:\WebServ\httpd\esoz\library\Zend\Application\Bootstrap\Bootstrap.php(77): Zend_Controller_Front->dispatch()
+#15 D:\WebServ\httpd\esoz\library\Zend\Application.php(328): Zend_Application_Bootstrap_Bootstrap->run()
+#16 D:\WebServ\httpd\esoz\public\index.php(38): Zend_Application->run()
+#17 {main}
+2015-09-10T19:02:55+01:00 DEBUG (7): array
+2015-09-10T19:50:05+01:00 ERR (3): Resource 'css' not found
+2015-09-10T19:50:05+01:00 DEBUG (7): #0 D:\WebServ\httpd\esoz\library\Zend\Acl.php(691): Zend_Acl->get('css')
+#1 D:\WebServ\httpd\esoz\library\Application\Controller\Plugin\Acl.php(34): Zend_Acl->isAllowed('admin', 'css', 'bootstrap-chose...')
+#2 D:\WebServ\httpd\esoz\library\Zend\Controller\Plugin\Broker.php(286): Application_Controller_Plugin_Acl->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#3 D:\WebServ\httpd\esoz\library\Zend\Controller\Front.php(919): Zend_Controller_Plugin_Broker->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#4 D:\WebServ\httpd\esoz\library\Zend\Application\Bootstrap\Bootstrap.php(77): Zend_Controller_Front->dispatch()
+#5 D:\WebServ\httpd\esoz\library\Zend\Application.php(328): Zend_Application_Bootstrap_Bootstrap->run()
+#6 D:\WebServ\httpd\esoz\public\index.php(38): Zend_Application->run()
+#7 {main}
+2015-09-10T19:50:05+01:00 DEBUG (7): array
+2015-09-10T19:59:07+01:00 ERR (3): Resource 'css' not found
+2015-09-10T19:59:07+01:00 DEBUG (7): #0 D:\WebServ\httpd\esoz\library\Zend\Acl.php(691): Zend_Acl->get('css')
+#1 D:\WebServ\httpd\esoz\library\Application\Controller\Plugin\Acl.php(34): Zend_Acl->isAllowed('admin', 'css', 'bootstrap-chose...')
+#2 D:\WebServ\httpd\esoz\library\Zend\Controller\Plugin\Broker.php(286): Application_Controller_Plugin_Acl->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#3 D:\WebServ\httpd\esoz\library\Zend\Controller\Front.php(919): Zend_Controller_Plugin_Broker->dispatchLoopStartup(Object(Zend_Controller_Request_Http))
+#4 D:\WebServ\httpd\esoz\library\Zend\Application\Bootstrap\Bootstrap.php(77): Zend_Controller_Front->dispatch()
+#5 D:\WebServ\httpd\esoz\library\Zend\Application.php(328): Zend_Application_Bootstrap_Bootstrap->run()
+#6 D:\WebServ\httpd\esoz\public\index.php(38): Zend_Application->run()
+#7 {main}
+2015-09-10T19:59:07+01:00 DEBUG (7): array

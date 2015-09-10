@@ -1,0 +1,84 @@
+<h2 class="sub-header">Lista słowników</h2>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-inline form-load" action="<?php
+        echo $this->url(
+                array('module' => 'admin', 'controller' => 'dictionaries', 'action' => 'list'), 'default', true)
+        ?>">
+            <div class="form-group">
+                <select class="form-control chosen-select" name="parentid[]" multiple placeholder="Wybierz kategorie">
+                    <option value="">Wybierz kategorie</option>
+                    <?php
+                    foreach ($this->parents as $parent):
+                        ?>
+                        <option value="<?php echo $parent->id; ?>" <?php if (!empty($this->request['parentid']) && in_array($parent->id, (array) $this->request['parentid'])): ?>selected<?php endif; ?>><?php echo $parent->name; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="button" class="btn btn-default search">Szukaj</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Kod</th>
+                <th>Nazwa</th>
+                <?php if (@in_array($this->parent->id, array($this->errorCode,$this->cancellationCode,$this->decoderinterchangeCode,$this->installationcancelCode,$this->installationCode,$this->modeminterchangeCode))):; ?>
+                    <th>Cena</th>
+                    <th>Data od</th>
+                    <th>Data do</th>
+                <?php elseif (@in_array($this->parent->id, array($this->solutionCode))):; ?>
+                    <th>Nazwa błędu</th>
+                <?php endif; ?>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <?php foreach ($this->dictionaries as $dictionary) : ?>
+            <tr>
+                <td><?php echo $this->escape($dictionary->acronym); ?></td>
+                <td>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'edit')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/list/parentid/<?php echo $dictionary->id; ?>" class="content-load"><?php echo $this->escape($dictionary->name); ?></a>
+                        <?php
+                    endif;
+                    ;
+                    ?>
+                </td>
+                <?php if (@in_array($this->parent->id, array($this->errorCode,$this->cancellationCode,$this->decoderinterchangeCode,$this->installationcancelCode,$this->installationCode,$this->modeminterchangeCode))): ?>
+                    <th><?php echo $this->escape($dictionary->price); ?></th>
+                    <th><?php echo $this->escape($dictionary->datefrom); ?></th>
+                    <th><?php echo $this->escape($dictionary->datetill); ?></th>
+                <?php elseif (@in_array($this->parent->id, array($this->solutionCode))):; ?>
+                    <th><?php echo $this->escape($dictionary->errorcodename); ?></th>
+                <?php endif; ?>
+                <td>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'edit')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/edit/id/<?php echo $dictionary->id; ?>" class="content-load" title="Edytuj">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </a>
+                        <?php if (@in_array($this->parent->id, array($this->errorCode))&&0):; ?>
+                            <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/edit/id/<?php echo $dictionary->id; ?>/copy/1" class="content-load" title="Kopiuj">
+                                <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <?php if (@!in_array($this->parent->id, array($this->solutionCode))):; ?>
+                        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'delete')): ?>
+                            <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/delete/id/<?php echo $dictionary->id; ?>" data-target=".modal-body" class="popup-load" title="Usuń">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?> 
+    </table> 
+</div>
+<?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
+<script>
+    params = <?php echo Zend_Json::encode($this->request); ?>;
+</script>

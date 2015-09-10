@@ -1,0 +1,66 @@
+<h2 class="sub-header">Lista zestawień</h2>
+
+<!--<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-inline form-load" action="<?php
+        echo $this->url(
+                array('module' => 'services', 'controller' => 'reports', 'action' => 'generate'), 'default', true)
+        ?>">
+            <input type="hidden" name="typeid" value="<?php echo $this->request['typeid']; ?>" />
+            <div class="form-group">
+                <input type="text" class="form-control" name="planneddatefrom" id="planneddatefrom" placeholder="Planowana data zlecenia" value="<?php if (!empty($this->request['planneddatefrom'])) echo $this->request['planneddatefrom']; ?>">
+            </div>
+            <button type="submit" class="btn btn-default">Generuj</button>
+        </form>
+    </div>
+</div>-->
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+        <thead>
+            <tr class="alternateRow">
+                <th>Typ zleceń</th>
+                <th>Data zlecenia</th>
+                <th>Plik</th>
+                <th>Data dodania</th>
+                <th>Data wysłania</th>
+                <th>Status</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <?php foreach ($this->reports as $i => $report) : ?>
+            <tr>
+                <th><?php echo $this->escape($report->getType()); ?></th>
+                <td><?php echo $this->escape($report->planneddate); ?></td>
+                <td>
+                    <a href="/files/download/file/<?php echo base64_encode($report->file); ?>">
+                        <?php echo $this->escape(basename($report->file)); ?>
+                    </a>
+                </td>
+                <td><?php echo $this->escape($report->dateadd); ?></td>
+                <td><?php echo $this->escape($report->senddate); ?></td>
+                <td><?php echo $this->escape($report->getStatus()); ?></td>
+                <td style="white-space: nowrap;">
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'reports', 'send') && (1 || $service->isNew())): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/reports/send/id/<?php echo $report->id; ?>/typeid/<?php echo $report->typeid; ?>" data-target=".modal-body" class="popup-load" title="Wyślij">
+                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?> 
+    </table> 
+</div>
+<?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
+<script>
+    params = <?php echo Zend_Json::encode($this->request); ?>;
+    $("#planneddatefrom").datepicker({
+        dateFormat: "yy-mm-dd",
+    });
+    $("#planneddatetill").datepicker({
+        dateFormat: "yy-mm-dd",
+    });
+</script>
+<!--<script src="/js/dataTables.js" />-->
+
+<iframe id="file-download" name="file-download" style="display: none"></iframe>

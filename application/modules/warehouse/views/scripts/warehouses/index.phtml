@@ -1,0 +1,39 @@
+<h2 class="sub-header">Lista magazynów</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Typ</th>
+                <th>Rejon</th>
+                <th>Nazwa</th>
+                <th>Magazyn nadrzędny</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <?php foreach ($this->warehouses as $warehouse) : ?>
+            <tr>
+                <td><?php echo $this->escape($warehouse->getType()); ?></td>
+                <td><?php echo $this->escape($warehouse->getArea()); ?></td>
+                <td><?php echo $this->escape($warehouse->name); ?></td>
+                <td><?php echo $this->escape($warehouse->getParent()); ?></td>
+                <td>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'warehouses', 'edit')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/warehouse/warehouses/edit/id/<?php echo $warehouse->id; ?>" class="content-load" title="Edytuj">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'warehouses', 'delete')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/warehouse/warehouses/delete/id/<?php echo $warehouse->id; ?>" class="content-load" title="Usuń">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?> 
+    </table> 
+</div>
+<?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
+<script>
+    params = <?php echo Zend_Json::encode($this->request); ?>;
+</script>

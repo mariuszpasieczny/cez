@@ -1,0 +1,40 @@
+<?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/../library/PHPExcel/PHPExcel.php';
+
+$filename = !empty($vars['filepath']) ? $_SERVER['DOCUMENT_ROOT'] . $vars['filepath'] : '';
+$filename .= !empty($vars['filename']) ? $vars['filename'] : 'document.xlsx';
+
+$objPHPExcel = new PHPExcel();
+$objPHPExcel->setActiveSheetIndex(0);
+
+$rowNo = 1;
+$objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, 'Magazyn');
+$objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, 'Nazwa');
+$objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, 'Ilość');
+$objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, 'Ilość dostępna');
+$objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, 'Jednostka');
+$objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, 'Numer seryjny');
+$objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, 'Status');
+$rowNo = 2;
+foreach ($vars['products'] as $product) {//var_dump($product);exit;
+    $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, $product->warehouse);
+    $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, $product->name);
+    $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, $product->quantity);
+    $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, $product->qtyavailable);
+    $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, $product->unit);
+    $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, $product->serial);
+    $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, $product->status);
+    $rowNo++;
+}
+
+//$objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+//$objWriter->save('php://output');
+$objWriter->save($filename);
+//$result = $_SERVER['DOCUMENT_ROOT'] . '/some_excel_file.xlsx';
+//header('Content-Description: File Transfer');
+//header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//header('Content-Disposition: attachment; filename=' . ($vars['filename'] ? $vars['filename'] : 'document.xlsx'));
+
+?>

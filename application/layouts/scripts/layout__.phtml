@@ -1,0 +1,260 @@
+<?php echo $this->doctype() ?>
+<html lang="en">
+    <head>
+        <?php echo $this->headMeta() ?>
+        <?php echo $this->headTitle() ?>
+        <?php echo $this->headLink() ?>
+        <?php echo $this->headStyle() ?>
+        <?php echo $this->headScript() ?>
+    </head>
+
+    <body cz-shortcut-listen="true">
+        <div id="wrapper">
+
+            <nav class="navbar navbar-default navbar-fixed-top">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="<?php
+                    echo $this->url(
+                            array('controller' => 'index', 'action' => 'index'), 'default', true)
+                    ?>">Elektroniczny System Obsługi Zleceń</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <?php if ($this->auth): ?>
+                            <a href="<?php
+                            echo $this->url(
+                                    array('controller' => 'auth', 'action' => 'logout'), 'default', true)
+                            ?>">Wyloguj</a>
+                           <?php else: ?>
+                            <a href="<?php
+                            echo $this->url(
+                                    array('controller' => 'auth', 'action' => 'login'), 'default', true)
+                            ?>" data-target="#myModal" class="popup-load">Zaloguj</a>
+                           <?php endif; ?>
+                    </li>
+                    <!--<li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                            <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            </li>
+                            <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                    <?php if ($this->auth): ?>
+                                                        <a href="<?php
+                        echo $this->url(
+                                array('controller' => 'auth', 'action' => 'logout'), 'default', true)
+                        ?>">Wyloguj</a>
+                    <?php else: ?>
+                                                        <a href="<?php
+                        echo $this->url(
+                                array('controller' => 'auth', 'action' => 'login'), 'default', true)
+                        ?>" data-target="#myModal" class="popup-load">Zaloguj</a>
+                    <?php endif; ?>
+                            </li>
+                        </ul>
+                    </li>-->
+                </ul>
+                <div class="navbar-default sidebar" role="navigation">
+                    <div class="col-sm-3 col-md-2 sidebar">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services')): ?>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title" id="-collapsible-group-item-#1-">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="">
+                                                Zlecenia
+                                            </a>
+                                            <a class="anchorjs-link" href="#-collapsible-group-item-#1-"><span class="anchorjs-icon"></span></a></h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true">
+                                        <div class="panel-body">
+                                            <ul class="nav nav-sidebar">
+                                                <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'list')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'services', 'controller' => 'services', 'action' => 'list', 'typeid' => $this->types ? $this->types->find('installation', 'acronym')->id : ''), 'default', true)
+                                                        ?>" class="content-load">Zlecenia instalacyjne</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'list')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'services', 'controller' => 'services', 'action' => 'edit', 'typeid' => $this->types ? $this->types->find('installation', 'acronym')->id : ''), 'default', true)
+                                                        ?>" class="content-load">Dodaj zlecenie instalacyjne</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'import')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'services', 'controller' => 'services', 'action' => 'import', 'typeid' => $this->types ? $this->types->find('installation', 'acronym')->id : ''), 'default', true)
+                                                        ?>" class="content-load">Imortuj zlecenia instalacyjne</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'list')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'services', 'controller' => 'services', 'action' => 'list', 'typeid' => $this->types ? $this->types->find('service', 'acronym')->id : ''), 'default', true)
+                                                        ?>" class="content-load">Zlecenia serwisowe</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'list')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'services', 'controller' => 'services', 'action' => 'edit', 'typeid' => $this->types ? $this->types->find('service', 'acronym')->id : ''), 'default', true)
+                                                        ?>" class="content-load">Dodaj zlecenie serwisowe</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'import')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'services', 'controller' => 'services', 'action' => 'import', 'typeid' => $this->types ? $this->types->find('service', 'acronym')->id : ''), 'default', true)
+                                                        ?>" class="content-load">Imortuj zlecenia serwisowe</a></li>
+                                                       <?php endif; ?>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'warehouses')): ?>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingTwo">
+                                        <h4 class="panel-title" id="-collapsible-group-item-#2-">
+                                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                Magazyny
+                                            </a>
+                                            <a class="anchorjs-link" href="#-collapsible-group-item-#2-"><span class="anchorjs-icon"></span></a></h4>
+                                    </div>
+                                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" aria-expanded="false" style="height: 0px;">
+                                        <div class="panel-body">
+                                            <ul class="nav nav-sidebar">
+                                                <?php if ($this->auth && $this->HasAccess($this->auth->role, 'warehouses', 'list')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'warehouse', 'controller' => 'warehouses', 'action' => 'list'), 'default', true)
+                                                        ?>" class="content-load">Magazyny</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'warehouses', 'edit')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'warehouse', 'controller' => 'warehouses', 'action' => 'edit'), 'default', true)
+                                                        ?>" class="content-load">Dodaj</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'products', 'list')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'warehouse', 'controller' => 'products', 'action' => 'list'), 'default', true)
+                                                        ?>" class="content-load">Produkty</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'products', 'edit')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'warehouse', 'controller' => 'products', 'action' => 'edit'), 'default', true)
+                                                        ?>" class="content-load">Dodaj</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'products', 'import')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'warehouse', 'controller' => 'products', 'action' => 'import'), 'default', true)
+                                                        ?>" class="content-load">Imortuj</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'orders', 'list')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'warehouse', 'controller' => 'orders', 'action' => 'products-list'), 'default', true)
+                                                        ?>" class="content-load">Koszyk</a></li>
+                                                       <?php endif; ?>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'admin')): ?>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingThree">
+                                        <h4 class="panel-title" id="-collapsible-group-item-#3-">
+                                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                Administrator
+                                            </a>
+                                            <a class="anchorjs-link" href="#-collapsible-group-item-#3-"><span class="anchorjs-icon"></span></a></h4>
+                                    </div>
+                                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree" aria-expanded="false" style="height: 0px;">
+                                        <div class="panel-body">
+                                            <ul class="nav nav-sidebar">
+                                                <?php if ($this->auth && $this->HasAccess($this->auth->role, 'warehouses', 'list')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'admin', 'controller' => 'users', 'action' => 'list'), 'default', true)
+                                                        ?>" class="content-load">Użytkownicy</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'users', 'edit')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'admin', 'controller' => 'users', 'action' => 'edit'), 'default', true)
+                                                        ?>" class="content-load">Dodaj</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'list')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'admin', 'controller' => 'dictionaries', 'action' => 'list'), 'default', true)
+                                                        ?>" class="content-load">Słowniki</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'edit')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'admin', 'controller' => 'dictionaries', 'action' => 'edit'), 'default', true)
+                                                        ?>" class="content-load">Dodaj</a></li>
+                                                       <?php endif; ?>
+                                                       <?php if ($this->auth && $this->HasAccess($this->auth->role, 'products', 'import')): ?>
+                                                    <li><a href="<?php
+                                                        echo $this->url(
+                                                                array('module' => 'admin', 'controller' => 'dictionaries', 'action' => 'import'), 'default', true)
+                                                        ?>" class="content-load">Imortuj</a></li>
+                                                       <?php endif; ?>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div id="page-wrapper">
+                <div class="row">
+                    <div id="content" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                        <?php echo $this->layout()->content ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Default bootstrap modal example -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <!--<div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+
+            <div id='loading-indicator' style="position: fixed; left: 50%; top: 50%; display: none;">
+                <img src="/css/images/ajax-loader.gif"></img>
+            </div>
+        </div>
+    </body>
+</html>

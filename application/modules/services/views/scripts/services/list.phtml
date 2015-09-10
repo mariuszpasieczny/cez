@@ -1,0 +1,389 @@
+<h2 class="sub-header">
+    Lista zleceń 
+    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+        instalacyjnych
+    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+        serwisowych
+    <?php endif; ?>
+</h2>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-inline form-load" action="<?php
+        echo $this->url(
+                array('module' => 'services', 'controller' => 'services', 'action' => 'list'), 'default', true)
+        ?>">
+            <input type="hidden" name="typeid" value="<?php echo $this->request['typeid']; ?>" />
+            <div class="form-group">
+                <select class="form-control chosen-select" name="statusid[]" multiple data-placeholder="Wybierz status">
+                    <option value="">Wybierz status</option>
+                    <?php
+                    foreach ($this->statuses as $status): if ($status['acronym'] == 'deleted'): continue;
+                        endif;
+                        ?>
+                        <option value="<?php echo $status->id; ?>" <?php if (!empty($this->request['statusid']) && in_array($status->id, (array) $this->request['statusid'])): ?>selected<?php endif; ?>><?php echo $status->name; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control chosen-select" name="technicianid[]" multiple data-placeholder="Wybierz technika">
+                    <option value="">Wybierz technika</option>
+                    <?php foreach ($this->technicians as $technician): ?>
+                        <option value="<?php echo $technician->id; ?>" <?php if (!empty($this->request['technicianid']) && in_array($technician->id, (array) $this->request['technicianid'])): ?>selected<?php endif; ?>><?php echo $technician->lastname . ' ' . $technician->firstname; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="clientnumber" placeholder="Nr klienta" value="<?php if (!empty($this->request['clientnumber'])) echo $this->request['clientnumber']; ?>">
+            </div>
+            <!--<div class="form-group">
+                <input type="text" class="form-control" name="client" placeholder="Adres" value="<?php if (!empty($this->request['client'])) echo $this->request['client']; ?>">
+            </div>-->
+            <select class="form-control chosen-select" style="width: 250px" name="clientstreet" data-placeholder="Wybierz ulicę">
+                <option value="">Wybierz ulicę</option>
+                <?php foreach ($this->clients as $client): ?>
+                    <option value="<?php echo $client->street; ?>" <?php if (!empty($this->request['clientstreet']) && $client->street == $this->request['clientstreet']): ?>selected<?php endif; ?>><?php echo $client->street; ?></option>
+                <?php endforeach; ?>
+            </select>
+            <input type="text" class="form-control" style="width: 50px" name="clientstreetno" placeholder="Nr domu" value="<?php if (!empty($this->request['clientstreetno'])) echo $this->request['clientstreetno']; ?>">
+            <input type="text" class="form-control" style="width: 50px" name="clientapartment" placeholder="Nr mieszkania" value="<?php if (!empty($this->request['clientapartment'])) echo $this->request['clientapartment']; ?>">
+            <div class="form-group">
+                <input type="text" class="form-control" name="number" placeholder="Nr zlecenia" value="<?php if (!empty($this->request['number'])) echo $this->request['number']; ?>">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="planneddatefrom" id="planneddatefrom" placeholder="Data od" value="<?php if (!empty($this->request['planneddatefrom'])) echo $this->request['planneddatefrom']; ?>">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="planneddatetill" id="planneddatetill" placeholder="Data do" value="<?php if (!empty($this->request['planneddatetill'])) echo $this->request['planneddatetill']; ?>">
+            </div>
+            <button type="button" class="btn btn-default search">Szukaj</button>
+            <button type="button" class="btn btn-link xls">Zapisz XLS</button>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+        <thead>
+            <tr class="alternateRow">
+                <th style="max-width: 15px !important;">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" class="check-all" data-elements-id="id">
+            </label>
+        </div>
+        </th>
+        <!--<th>Lp.</th>-->
+        <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+            <th style="max-width: 75px !important;">Data</th>
+            <th style="max-width: 55px !important;">Godzina</th>
+            <th style="max-width: 25px !important;">Typ</th>
+            <th style="max-width: 25px !important;"><acronym title="Kalendarz">Kal.</acronym></th>
+            <th style="max-width: 75px !important;">Nr zlecenia</th>
+            <th style="max-width: 75px !important;">Nr klienta</th>
+            <th>Adres</th>
+            <?php if ($this->auth->role != 'technician'): ?>
+                <th style="max-width: 195px !important;">Technik</th>
+            <?php endif; ?>
+            <th style="max-width: 75px !important;">Dokumenty</th>
+            <?php if ($this->auth->role != 'technician'): ?>
+                <th style="max-width: 25px !important;">UPC</th>
+            <?php endif; ?>
+            <th style="max-width: 125px !important;">Status</th>
+            <th style="max-width: 15px !important;"><acronym title="Wykonane">Wyk.</acronym></th>
+        <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+            <th style="max-width: 105px !important;">Data zlecenia</th>  
+            <th style="max-width: 25px !important;">Od</th>
+            <th style="max-width: 25px !important;">Do</th> 
+            <th style="max-width: 95px !important;">Numer WO</th>
+            <th style="max-width: 85px !important;">ID Klienta</th>
+            <th>Adres</th>
+            <?php if ($this->auth->role != 'technician'): ?>
+                <th style="max-width: 195px !important;">Technik</th>
+            <?php endif; ?>
+        <!--<th style="max-width: 75px !important;">Dokumenty</th>
+        <th style="max-width: 25px !important;">UPC</th>-->
+            <th style="max-width: 125px !important;">Status</th>
+            <th style="max-width: 15px !important;"><acronym title="Wykonane">Wyk.</acronym></th>
+        <?php endif; ?>
+        <th style="max-width: 95px !important;">
+            &nbsp;
+            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'assign') && (in_array($this->auth->role, array('coordinator', 'admin')) || $this->request['typeid'] == $this->types->find('service', 'acronym')->id)): ?>
+                <a href="<?php echo $this->baseUrl; ?>/services/services/assign/typeid/<?php echo $this->request['typeid']; ?>" data-target=".modal-body" class="popup-load multi" title="Przypisz">
+                    <span class="glyphicon glyphicon glyphicon-user" aria-hidden="true"></span>
+                </a>
+            <?php endif; ?>
+            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'return')): ?>
+                <a href="<?php echo $this->baseUrl; ?>/services/services/return/typeid/<?php echo $this->request['typeid']; ?>" data-target=".modal-body" class="popup-load multi" title="Cofnij">
+                    <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+                </a>
+            <?php endif; ?>
+            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close') && 0): ?>
+                <a href="<?php echo $this->baseUrl; ?>/services/services/close/typeid/<?php echo $this->request['typeid']; ?>" data-target=".modal-body" class="popup-load multi" title="Zamknij">
+                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                </a>
+            <?php endif; ?>
+            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'finish') && 0): ?>
+                <a href="<?php echo $this->baseUrl; ?>/services/services/finish/typeid/<?php echo $this->request['typeid']; ?>" data-target=".modal-body" class="popup-load multi" title="Zakończ">
+                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                </a>
+            <?php endif; ?>
+            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'delete')): ?>
+                <a href="<?php echo $this->baseUrl; ?>/services/services/delete/typeid/<?php echo $this->request['typeid']; ?>" data-target=".modal-body" class="popup-load multi" title="Usuń">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </a>
+            <?php endif; ?>
+        </th>
+        </tr>
+        </thead>
+        <?php foreach ($this->services as $i => $service) : ?>
+            <tr class="dbl-click" href="<?php echo $this->baseUrl; ?>/services/services/view/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" 
+            <?php
+            if ($service->technicalcommentsrequired):
+                echo 'style="background-color:#ffff00"';
+            endif;
+            if ($service->isHorizon()):
+                echo 'style="background-color:#89e0ff"';
+            endif;
+            if ($service->isDCI()):
+                echo 'style="background-color:#92d050"';
+            endif;
+            ?>>
+                <td>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="id" value="<?php echo $service->id; ?>">
+                        </label>
+                    </div>
+                </td>
+                <!--<td><?php echo $i + 1; ?></td>-->
+    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+                    <td><?php echo $this->escape($service->getPlanneddate()); ?></td>
+                    <td><?php echo $this->escape($service->getPlannedtime()); ?></td>
+                    <td><?php echo $this->escape($service->servicetype); ?></td>
+                    <td><?php echo $this->escape($service->calendar); ?></td>
+                    <td><?php echo $this->escape($service->number); ?></td>
+                    <td><?php echo $this->escape($service->clientnumber); ?></td>
+                    <td><?php echo $this->escape($service->client); ?></td>
+                        <?php if ($this->auth->role != 'technician'): ?>
+                        <td>
+                            <?php echo $this->escape($service->technician); ?>
+                            <?php if ($technician = $service->getTechnician()): ?>
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
+                        <?php else: echo "&nbsp;";
+                        endif;
+                        ?>
+                        </td>
+                        <?php endif; ?>
+                    <td>
+                        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+                            <input type="checkbox" name="documentspassed[<?php echo $service->id; ?>]" value="1" <?php if ($service->documentspassed): echo 'checked';
+                endif; ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/documentspassed/<?php if ($service->documentspassed): echo 0;
+                else: echo 1;
+                endif; ?>" data-target=".modal-body" class="popup-load">
+                        <?php else: ?>
+                            <?php if ($service->documentspassed): echo 'zdane';
+                            else: echo '&nbsp;';
+                            endif; ?>
+                        <?php endif; ?>
+                    </td>
+                    <?php if ($this->auth->role != 'technician'): ?>
+                        <td>
+                            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+                                <input type="checkbox" name="closedupc[<?php echo $service->id; ?>]" value="1" <?php if ($service->closedupc): echo 'checked';
+                endif; ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/closedupc/<?php if ($service->closedupc): echo 0;
+                else: echo 1;
+                endif; ?>" data-target=".modal-body" class="popup-load">
+                        <?php else: ?>
+                <?php if ($service->closedupc): echo 'zakończone';
+                else: echo '&nbsp;';
+                endif; ?>
+            <?php endif; ?>
+                        </td>
+                    <?php endif ?>
+                    <td><?php echo $this->escape($service->status); ?></td>
+                    <td><?php
+                        if ($service->performed != null): echo $service->performed ? 'tak' : 'nie';
+                        else: echo "&nbsp;";
+                        endif;
+                        ?></td>
+                    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+                    <td><?php echo $this->escape($service->getPlanneddate()); ?></td>
+                    <td><?php echo $this->escape($service->getTimefrom()); ?></td>
+                    <td><?php echo $this->escape($service->getTimetill()); ?></td>
+                    <td><?php echo $this->escape($service->number); ?></td>
+                    <td><?php echo $this->escape($service->clientnumber); ?></td>
+                    <td><?php echo $this->escape($service->client); ?></td>
+                    <?php if ($this->auth->role != 'technician'): ?>
+                        <td>
+            <?php echo $this->escape($service->technician); ?>
+                        <?php if ($technician = $service->getTechnician()): ?>
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
+                        <?php else: echo "&nbsp;";
+                        endif;
+                        ?>
+                        </td>
+        <?php endif; ?>
+                <!--<td>
+                        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+                        <input type="checkbox" name="documentspassed[<?php echo $service->id; ?>]" value="1" <?php if ($service->documentspassed): echo 'checked';
+                endif; ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/documentspassed/<?php if ($service->documentspassed): echo 0;
+                else: echo 1;
+                endif; ?>" data-target=".modal-body" class="popup-load">
+                    <?php else: ?>
+            <?php if ($service->documentspassed): echo 'zdane';
+            else: echo '&nbsp;';
+            endif; ?>
+                        <?php endif; ?>
+                </td>
+                <td>
+        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+                        <input type="checkbox" name="closedupc[<?php echo $service->id; ?>]" value="1" <?php if ($service->closedupc): echo 'checked';
+            endif; ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/closedupc/<?php if ($service->closedupc): echo 0;
+            else: echo 1;
+            endif; ?>" data-target=".modal-body" class="popup-load">
+        <?php else: ?>
+                            <?php if ($service->closedupc): echo 'zakończone';
+                            else: echo '&nbsp;';
+                            endif; ?>
+        <?php endif; ?>
+                </td>---->
+                    <td><?php echo $this->escape($service->status); ?></td>
+                    <td><?php
+                        if ($service->performed != null): echo $service->performed ? 'tak' : 'nie';
+                        else: echo "&nbsp;";
+                        endif;
+                        ?></td>
+                    <?php endif; ?>
+                <td style="white-space: nowrap;">
+                    <!--<span class="glyphicon glyphicon-info-sign" aria-hidden="true"data-toggle="popover" data-placement="left" 
+                          title="<?php
+                //echo $this->escape($this->partial('services/details.phtml', array('service' => $service, 'request' => $this->request, 'types' => $this->types))); 
+                    ?>">
+                    </span>-->
+                    <a href="<?php echo $this->baseUrl; ?>/services/services/details/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Szczegóły">
+                        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                    </a>
+                    <?php if ($this->auth && $service->isAssigned() && $this->HasAccess($this->auth->role, 'services', 'edit')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/services/edit/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" class="content-load" title="Edytuj">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if (($service->isNew() || ($service->isAssigned() && in_array($this->auth->role, array('coordinator', 'admin')))) && !(!in_array($this->auth->role, array('coordinator', 'admin')) && $this->request['typeid'] == $this->types->find('installation', 'acronym')->id) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'assign')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/services/assign/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Przypisz">
+                            <span class="glyphicon glyphicon glyphicon-user" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ($service->typeid == $this->types->find('installation', 'acronym')->id && ($service->isUnperformed() || 1) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'send-comments')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/services/send-comments/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Wyślij komentarz">
+                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if (($service->isFinished() || $service->isClosed()) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'return')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/services/return/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Cofnij">
+                            <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+                        </a>
+    <?php endif; ?>
+    <?php if (($service->isAssigned()) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'finish')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/services/finish/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Zakończ">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </a>
+    <?php endif; ?>
+    <?php if (($service->isFinished() || $service->isAssigned() || $service->isNew()) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/services/close/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Zamknij">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </a>
+    <?php endif; ?>
+    <?php if (($service->isAssigned() || $service->isFinished() || $service->isClosed()) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'withdraw')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/services/withdraw/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Wycofaj">
+                            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                        </a>
+    <?php endif; ?>
+    <?php if ($service->isNew() && $this->auth && $this->HasAccess($this->auth->role, 'services', 'delete')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/services/delete/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Usuń">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </a>
+    <?php endif; ?>
+                </td>
+            </tr>
+<?php endforeach; ?> 
+    </table> 
+</div>
+<?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
+<script>
+    params = <?php echo Zend_Json::encode($this->request); ?>;
+    $("#planneddatefrom").datepicker({
+        dateFormat: "yy-mm-dd",
+    });
+    $("#planneddatetill").datepicker({
+        dateFormat: "yy-mm-dd",
+    });
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip({
+            html: true,
+            content: function() {
+                return $(this).attr('title').replace(/\[br\]/g, "<br />");
+            }
+        });
+        $('[data-toggle="popover"]').popover({
+            html: true
+        }).on("show.bs.popover", function() {
+            //var width = window.innerWidth * 0.75;
+            //$(this).data("bs.popover").tip().css("max-width", width + 'px').css("width", width + 'px');
+        });
+        $('[name=clientid]').outerWidth(200);
+        $('.chosen-select').chosen({allow_single_deselect: true});
+        $("select[name=clientstreet].chosen-select").data('chosen').allow_single_deselect = true;
+    });
+<?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+    <?php if ($this->auth->role == 'technician'): ?>
+            columnsDef = [{
+                    'bSortable': false,
+                    'aTargets': [0]
+                }, //{
+                //    'bSortable': false,
+                //    'aTargets': [2]
+                //},
+                {
+                    'bSortable': false,
+                    'aTargets': [11]
+                }];
+    <?php else: ?>
+            columnsDef = [{
+                    'bSortable': false,
+                    'aTargets': [0]
+                }, //{
+                //    'bSortable': false,
+                //    'aTargets': [2]
+                //},
+                {
+                    'bSortable': false,
+                    'aTargets': [13]
+                }];
+    <?php endif; ?>
+<?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+    <?php if ($this->auth->role == 'technician'): ?>
+            columnsDef = [{
+                    'bSortable': false,
+                    'aTargets': [0]
+                },
+                {
+                    'bSortable': false,
+                    'aTargets': [9]
+                }];
+    <?php else: ?>
+            columnsDef = [{
+                    'bSortable': false,
+                    'aTargets': [0]
+                },
+                {
+                    'bSortable': false,
+                    'aTargets': [10]
+                }];
+    <?php endif; ?>
+<?php endif; ?>
+
+</script>
+<script src="/js/dataTables.js" />
+
+<iframe id="file-download" name="file-download" style="display: none"></iframe>

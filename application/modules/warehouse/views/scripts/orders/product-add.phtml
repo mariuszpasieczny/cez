@@ -1,0 +1,24 @@
+<h2 class="sub-header">Do koszyka (<?php echo $this->productsCount; ?> pozycji)</h2>
+
+<?php if ($this->success): ?>
+    <div class="alert alert-success"><?php echo $this->success; ?></div> 
+    <button type="button" class="btn btn-success">Powrót</button>
+<?php else: ?> 
+
+    <?php if ($this->form->getDescription()): ?>
+        <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+    <?php endif; ?>
+
+    <?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+    ;
+    ?>
+
+<?php endif; ?> 
+        
+<script>
+    $(document).ready(function() {
+        $('.chosen-select').chosen({allow_single_deselect: true});
+    });
+</script>

@@ -1,0 +1,30 @@
+<h2 class="sub-header">Import słowników</h2>
+
+<?php if ($this->success): ?>
+    <div class="alert alert-success"><?php echo $this->success; ?></div> 
+    <button type="button" class="btn btn-success">Powrót</button>
+<?php else: ?> 
+
+    <?php if ($this->form->getDescription()): ?>
+        <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+    <?php endif; ?>
+
+    <?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+    ;
+    ?>
+
+<?php endif; ?> 
+
+<table class="table">
+    <?php foreach ($this->data as $row):; ?>
+        <tr>
+            <?php foreach ($row as $cell):; ?>
+                <td><?php echo $cell; ?></td>    
+            <?php endforeach; ?>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+<iframe id="file-upload" name="file-upload" style="display: none"></iframe>

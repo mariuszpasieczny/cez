@@ -1,0 +1,52 @@
+<h2 class="sub-header">
+    Import zleceń
+    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+        instalacyjnych
+    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+        serwisowych
+    <?php endif; ?>
+</h2>
+
+<?php if ($this->success): ?>
+    <div class="alert alert-success"><?php echo $this->success; ?></div> 
+    <button type="button" class="btn btn-success">Powrót</button>
+<?php else: ?> 
+
+    <?php if ($this->form->getDescription()): ?>
+        <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+    <?php endif; ?>
+
+    <?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+    ;
+    ?>
+
+<?php endif; ?> 
+
+<?php if (!empty($this->data)): ?>
+    <table class="table">
+        <?php foreach ($this->data as $row):; ?>
+            <tr>
+                <?php foreach ($row as $cell):; ?>
+                    <td><?php echo $cell; ?></td>    
+                <?php endforeach; ?>
+            </tr>
+        <?php endforeach; ?>
+        <thead>
+            <tr>
+                <td colspan="1000"><a href="<?php echo '/files/download/file/' . base64_encode($this->filename); ?>">pobierz raport</a></td>
+            </tr>
+        </thead>
+    </table>
+<?php endif; ?>
+
+<iframe id="file-upload" name="file-upload" style="display: none"></iframe>
+
+<script>
+    $(function() {
+        $("#planneddate").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+    });
+</script>

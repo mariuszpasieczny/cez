@@ -1,0 +1,29 @@
+<table class="table">
+    <tr>
+        <th>Miasto</th>
+        <th>Ulica</th>
+        <th>Nr</th>
+        <th>Lokal</th>
+        <th>Kod pocztowy</th>
+        <th>&nbsp;</th>
+    </tr>
+
+<?php foreach ($this->clients as $client) : ?>
+        <tr>
+            <td><?php echo $this->escape($client->city); ?></td>
+            <td><?php echo $this->escape($client->street); ?></td>
+            <td><?php echo $this->escape($client->number); ?></td>
+            <td><?php echo $this->escape($client->apartment); ?></td>
+            <td><?php echo $this->escape($client->postcode); ?></td>
+            <td>
+                   <?php if ($this->auth && $this->HasAccess($this->auth->role, 'clients', 'edit')): ?>
+                    <a href="<?php echo $this->baseUrl; ?>/orders/clients/edit/id/<?php echo $client->id; ?>" class="content-load">Edytuj</a>
+                   <?php endif; ?>
+                   <?php if ($this->auth && $this->HasAccess($this->auth->role, 'clients', 'delete')): ?>
+                    <a href="<?php echo $this->baseUrl; ?>/orders/clients/delete/id/<?php echo $client->id; ?>" class="content-load">Usuń</a>
+                   <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?> 
+
+</table> 

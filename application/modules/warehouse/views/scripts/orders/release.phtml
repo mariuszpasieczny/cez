@@ -1,0 +1,42 @@
+<h2 class="sub-header">Wydanie towaru (<?php echo $this->productsCount; ?> pozycji)</h2>
+
+<?php if ($this->success): ?>
+    <div class="alert alert-success"><?php echo $this->success; ?></div> 
+    <button type="button" class="btn btn-success">Powrót</button>
+<?php else: ?> 
+
+    <?php if ($this->form->getDescription()): ?>
+        <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+    <?php endif; ?>
+
+    <?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+    ;
+    ?>
+
+<?php endif; ?> 
+
+<script>
+    $(document).ready(function() {
+<?php if (!empty($this->request['print'])): ?>
+            var url = '<?php echo $this->baseUrl; ?>/warehouse/orders/products-list/released/1/format/xls';
+            var ids = new Array();
+    <?php foreach ($this->ids as $id): ?>
+                url += '/id/' + <?php echo $id; ?>;
+    <?php endforeach; ?>
+            $.ajax({
+                type: "POST",
+                url: url,
+                enctype: 'multipart/form-data',
+                success: function(data, status, xhr) {
+                    var header = xhr.getResponseHeader('Content-Disposition');
+                    var file = header.substr(header.indexOf('filename=') + 'filename='.length, header.length);
+                    document.location = '/files/download/file/' + Base64.encode(file);
+                },
+                dataType: "html",
+            });
+            ;
+<?php endif; ?>
+    });
+</script>

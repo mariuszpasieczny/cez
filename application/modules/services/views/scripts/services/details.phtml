@@ -1,0 +1,326 @@
+<div class="ibox-content inspinia-timeline">
+    <?php $codes = $this->service->getCodes(); ?>
+    <div class="timeline-item">
+        <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Kod instalacji
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $installationCodes = $codes->filter(array('attributeacronym' => 'installationcode')); ?>
+                        <?php if ($installationCodes): ?>
+                            <?php foreach ($installationCodes as $ix => $code): $code = $code->toArray(); ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $code['codeacronym'] . ' - ' . $code['codename']; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Kod odwołania
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $installationCodes = $codes->filter(array('attributeacronym' => 'installationcancelcode')); ?>
+                        <?php if ($installationCodes): ?>
+                            <?php foreach ($installationCodes as $ix => $code): $code = $code->toArray(); ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $code['codeacronym'] . ' - ' . $code['codename']; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Sprzęt wydany
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $products = $this->service->getProducts(); ?>
+                        <?php if ($products->count()): ?>
+                            <?php foreach ($products as $ix => $product): ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $product->name . ' (' . $product->serial . ')'; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Sprzęt zwrócony
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $products = explode(',', $this->service->productsreturned); ?>
+                        <?php if ($products): ?>
+                            <?php foreach ($products as $ix => $product): ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $product; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Komentarz technika
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->technicalcomments ? $this->service->technicalcomments : 'brak'; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Komentarz koordynatora
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->coordinatorcomments ? $this->service->coordinatorcomments : 'brak'; ?></p>
+                </div>
+            </div>
+        <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Telefon
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>domowy: <?php echo $this->service->clienthomephone; ?></p>
+                    <p>do pracy: <?php echo $this->service->clientworkphone; ?></p>
+                    <p>komórkowy: <?php echo $this->service->clientcellphone; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Kod skargi
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->complaintcode; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Komentarz do zlecenia
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->comments; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Opis zgłoszenia w Remedy
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->description; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Data ostatniej zmiany usług
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->modifieddate; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Posiadane produkty
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->products; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    SN
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->serialnumbers; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    MAC
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->macnumbers; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Nazwa sprzętu
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->equipment; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Mac modemu, parametry sygnału
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->parameters; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Godzina wykonania/odwołania
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo date('H:i', strtotime($this->service->datefinished)); ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Kod rozwiązania
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $solutionCodes = $codes->filter(array('attributeacronym' => 'solutioncode')); ?>
+                        <?php if ($solutionCodes): ?>
+                            <?php foreach ($solutionCodes as $ix => $code): $code = $code->toArray(); ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $code['codeacronym'] . ' - ' . $code['codename']; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Kod odwołania
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $cancellationCodes = $codes->filter(array('attributeacronym' => 'cancellationcode')); ?>
+                        <?php if ($cancellationCodes): ?>
+                            <?php foreach ($cancellationCodes as $ix => $code): $code = $code->toArray(); ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $code['codeacronym'] . ' - ' . $code['codename']; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Kod wymiany modemu
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $modeminterchangeCodes = $codes->filter(array('attributeacronym' => 'modeminterchangecode')); ?>
+                        <?php if ($modeminterchangeCodes): ?>
+                            <?php foreach ($modeminterchangeCodes as $ix => $code): $code = $code->toArray(); ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $code['codeacronym'] . ' - ' . $code['codename']; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Kod wymiany dedera
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $decoderinterchangeCodes = $codes->filter(array('attributeacronym' => 'decoderinterchangecode')); ?>
+                        <?php if ($decoderinterchangeCodes): ?>
+                            <?php foreach ($decoderinterchangeCodes as $ix => $code): $code = $code->toArray(); ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $code['codeacronym'] . ' - ' . $code['codename']; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Sprzęt wydany
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $products = $this->service->getProducts(); ?>
+                        <?php if ($products->count()): ?>
+                            <?php foreach ($products as $ix => $product): ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $product->name . ' (' . $product->serial . ')'; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Sprzęt zdjęty
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p>
+                        <?php $products = explode(',', $this->service->productsreturned); ?>
+                        <?php if ($products): ?>
+                            <?php foreach ($products as $ix => $product): ?>
+                                <?php echo $ix ? '<br /> ' : ''; ?>
+                                <?php echo $product; ?>
+                            <?php endforeach; ?>
+                        <?php else: echo 'brak'; ?>
+                        <?php endif; ?>
+                    </p>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Komentarz technika
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->technicalcomments ? $this->service->technicalcomments : 'brak'; ?></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 date">
+                    <i class="fa"></i>
+                    Komentarz koordynatora
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                    <p><?php echo $this->service->coordinatorcomments ? $this->service->coordinatorcomments : 'brak'; ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>

@@ -1,0 +1,269 @@
+<h2 class="sub-header">
+    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+        Instalacja
+    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+        Serwis
+    <?php endif; ?>
+    - <?php echo $this->service->client; ?>
+</h2>
+
+<?php if ($this->success): ?>
+    <div class="alert alert-success"><?php echo $this->success; ?></div> 
+    <button type="button" class="btn btn-success">Powrót</button>
+<?php else: ?> 
+
+    <?php if ($this->form->getDescription()): ?>
+        <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+    <?php endif; ?>
+
+    <?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+    ;
+    ?>
+
+<?php endif; ?> 
+
+<script>
+    $(function() {
+        $('.chosen-select').not('[name^=installationcodeid]').chosen({
+            search_contains: true,
+            allow_single_deselect: true,
+            placeholder_text_multiple: 'dodaj'
+        });
+        $('.chosen-select[name^=installationcodeid]').chosen({
+            search_contains: true,
+            allow_single_deselect: true,
+            multiple: false,
+            placeholder_text_multiple: 'dodaj',
+            max_selected_options: 1
+        }).change(function(e) {
+            
+        });
+        onInstallationCodeChange();
+        function onInstallationCodeChange() {
+            $(".chosen-select[name^=installationcodeid]").off();
+            $(".chosen-select[name^=installationcodeid]").on("change", function(e) {
+                if (!e.currentTarget.value) {
+                    $(e.currentTarget).next('.chosen-container').remove();
+                } else {
+                    div = $('[name="installationcodeid[installationcodeid-0][]"]').parents('.form-group.inline').clone();
+                    if (div.size()) {
+                        length = $('.chosen-select[name^="installationcodeid"]').length;
+                        div.find('.chosen-container').remove();
+                        div.find('select').show();
+                        div.find('select').val([]);
+                        div.find('select').attr('name', 'installationcodeid[installationcodeid-' + length + '][]');
+                        div.find('select').attr('id', 'installationcodeid-installationcodeid-' + length + '');
+                        $(div).insertAfter($($(e.currentTarget).parents('.form-group.inline').last()));
+                        $('.chosen-select[name^="installationcodeid[installationcodeid-' + length + ']"]').chosen({
+                            search_contains: true,
+                            allow_single_deselect: true,
+                            multiple: false,
+                            placeholder_text_multiple: 'dodaj',
+                            max_selected_options: 1
+                        });
+                        onInstallationCodeChange();
+                    }
+                }
+            });
+        };
+
+        /*var select, chosen;
+         // cache the select element as we'll be using it a few times
+         select = $(".chosen-select");
+         // init the chosen plugin
+         select.chosen();
+         // get the chosen object
+         chosen = select.data('chosen');
+         console.log(select, chosen, chosen.dropdown);
+         // Bind the keyup event to the search box input
+         chosen.find('input').keyup(function(e)
+         {
+         // if we hit Enter and the results list is empty (no matches) add the option
+         if (e.which == 13 && chosen.find('li.no-results').length > 0)
+         {
+         var option = $("<option>").val(this.value).text(this.value);
+         
+         // add the new option
+         select.prepend(option);
+         // automatically select it
+         select.find(option).prop('selected', true);
+         // trigger the update
+         select.trigger("chosen:updated");
+         }
+         });*/
+
+<?php if ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+            $("#datefinished").timepicker({
+                timeFormat: 'HH:mm',
+                hourGrid: 4,
+                minuteGrid: 10,
+                stepMinute: 5
+            });
+            $('#solutioncodeid').on('change', function(e) {
+                $('#decoderinterchangecodeid-element').hide();
+                $('#decoderinterchangecodeid-label').hide();
+                $('#modeminterchangecodeid-element').hide();
+                $('#modeminterchangecodeid-label').hide();
+                e.preventDefault();
+                var errorCodes = [];
+                $.each($(this).find('option:selected'), function(key, value) {
+                    errorCodes.push($(value).attr('data-errorcodeid'));
+                })
+                $('#errorcodeid').val(errorCodes);
+                $('#errorcodeid').trigger("chosen:updated");
+                if ($(this).find('option:selected').attr('data-solutioncode')) {
+                    var tmp = $(this).find('option:selected').attr('data-solutioncode').split('-');
+                    switch (tmp[0]) {
+                        // dekoder
+                        case 'ST1':
+                            switch (tmp[1]) {
+                                case 'WKW':
+                                case 'WKX':
+                                    $('#modeminterchangecodeid-element').hide();
+                                    $('#modeminterchangecodeid-label').hide();
+                                    $('#decoderinterchangecodeid-element').show();
+                                    $('#decoderinterchangecodeid-label').show();
+                                    break;
+                            }
+                            break;
+                        case 'SCI':
+                            switch (tmp[1]) {
+                                case 'WKW':
+                                    $('#modeminterchangecodeid-element').hide();
+                                    $('#modeminterchangecodeid-label').hide();
+                                    $('#decoderinterchangecodeid-element').show();
+                                    $('#decoderinterchangecodeid-label').show();
+                                    break;
+                            }
+                            break;
+                            // modem
+                        case 'UMD':
+                            switch (tmp[1]) {
+                                case 'WKW':
+                                case 'WKX':
+                                    $('#decoderinterchangecodeid-element').hide();
+                                    $('#decoderinterchangecodeid-label').hide();
+                                    $('#modeminterchangecodeid-element').show();
+                                    $('#modeminterchangecodeid-label').show();
+                                    break;
+                            }
+                            break;
+                        case 'WIF':
+                            switch (tmp[1]) {
+                                case 'WKW':
+                                    $('#decoderinterchangecodeid-element').hide();
+                                    $('#decoderinterchangecodeid-label').hide();
+                                    $('#modeminterchangecodeid-element').show();
+                                    $('#modeminterchangecodeid-label').show();
+                                    break;
+                            }
+                            break;
+                        case 'SIP':
+                            switch (tmp[1]) {
+                                case 'WKW':
+                                    $('#decoderinterchangecodeid-element').hide();
+                                    $('#decoderinterchangecodeid-label').hide();
+                                    $('#modeminterchangecodeid-element').show();
+                                    $('#modeminterchangecodeid-label').show();
+                                    break;
+                            }
+                            break;
+                        case 'HZ1':
+                        case 'PAY':
+                            switch (tmp[1]) {
+                                case 'WKW':
+                                case 'WKX':
+                                    //if (['WCH'].indexOf('<?php echo $this->service->complaintcode; ?>') != false) {
+                                    //    $('#modeminterchangecodeid-element').hide();
+                                    //    $('#modeminterchangecodeid-label').hide();
+                                    //} else if (['STB'].indexOf('<?php echo $this->service->complaintcode; ?>') != false) {
+                                    //    $('#decoderinterchangecodeid-element').hide();
+                                    //    $('#decoderinterchangecodeid-label').hide();
+                                    //}
+                                    $('#decoderinterchangecodeid-element').show();
+                                    $('#decoderinterchangecodeid-label').show();
+                                    $('#modeminterchangecodeid-element').show();
+                                    $('#modeminterchangecodeid-label').show();
+                                    break;
+                            }
+                            break;
+                    }
+                }
+                return false;
+            });
+
+<?php elseif ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+            /*$("#datefinished").datetimepicker({
+             dateFormat: "yy-mm-dd",
+             timeFormat: 'HH:mm',
+             hourGrid: 4,
+             minuteGrid: 10,
+             stepMinute: 5
+             });*/
+            $("#datefinished").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+<?php endif; ?>
+        $('#errorcodeid').on('change', function(e) {
+            e.preventDefault();
+
+            return false;
+        });
+        $('#errorcodeid').parents('dd').hide().prev().hide();
+
+        function setPerformed() {
+            var performed = $('[name=performed]').val();
+
+            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid'], function(key, value) {
+                switch (value) {
+                    case 'cancellationcodeid':
+                    case 'installationcancelcodeid':
+                        if (performed === '0') {
+                            $('[name^=' + value + ']').parents('dd').show();
+                            $('[name^=' + value + ']').parents('dd').prev().show();
+                        } else {
+                            $('[name^=' + value + ']').parents('dd').hide();
+                            $('[name^=' + value + ']').parents('dd').prev().hide();
+                        }
+                        break;
+                    case 'installationcodeid':
+                    case 'solutioncodeid':
+                    case 'modeminterchangecodeid':
+                    case 'decoderinterchangecodeid':
+                    case 'productid':
+                    case 'productreturnedid':
+                        if (performed == 1) {
+                            $('[name^=' + value + ']').parents('dd').show();
+                            $('[name^=' + value + ']').parents('dd').prev().show();
+                        } else {
+                            $('[name^=' + value + ']').parents('dd').hide();
+                            $('[name^=' + value + ']').parents('dd').prev().hide();
+                        }
+                        break;
+                }
+            });
+            $.each(['datefinished', 'technicalcomments'], function(key, value) {
+                if (performed !== '') {
+                    $('#' + value).parents('dd').show();
+                    $('#' + value).parents('dd').prev().show();
+                    $('#submit').parents('dd').show();
+                    $('#cancel').show();
+                } else {
+                    $('#' + value).parents('dd').hide();
+                    $('#' + value).parents('dd').prev().hide();
+                    $('#submit').parents('dd').hide();
+                    $('#cancel').hide();
+                }
+            });
+        }
+        ;
+
+        $('[name=performed]').on('change', function() {
+            setPerformed();
+        });
+        setPerformed();
+        $('#solutioncodeid').trigger('change');
+    });
+</script>

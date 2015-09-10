@@ -1,0 +1,266 @@
+{
+    "status": {
+        "acronym": "status",
+        "name": "Statusy",
+        "service": {
+            "acronym": "service",
+            "name": "Statusy zlecen",
+            "new": {
+                "acronym": "new",
+                "name": "Nowe"
+            },
+            "assigned": {
+                "acronym": "assigned",
+                "name": "Przypisane"
+            },
+            "finished": {
+                "acronym": "finished",
+                "name": "Zakonczone"
+            },
+            "closed": {
+                "acronym": "closed",
+                "name": "Zamkniete"
+            },
+            "deleted": {
+                "acronym": "deleted",
+                "name": "Usuniete"
+            },
+            "reassigned": {
+                "acronym": "reassigned",
+                "name": "Ponownie przypisane"
+            },
+            "withdrawn": {
+                "acronym": "withdrawn",
+                "name": "Wycofane"
+            }
+        },
+        "products": {
+            "acronym": "products",
+            "name": "Statusy produktow",
+            "instock": {
+                "acronym": "instock",
+                "name": "Na stanie"
+            },
+            "reserved": {
+                "acronym": "reserved",
+                "name": "W koszyku"
+            },
+            "released": {
+                "acronym": "released",
+                "name": "Wydane"
+            },
+            "deleted": {
+                "acronym": "deleted",
+                "name": "Usuniete"
+            }
+        },
+        "orders": {
+            "acronym": "orders",
+            "name": "Statusy zamowien",
+            "new": {
+                "acronym": "new",
+                "name": "Nowe"
+            },
+            "assigned": {
+                "acronym": "assigned",
+                "name": "Przypisane"
+            },
+            "released": {
+                "acronym": "released",
+                "name": "Wydane technikowi"
+            },
+            "invoiced": {
+                "acronym": "invoiced",
+                "name": "Wydane klientowi"
+            },
+            "returned": {
+                "acronym": "returned",
+                "name": "Zwrocone"
+            },
+            "deleted": {
+                "acronym": "deleted",
+                "name": "Usunięte"
+            }
+        ,
+        "users": {
+            "acronym": "users",
+            "name": "Statusy uzytkownikow",
+            "active": {
+                "acronym": "active",
+                "name": "Aktywny"
+            },
+            "inactive": {
+                "acronym": "inactive",
+                "name": "Nieaktywny"
+            },
+            "deleted": {
+                "acronym": "deleted",
+                "name": "Usunięty"
+            }
+        },
+        "reports": {
+            "acronym": "reports",
+            "name": "Statusy raportów",
+            "new": {
+                "acronym": "new",
+                "name": "Nowe"
+            },
+            "sent": {
+                "acronym": "sent",
+                "name": "Wysłane",
+				"deleted": {
+					"acronym": "deleted",
+					"name": "Usunięty"
+				}
+            }
+        },
+		"dictionaries": {
+			"acronym": "dictionaries",
+			"name": "Statusy słownika"
+		}
+    },
+    "type": {
+        "acronym": "type",
+        "name": "Typy",
+        "service": {
+            "acronym": "service",
+            "name": "Typy zlecen",
+            "service": {
+                "acronym": "service",
+                "name": "Serwisowe"
+            },
+            "installation": {
+                "acronym": "installation",
+                "name": "Instalacyjne"
+            },
+            "disconnection": {
+                "acronym": "disconnection",
+                "name": "Odlaczeniowe"
+            }
+        }
+    },
+    "dictionary": {
+        "acronym": "dictionary",
+        "name": "Slowniki",
+        "warehouse": {
+            "acronym": "warehouse",
+            "name": "Slowniki dla magazynu",
+            "type": {
+                "acronym": "type",
+                "name": "Typy magazynow",
+                "INST": {
+                    "acronym": "INST",
+                    "name": "Instalacje"
+                },
+                "SERV": {
+                    "acronym": "SERV",
+                    "name": "Serwis"
+                }
+            },
+            "area": {
+                "acronym": "area",
+                "name": "Regiony magazynow",
+                "LBL": {
+                    "acronym": "LBL",
+                    "name": "Lublin"
+                }
+            },
+            "unit": {
+                "acronym": "unit",
+                "name": "Jednostki",
+                "szt": {
+                    "acronym": "szt",
+                    "name": "sztuki"
+                },
+                "mb": {
+                    "acronym": "mb",
+                    "name": "metr biezacy"
+                }
+            }
+        },
+        "service": {
+            "acronym": "service",
+            "name": "Slowniki dla zlecen",
+            "region": {
+                "acronym": "region",
+                "name": "Obszar dyspozytorski"
+            },
+            "system": {
+                "acronym": "system",
+                "name": "System"
+            },
+            "laborcode": {
+                "acronym": "laborcode",
+                "name": "Kod pracy"
+            },
+            "complaintcode": {
+                "acronym": "complaintcode",
+                "name": "Kod skargi"
+            },
+            "blockadecode": {
+                "acronym": "blockadecode",
+                "name": "Kod blokady"
+            },
+            "calendar": {
+                "acronym": "calendar",
+                "name": "Kalendarz serwisowy"
+            },
+            "area": {
+                "acronym": "area",
+                "name": "Rejon"
+            },
+            "type": {
+                "acronym": "type",
+                "name": "Typ zlecenia"
+            },
+            "errorcode": {
+                "acronym": "errorcode",
+                "name": "Kod bledu"
+            },
+            "solutioncode": {
+                "acronym": "solutioncode",
+                "name": "Kod rozwiazania"
+            },
+            "modeminterchangecode": {
+                "acronym": "modeminterchangecode",
+                "name": "Kod wymiany modemu"
+            },
+            "decoderinterchangecode": {
+                "acronym": "decoderinterchangecode",
+                "name": "Kod wymiany dekodera"
+            },
+            "cancellationcode": {
+                "acronym": "cancellationcode",
+                "name": "Kod odwolania"
+            },
+            "installationcode": {
+                "acronym": "installationcode",
+                "name": "Kod instalacyjny"
+            },
+            "installationcancelcode": {
+                "acronym": "installationcancelcode",
+                "name": "Kod odwolania instalacji"
+            }
+        }
+    },
+    "attribute": {
+        "acronym": "attribute",
+        "name": "Atrybuty",
+        "price": {
+            "acronym": "price",
+            "name": "Cena"
+        },
+        "datefrom": {
+            "acronym": "datefrom",
+            "name": "Data od"
+        },
+        "datetill": {
+            "acronym": "datetill",
+            "name": "Data do"
+        },
+        "errorcodeid": {
+            "acronym": "errorcodeid",
+            "name": "Kod bledu"
+        }
+    }
+}

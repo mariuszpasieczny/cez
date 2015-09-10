@@ -1,0 +1,192 @@
+<h2 class="sub-header">
+    Wycofanie zlecenia
+    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+        instalacyjnego
+    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+        serwisowego
+    <?php endif; ?>
+</h2>
+
+<?php if ($this->success): ?>
+    <div class="alert alert-success"><?php echo $this->success; ?></div> 
+    <button type="button" class="btn btn-success">Powrót</button>
+<?php else: ?> 
+    <?php foreach ($this->service as $service): ?>
+    <?php if (!in_array($service->getStatus()->acronym, array('new', 'assigned'))): ?>
+        <div class="alert alert-warning" role="alert">
+            Zgłoszenie przypisane do 
+            <?php echo $service->getTechnician(); ?>.<br/>
+            Produkty i kody zostaną wyzerowane!
+        </div>
+        <div class="ibox-content inspinia-timeline">
+            <div class="timeline-item">
+                <div class="row">
+                    <div class="col-xs-3 date">
+                        <i class="fa"></i>
+                        Komentarz technika
+                    </div>
+                    <div class="col-xs-7 content no-top-border">
+                        <p><?php echo $service->technicalcomments ? $service->technicalcomments : 'brak'; ?></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 date">
+                        <i class="fa"></i>
+                        Komentarz koordynatora
+                    </div>
+                    <div class="col-xs-7 content no-top-border">
+                        <p><?php echo $service->coordinatorcomments ? $service->coordinatorcomments : 'brak'; ?></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 date">
+                        <i class="fa"></i>
+                        Data zakończenia
+                    </div>
+                    <div class="col-xs-7 content no-top-border">
+                        <p><?php echo $service->datefinished ? $service->datefinished : 'brak'; ?></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 date">
+                        <i class="fa"></i>
+                        Wykonane
+                    </div>
+                    <div class="col-xs-7 content no-top-border">
+                        <p><?php echo $service->performed !== null ? ($service->performed ? 'tak' : 'nie') : 'nie ustalone'; ?></p>
+                    </div>
+                </div>
+                <?php $codes = $service->getCodes(); ?>
+                <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+                    <div class="row">
+                        <div class="col-xs-3 date">
+                            <i class="fa"></i>
+                            Kod instalacji
+                        </div>
+                        <div class="col-xs-7 content no-top-border">
+                            <p>
+                                <?php $installationCodes = $codes->filter(array('attributeacronym' => 'installationcode')); ?>
+                                <?php if ($installationCodes): ?>
+                                    <?php foreach ($installationCodes as $ix => $code): $code = $code->toArray(); ?>
+                                        <?php echo $ix ? ', ' : ''; ?>
+                                        <?php echo $code['codename'] . ' (' . $code['codeacronym'] . ')'; ?>
+                                    <?php endforeach; ?>
+                                <?php else: echo 'brak'; ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                    </div>
+                <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+                    <div class="row">
+                        <div class="col-xs-3 date">
+                            <i class="fa"></i>
+                            Kod rozwiązania
+                        </div>
+                        <div class="col-xs-7 content no-top-border">
+                            <p>
+                                <?php $solutionCodes = $codes->filter(array('attributeacronym' => 'solutioncode')); ?>
+                                <?php if ($solutionCodes): ?>
+                                    <?php foreach ($solutionCodes as $ix => $code): $code = $code->toArray(); ?>
+                                        <?php echo $ix ? ', ' : ''; ?>
+                                        <?php echo $code['codeacronym'] . ' - ' . $code['codename']; ?>
+                                    <?php endforeach; ?>
+                                <?php else: echo 'brak'; ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 date">
+                            <i class="fa"></i>
+                            Kod odwołania
+                        </div>
+                        <div class="col-xs-7 content no-top-border">
+                            <p>
+                                <?php $cancellationCodes = $codes->filter(array('attributeacronym' => 'cancellationcode')); ?>
+                                <?php if ($cancellationCodes): ?>
+                                    <?php foreach ($cancellationCodes as $ix => $code): $code = $code->toArray(); ?>
+                                        <?php echo $ix ? ', ' : ''; ?>
+                                        <?php echo $code['codename'] . ' (' . $code['codeacronym'] . ')'; ?>
+                                    <?php endforeach; ?>
+                                <?php else: echo 'brak'; ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 date">
+                            <i class="fa"></i>
+                            Kod wymiany modemu
+                        </div>
+                        <div class="col-xs-7 content no-top-border">
+                            <p>
+                                <?php $modeminterchangeCodes = $codes->filter(array('attributeacronym' => 'modeminterchangecode')); ?>
+                                <?php if ($modeminterchangeCodes): ?>
+                                    <?php foreach ($modeminterchangeCodes as $ix => $code): $code = $code->toArray(); ?>
+                                        <?php echo $ix ? ', ' : ''; ?>
+                                        <?php echo $code['codename'] . ' (' . $code['codeacronym'] . ')'; ?>
+                                    <?php endforeach; ?>
+                                <?php else: echo 'brak'; ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 date">
+                            <i class="fa"></i>
+                            Kod wymiany dedera
+                        </div>
+                        <div class="col-xs-7 content no-top-border">
+                            <p>
+                                <?php $decoderinterchangeCodes = $codes->filter(array('attributeacronym' => 'decoderinterchangecode')); ?>
+                                <?php if ($decoderinterchangeCodes): ?>
+                                    <?php foreach ($decoderinterchangeCodes as $ix => $code): $code = $code->toArray(); ?>
+                                        <?php echo $ix ? ', ' : ''; ?>
+                                        <?php echo $code['codename'] . ' (' . $code['codeacronym'] . ')'; ?>
+                                    <?php endforeach; ?>
+                                <?php else: echo 'brak'; ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <div class="row">
+                    <div class="col-xs-3 date">
+                        <i class="fa"></i>
+                        Przedmioty
+                    </div>
+                    <div class="col-xs-7 content no-top-border">
+                        <p>
+                            <?php $products = $this->service->current()->getProducts(); ?>
+                            <?php if ($products->count()): ?>
+                                <?php foreach ($products as $ix => $product): ?>
+                                    <?php echo $ix ? ', ' : ''; ?>
+                                    <?php echo $product->name . ' (' . $product->serial . ')'; ?>
+                                <?php endforeach; ?>
+                            <?php else: echo 'brak'; ?>
+                            <?php endif; ?>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php endforeach; ?>
+
+    <?php if ($this->form->getDescription()): ?>
+        <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+    <?php endif; ?>
+
+    <?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+    ;
+    ?>
+
+<?php endif; ?> 
+
+<script>
+    $(function() {
+        $('.chosen-select').chosen({allow_single_deselect: true});
+    });
+</script>

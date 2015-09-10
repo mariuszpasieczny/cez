@@ -1,0 +1,101 @@
+<h2 class="sub-header">Edycja słownika</h2>
+
+<?php if ($this->success): ?>
+    <div class="alert alert-success"><?php echo $this->success; ?></div> 
+    <button type="button" class="btn btn-success">Powrót</button>
+<?php else: ?> 
+
+    <?php if ($this->form->getDescription()): ?>
+        <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+    <?php endif; ?>
+
+    <?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+    ;
+    ?>
+
+<?php endif; ?> 
+
+<script>
+    $(function() {
+        $('#parentid').on('change', function() {
+            var selected = $(this).val();
+            
+            $.each($('#price,#datefrom,#datetill,#solutioncodeid,#errorcodeid'), function(key, value) {
+                if (jQuery.inArray(selected, ['<?php echo $this->escape($this->errorCode);?>','<?php echo $this->escape($this->cancellationCode);?>','<?php echo $this->escape($this->decoderinterchangeCode);?>','<?php echo $this->escape($this->installationcancelCode);?>','<?php echo $this->escape($this->installationCode);?>','<?php echo $this->escape($this->modeminterchangeCode);?>']) != -1) {
+                    switch ($(value).attr('id')) {
+                        case 'solutioncodeid':
+                            $('#' + $(value).attr('id') + '-element').show();
+                            $('#' + $(value).attr('id') + '-label').show();
+                            $('.chosen-container').width('100%');
+                            break;
+                        case 'errorcodeid':
+                            $('#' + $(value).attr('id') + '-element').hide();
+                            $('#' + $(value).attr('id') + '-label').hide();
+                            $('.chosen-container').width('100%');
+                            break;
+                        default:
+                            $(value).show();
+                            $('label[for=' + $(value).attr('name') + ']').show();
+                            break;
+                    }
+                } else if (jQuery.inArray(selected, ['<?php echo $this->escape($this->solutionCode);?>']) != -1) {
+                    switch ($(value).attr('id')) {
+                        case 'errorcodeid':
+                            $('#' + $(value).attr('id') + '-element').show();
+                            $('#' + $(value).attr('id') + '-label').show();
+                            $('.chosen-container').width('100%');
+                            break;
+                        case 'solutioncodeid':
+                            $('#' + $(value).attr('id') + '-element').hide();
+                            $('#' + $(value).attr('id') + '-label').hide();
+                            $('.chosen-container').width('100%');
+                            break;
+                        default:
+                            $(value).hide();
+                            $('label[for=' + $(value).attr('name') + ']').hide();
+                            break;
+                    }
+                } else {
+                    switch ($(value).attr('id')) {
+                        case 'solutioncodeid':
+                            $('#' + $(value).attr('id') + '-element').hide();
+                            $('#' + $(value).attr('id') + '-label').hide();
+                            break;
+                        case 'errorcodeid':
+                            $('#' + $(value).attr('id') + '-element').hide();
+                            $('#' + $(value).attr('id') + '-label').hide();
+                            break;
+                        default:
+                            $(value).hide();
+                            $('label[for=' + $(value).attr('name') + ']').hide();
+                            break;
+                    }
+                }
+            });
+        });
+        $('#parentid').trigger('change');
+        $("#datefrom").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        $("#datetill").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        $('.chosen-select').chosen({width: '100%', allow_single_deselect: true});
+        $('.add-attributes').on('click', function (event) {
+            var fieldset = $(this).parents('#fieldset-attributes');
+            var row = $(this).parents('dl').first();
+            row.clone(false).appendTo(fieldset);
+            return false;
+        });
+    })
+</script>
+
+<style>
+    .input-group-btn {
+        float: right;
+        width: 25px;
+        padding-left: 5px;
+    }
+</style>

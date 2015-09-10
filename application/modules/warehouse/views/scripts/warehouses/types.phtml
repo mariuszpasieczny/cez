@@ -1,0 +1,23 @@
+<table class="table">
+    <tr>
+        <th>Kod</th>
+        <th>Nazwa</th>
+        <th>&nbsp;</th>
+    </tr>
+
+<?php foreach ($this->types as $type) : ?>
+        <tr>
+            <td><?php echo $this->escape($type->acronym); ?></td>
+            <td><?php echo $this->escape($type->name); ?></td>
+            <td>
+                   <?php if ($this->auth && $this->HasAccess($this->auth->role, 'warehouses', 'types-edit')): ?>
+                    <a href="<?php echo $this->baseUrl; ?>/warehouse/warehouses/types-edit/id/<?php echo $type->id; ?>" class="content-load">Edytuj</a>
+                   <?php endif; ?>
+                   <?php if ($this->auth && $this->HasAccess($this->auth->role, 'warehouses', 'types-delete')): ?>
+                    <a href="<?php echo $this->baseUrl; ?>/warehouse/warehouses/types-delete/id/<?php echo $type->id; ?>" class="content-load">Usuń</a>
+                   <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?> 
+
+</table> 

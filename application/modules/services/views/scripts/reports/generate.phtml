@@ -1,0 +1,64 @@
+<h2 class="sub-header"
+    >Generuj zestawienie
+    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+        instalacyjne
+    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+        serwisowe
+    <?php endif; ?>
+</h2>
+
+<?php if ($this->success): ?>
+    <div class="alert alert-success"><?php echo $this->success; ?></div> 
+    <button type="button" class="btn btn-success">Powrót</button>
+<?php else: ?> 
+
+    <?php if ($this->form->getDescription()): ?>
+        <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+    <?php endif; ?>
+
+    <?php
+    $this->form->setAction($this->url());
+    echo $this->form;
+    ;
+    ?>
+
+<?php endif; ?> 
+
+<script>
+    $(function() {
+        $("#planneddate").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        $("#timefrom").timepicker({
+            timeFormat: 'HH:mm',
+            hourGrid: 4,
+            minuteGrid: 10,
+            stepMinute: 15
+        });
+        $("#timetill").timepicker({
+            timeFormat: 'HH:mm',
+            hourGrid: 4,
+            minuteGrid: 10,
+            stepMinute: 15
+        });
+        $("#datefinished").datetimepicker({
+            dateFormat: "yy-mm-dd",
+            timeFormat: 'HH:mm',
+            hourGrid: 4,
+            minuteGrid: 10,
+            stepMinute: 15
+        });
+        $('#errorcodeid').parents('dd').hide().prev().hide();
+        $('#solutioncodeid').on('change', function(e) {
+            event.preventDefault();
+            event.stopPropagation();
+            var errorCodes = [];
+            $.each($(this).find('option:selected'), function(key, value) {
+                errorCodes.push($(value).attr('data-errorcodeid'));
+            })
+            $('#errorcodeid').val(errorCodes);
+            $('#errorcodeid').trigger("chosen:updated");
+            return false;
+        });
+    });
+</script>

@@ -1,0 +1,21 @@
+<table class="table display" style="empty-cells: hide;" cellspacing="0" width="100%">
+    <thead>
+        <tr class="alternateRow">
+            <?php foreach ($this->headers as $column => $label) : ?>
+                <th><?php echo $label; ?></th>
+            <?php endforeach; ?>
+        </tr>
+    </thead>
+    <?php foreach ($this->data as $i => $row) : ?>
+        <tr>
+            <?php foreach ($this->headers as $column => $label) : ?>
+                <td><?php echo $this->escape($row->{$column}); ?></td>
+            <?php endforeach; ?>
+            <?php if ($this->addOns): ?>
+                <?php foreach ($this->headers as $key => $value) : ?>
+                    <td><?php echo $this->escape($row->{$column}); ?></td>
+                <?php endforeach; ?>
+            <?php endif ?>
+        </tr>
+    <?php endforeach; ?> 
+</table>

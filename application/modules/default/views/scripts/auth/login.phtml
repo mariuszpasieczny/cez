@@ -1,0 +1,30 @@
+<!-- application/views/scripts/auth/login.phtml -->
+<div class="jumbotron">
+    <div class="container">
+        <div class="card card-container">
+            <?php if ($this->success): ?>
+                <div class="alert alert-success"><?php echo $this->success; ?></div> 
+            <?php endif; ?> 
+
+            <?php if ($this->form->getDescription()): ?>
+                <div class="alert alert-danger"><?php echo $this->form->getDescription(); ?></div>
+            <?php endif ?>
+
+            <?php
+            //$this->form->setAction($this->url());
+            echo $this->form;
+            ?>
+
+            <a href="<?php
+            echo $this->url(
+                    array('controller' => 'auth', 'action' => 'remind-password'), 'default', true)
+            ?>" class="forgot-password content-load">
+                Zapomniałem hasła
+            </a>
+        </div><!-- /card-container -->
+    </div><!-- /container -->
+</div>
+
+<script>
+
+</script>

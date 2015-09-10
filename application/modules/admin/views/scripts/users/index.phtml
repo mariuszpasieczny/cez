@@ -1,0 +1,45 @@
+<h2 class="sub-header">Lista użytkowników</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Symbol</th>
+                <th>E-mail</th>
+                <th>Telefon</th>
+                <th>Rola</th>
+                <th>Status</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <?php foreach ($this->users as $user) : ?>
+            <tr>
+                <td><?php echo $this->escape($user->firstname); ?></td>
+                <td><?php echo $this->escape($user->lastname); ?></td>
+                <td><?php echo $this->escape($user->symbol); ?></td>
+                <td><?php echo $this->escape($user->email); ?></td>
+                <td><?php echo $this->escape($user->phoneno); ?></td>
+                <td><?php echo $this->escape($user->role); ?></td>
+                <td><?php echo $this->escape($user->status); ?></td>
+                <td>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'users', 'edit')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/admin/users/edit/id/<?php echo $user->id; ?>" class="content-load" title="Edytuj">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
+                    <!--<?php if ($this->auth && $this->HasAccess($this->auth->role, 'users', 'delete')): ?>
+                            <a href="<?php echo $this->baseUrl; ?>/admin/users/delete/id/<?php echo $user->id; ?>" class="content-load" title="Usuń">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </a>
+                    <?php endif; ?>-->
+                </td>
+            </tr>
+        <?php endforeach; ?> 
+    </table> 
+</div>
+<?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
+<script>
+    params = <?php echo Zend_Json::encode($this->request); ?>;
+</script>

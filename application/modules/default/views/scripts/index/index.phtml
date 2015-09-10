@@ -1,0 +1,6 @@
+<?php if (in_array($this->auth->role, array('admin', 'coordinator', 'technician'))): ?>
+<?php echo $this->partial('index/services.phtml', array('services' => $this->services, 'auth' => $this->auth)); ?>
+<?php endif; ?>
+<?php if (in_array($this->auth->role, array('admin', 'coordinator', 'technician', 'warehouse'))): ?>
+<?php echo $this->partial('index/warehouse.phtml', array('products' => $this->products, 'auth' => $this->auth)); ?>
+<?php endif; ?>

@@ -1,0 +1,147 @@
+<h2 class="sub-header">
+    Szukaj zleceń 
+</h2>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-inline form-load" action="<?php
+        echo $this->url(
+                array('module' => 'services', 'controller' => 'services', 'action' => 'search'), 'default', true)
+        ?>">
+            <div class="form-group">
+                <input type="text" class="form-control" name="clientnumber" placeholder="Nr klienta" value="<?php if (!empty($this->request['clientnumber'])) echo $this->request['clientnumber']; ?>">
+            </div>
+            <div class="form-group">
+                <!--<select class="form-control chosen-select" width="150px" name="clientid" placeholder="Wybierz adres">
+                    <option value="">Wybierz adres</option>
+                    <?php foreach ($this->clientss as $client): ?>
+                        <option value="<?php echo $client->id; ?>" <?php if (!empty($this->request['clientid']) && $client->id == $this->request['clientid']): ?>selected<?php endif; ?>><?php echo $client->street . ' ' . $client->streetno . '/' . $client->apartmentno; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <input type="text" class="form-control" name="clientaddress" placeholder="Adres" value="<?php if (!empty($this->request['clientaddress'])) echo $this->request['clientaddress']; ?>">-->
+                <select class="form-control chosen-select" style="width: 250px" name="street" data-placeholder="Wybierz ulicę">
+                    <option value="">Wybierz ulicę</option>
+                    <?php foreach ($this->clients as $client): ?>
+                        <option value="<?php echo $client->street; ?>" <?php if (!empty($this->request['street']) && $client->street == $this->request['street']): ?>selected<?php endif; ?>><?php echo $client->street; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <input type="text" class="form-control" style="width: 50px" name="streetno" placeholder="Nr domu" value="<?php if (!empty($this->request['streetno'])) echo $this->request['streetno']; ?>">
+                <input type="text" class="form-control" style="width: 50px" name="apartmentno" placeholder="Nr mieszkania" value="<?php if (!empty($this->request['apartmentno'])) echo $this->request['apartmentno']; ?>">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="number" placeholder="Nr zlecenia" value="<?php if (!empty($this->request['number'])) echo $this->request['number']; ?>">
+            </div>
+            <button type="button" class="btn btn-default search">Szukaj</button>
+        </form>
+    </div>
+</div>
+
+<?php if (!empty($this->services)): ?>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+            <thead>
+                <tr class="alternateRow">
+                    <?php if (1 || $this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+                        <th>Data</th>
+                        <th>Od</th>
+                        <th>Do</th> 
+                        <th>Typ</th>
+                        <th><acronym title="Kalendarz">Kal.</acronym></th>
+                <th>Nr zlecenia</th>
+                <th>Nr klienta</th>
+                <th>Klient</th>
+                <th>Technik</th>
+                    <th style="max-width: 195px !important;">Sprzęt</th>
+                    <th style="max-width: 195px !important;">Komentarz tech.</th>
+                <?php if ($this->auth->role == 'technician'): ?>
+                <?php endif; ?>
+                <th>Status</th>
+                <th><acronym title="Wykonane">Wyk.</acronym></th>
+            <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+                <th>Data zlecenia</th>  
+                <th>Przedział czasowy</th>
+                <th>Numer WO</th>
+                <th>ID Klienta</th>
+                <th>Klient</th>
+                <th>Technik</th>
+                <th>Status</th>
+                <th><acronym title="Wykonane">Wyk.</acronym></th>
+            <?php endif; ?>
+            </tr>
+            </thead>
+            <?php foreach ($this->services as $i => $service) : ?>
+                <tr>
+                    <?php if (1 || $this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+                        <td><?php echo $this->escape($service->getPlanneddate()); ?></td>
+                        <td><?php echo $this->escape($service->getTimefrom()); ?></td>
+                        <td><?php echo $this->escape($service->getTimetill()); ?></td>
+                        <td><?php echo $this->escape($service->servicetype); ?></td>
+                        <td><?php echo $this->escape($service->calendar); ?></td>
+                        <td><?php echo $this->escape($service->number); ?></td>
+                        <td><?php echo $this->escape($service->clientnumber); ?></td>
+                        <td><?php echo $this->escape($service->client); ?></td>
+                        <td>
+                            <?php echo $this->escape($service->technician); ?>
+                            <?php if ($technician = $service->getTechnician()): ?>
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
+                        <?php else: echo "&nbsp;";
+                        endif; ?>
+                        </td>
+                            <td>
+                                <?php if ($equipment = $service->equipment): echo $equipment; ?>
+                                <?php else: echo "&nbsp;"; endif; ?>
+                            </td>
+                            <td>
+                                <?php if ($technicalcomments = $service->technicalcomments): echo $technicalcomments; ?>
+                                <?php else: echo "&nbsp;"; endif; ?>
+                            </td>
+                        <?php if ($this->auth->role == 'technician'): ?>
+                        <?php endif; ?>
+                        <td><?php echo $this->escape($service->status); ?></td>
+                        <td><?php echo $service->performed ? 'tak' : 'nie'; ?></td>
+                    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+                        <td><?php echo $this->escape($service->getPlanneddate()); ?></td>
+                        <td><?php echo $this->escape($service->getPlannedtime()); ?></td>
+                        <td><?php echo $this->escape($service->number); ?></td>
+                        <td><?php echo $this->escape($service->clientnumber); ?></td>
+                        <td><?php echo $this->escape($service->client); ?></td>
+                        <td>
+                            <?php echo $this->escape($service->technician); ?>
+                            <?php if ($technician = $service->getTechnician()): ?>
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
+                        <?php else: echo "&nbsp;";
+                        endif; ?>
+                        </td>
+                        <td><?php echo $this->escape($service->status); ?></td>
+                        <td><?php echo $service->performed ? 'tak' : 'nie'; ?></td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?> 
+        </table> 
+    </div>
+<?php endif; ?>
+
+<script>
+    params = <?php echo Zend_Json::encode($this->request); ?>;
+
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip({
+            html: true,
+            content: function() {
+                return $(this).attr('title').replace(/\[br\]/g, "<br />");
+            }
+        });
+        $('[data-toggle="popover"]').popover({
+            html: true
+        }).on("show.bs.popover", function() {
+            //var width = window.innerWidth * 0.75;
+            //$(this).data("bs.popover").tip().css("max-width", width + 'px').css("width", width + 'px');
+        });
+        $('[name=clientid]').outerWidth(200);
+        $('.chosen-select').chosen({
+            allow_single_deselect: true
+        });
+        $("select[name=street].chosen-select").data('chosen').allow_single_deselect = true;
+    });
+</script>
+<!--<script src="/js/dataTables.js" />-->

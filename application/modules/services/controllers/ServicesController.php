@@ -831,6 +831,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                         $this->_users->setWhere($this->_users->getAdapter()->quoteInto("UPPER(lastname) = UPPER(?)", "{$data['lastname']}"));
                                         $user = $this->_users->getAll()->current();
                                     } else if (!empty($data['symbol'])) {
+                                        $this->_users->clearWhere();
                                         //$user = $this->_users->getAll(array('symbol' => $data['symbol']))->current();
                                         $this->_users->setWhere($this->_users->getAdapter()->quoteInto("UPPER(symbol) = UPPER(?)", "{$data['symbol']}"));
                                         $user = $this->_users->getAll()->current();

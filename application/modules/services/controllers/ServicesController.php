@@ -496,10 +496,11 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
                 $this->_orderlines->setLazyLoading(true);
                 foreach ($service->getProducts() as $product) {
-                    $orderLine = $this->_orderlines->find($product->productid)->current();
-                    $orderLine->statusid = $statusReleased->id;
-                    $orderLine->serviceid = null;
-                    $orderLine->save();
+                    if ($orderLine = $this->_orderlines->find($product->productid)->current()) {
+                        $orderLine->statusid = $statusReleased->id;
+                        $orderLine->serviceid = null;
+                        $orderLine->save();
+                    }
                     $product->delete();
                 }
                 $productIds = array_filter((array)$request->getParam('productid'));
@@ -1271,10 +1272,11 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
                 $this->_orderlines->setLazyLoading(true);
                 foreach ($service->getProducts() as $product) {
-                    $orderLine = $this->_orderlines->find($product->productid)->current();
-                    $orderLine->statusid = $statusReleased->id;
-                    $orderLine->serviceid = null;
-                    $orderLine->save();
+                    if ($orderLine = $this->_orderlines->find($product->productid)->current()) {
+                        $orderLine->statusid = $statusReleased->id;
+                        $orderLine->serviceid = null;
+                        $orderLine->save();
+                    }
                     $product->delete();
                 }
                 $productIds = array_filter($request->getParam('productid'));
@@ -1629,10 +1631,11 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
                 $this->_orderlines->setLazyLoading(true);
                 foreach ($service->getProducts() as $product) {
-                    $orderLine = $this->_orderlines->find($product->productid)->current();
-                    $orderLine->statusid = $statusReleased->id;
-                    $orderLine->serviceid = null;
-                    $orderLine->save();
+                    if ($orderLine = $this->_orderlines->find($product->productid)->current()) {
+                        $orderLine->statusid = $statusReleased->id;
+                        $orderLine->serviceid = null;
+                        $orderLine->save();
+                    }
                     $product->delete();
                 }
                 $productIds = array_filter($request->getParam('productid'));
@@ -1899,10 +1902,11 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
                     $this->_orderlines->setLazyLoading(true);
                     foreach ($service->getProducts() as $product) {
-                        $orderLine = $this->_orderlines->find($product->productid)->current();
-                        $orderLine->statusid = $statusReleased->id;
-                        $orderLine->serviceid = null;
-                        $orderLine->save();
+                        if ($orderLine = $this->_orderlines->find($product->productid)->current()) {
+                            $orderLine->statusid = $statusReleased->id;
+                            $orderLine->serviceid = null;
+                            $orderLine->save();
+                        }
                         $product->delete();
                     }
                     foreach ($service->getCodes() as $attribute) {

@@ -29,5 +29,24 @@ class Application_Model_Products_Row extends Application_Db_Table_Row {
         $products->setWhere($this->getTable()->getAdapter()->quoteInto('statusid IN (?)', array($statusInvoiced->id, $statusReleased->id)));
         return $products->getAll(array('productid' => $this->id));
     }
+    
+    public function isNew() {
+        if ($this->getStatus()->acronym != 'new') {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    public function isAvailable() {
+        if ($this->getStatus()->acronym != 'instock') {
+            return false;
+        }
+        if (!$this->qtyavailable) {
+            return false;
+        }
+        
+        return true;
+    }
 
 }

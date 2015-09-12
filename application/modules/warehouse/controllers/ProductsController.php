@@ -25,6 +25,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                 ->addActionContext('migration', array('html', 'json', 'xls'))
                 ->addActionContext('edit', 'html')
                 ->addActionContext('delete', 'html')
+                ->addActionContext('accept', 'html')
                 ->addActionContext('import', 'html')
                 ->setSuffix('html', '')
                 ->initContext();
@@ -124,7 +125,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
         $form = new Application_Form_Products_Import();
         $parents = $this->_warehouses->getAll();
         $units = $this->_dictionaries->getDictionaryList('warehouse', 'unit');
-        $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
+        $status = $this->_dictionaries->getStatusList('products')->find('new', 'acronym');
         $form->setOptions(array('warehouses' => $parents, 'units' => $units));
 
         $this->view->form = $form;
@@ -173,6 +174,9 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                                     case 'C': 
                                         $params['quantity'] = $cell->getValue();
                                         $params['qtyavailable'] = $cell->getValue();
+                                        break;
+                                    case 'D': 
+                                        $params['pairedcard'] = $cell->getValue();
                                         break;
                                 }
                             }
@@ -368,11 +372,48 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                         $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Nie można usunąć towaru wydanego technikowi'));
                         return;
                     }
+                    //$item->statusid = $status->id;
+                    $item->delete();
+                }
+                Zend_Db_Table::getDefaultAdapter()->commit();
+                $this->view->success = 'Produkt usunięty';
+            }
+        }
+    }
+
+    public function acceptAction() {
+        $request = $this->getRequest();
+        $id = (array) $request->getParam('id');
+        $typeid = $request->getParam('typeid');
+        //$id = array_unique((array)$id);
+        $product = $this->_products->get($id);
+        if (!$product) {
+            throw new Exception('Nie znaleziono produktu');
+        }
+        $form = new  Application_Form_Products_Accept(array('productsCount' => $product->count()));
+        $form->setProducts($product);
+        $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
+        $this->view->form = $form;
+        $this->view->product = $product;
+
+        if ($this->getRequest()->isPost()) {
+            if ($form->isValid($request->getPost())) {
+                $values = $form->getValues();
+                if (!$product) {
+                    $form->setDescription('Nie zaznaczono produktów do usunięcia');
+                    return;
+                }
+                Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                foreach ($product as $i => $item) {
+                    if (!$item->isNew()) {
+                        $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Nie można zaakceptować towaru'));
+                        return;
+                    }
                     $item->statusid = $status->id;
                     $item->save();
                 }
                 Zend_Db_Table::getDefaultAdapter()->commit();
-                $this->view->success = 'Produkt usunięty';
+                $this->view->success = 'Produkt zaakceptowany';
             }
         }
     }

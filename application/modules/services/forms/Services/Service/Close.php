@@ -93,8 +93,8 @@ class Application_Form_Services_Service_Close extends Application_Form {
                     $attribs = $this->getElement($name)->getAttribs();
                     $options = $attribs['options'];
                     if (!isset($options[$row['productid']])) {
-                        $this->getElement($name)->addMultiOption($row['name'], $row['name']);
-                        $selectedIds[] = $row['name'];
+                        $this->getElement($name)->addMultiOption($row['productid'] < 0 ? $row['name'] : $row['productid'], $row['name'] . ' (' . $row['serial'] . ')');
+                        $selectedIds[] = $row['productid'] < 0 ? $row['name'] : $row['productid'];
                     }
                 }
                 $value = $selectedIds;

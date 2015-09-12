@@ -31,7 +31,7 @@
 <script>
     $(function() {
         //$('#installationcodeid').hide();
-        $('.chosen-select').not('[name^=installationcodeid]').chosen({
+        $('.chosen-select').not('[name^=installationcodeid]').not('[multiple=multiple][name^=productid]').chosen({
             search_contains: true,
             allow_single_deselect: true,
             placeholder_text_multiple: 'dodaj'
@@ -73,6 +73,15 @@
                 }
             });
         };
+        $('.chosen-select[multiple=multiple][name^=productid]').chosen({
+            search_contains: true,
+            allow_single_deselect: true,
+            multiple: false,
+            placeholder_text_multiple: 'dodaj',
+            max_selected_options: 1
+        }).change(function(e) {
+            
+        });
         $("#planneddate").datepicker({
             dateFormat: "yy-mm-dd"
         });

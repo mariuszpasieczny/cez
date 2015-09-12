@@ -26,7 +26,7 @@
 
 <script>
     $(function() {
-        $('.chosen-select').not('[name^=installationcodeid]').chosen({
+        $('.chosen-select').not('[name^=installationcodeid]').not('[multiple=multiple][name^=productid]').chosen({
             search_contains: true,
             allow_single_deselect: true,
             placeholder_text_multiple: 'dodaj'
@@ -64,6 +64,50 @@
                             max_selected_options: 1
                         });
                         onInstallationCodeChange();
+                    }
+                }
+            });
+        };
+        
+        $('.chosen-select[multiple=multiple][name^=productid]').chosen({
+            search_contains: true,
+            allow_single_deselect: true,
+            multiple: false,
+            placeholder_text_multiple: 'dodaj',
+            max_selected_options: 1
+        }).change(function(e) {
+            
+        });
+        onProductChange();
+        function onProductChange() {
+            $(".chosen-select[name^=productid]").off();
+            $(".chosen-select[name^=productid]").on("change", function(e) {
+                if (!e.currentTarget.value) {
+                    $($(e.currentTarget).parents('.form-group.inline').last().next()).remove();
+                    $(e.currentTarget).next('.chosen-container').remove();
+                } else {
+                    div = $('[name="productid[productid-0][]"]').parents('.form-group.inline').clone();
+                    div2 = $('[name="productid[productid-0][]"]').parents('.form-group.inline').next().clone();
+                    if (div.size()) {
+                        length = $('.chosen-select[name^="productid"]').length;
+                        div.find('.chosen-container').remove();
+                        div.find('select').show();
+                        div.find('select').val([]);
+                        div.find('select').attr('name', 'productid[productid-' + length + '][]');
+                        div.find('select').attr('id', 'productid-productid-' + length + '');
+                        $(div).insertAfter($($(e.currentTarget).parents('.form-group.inline').last().next()));
+                        div2.find('input').val('');
+                        div2.find('input').attr('name', 'quantity[quantity-' + length + '][]');
+                        div2.find('input').attr('id', 'quantity-quantity-' + length + '');
+                        $(div2).insertAfter($(div));
+                        $('.chosen-select[name^="productid[productid-' + length + ']"]').chosen({
+                            search_contains: true,
+                            allow_single_deselect: true,
+                            multiple: false,
+                            placeholder_text_multiple: 'dodaj',
+                            max_selected_options: 1
+                        });
+                        onProductChange();
                     }
                 }
             });
@@ -216,7 +260,7 @@
         function setPerformed() {
             var performed = $('[name=performed]').val();
 
-            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid'], function(key, value) {
+            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'quantity', 'productreturnedid'], function(key, value) {
                 switch (value) {
                     case 'cancellationcodeid':
                     case 'installationcancelcodeid':
@@ -233,6 +277,7 @@
                     case 'modeminterchangecodeid':
                     case 'decoderinterchangecodeid':
                     case 'productid':
+                    case 'quantity':
                     case 'productreturnedid':
                         if (performed == 1) {
                             $('[name^=' + value + ']').parents('dd').show();

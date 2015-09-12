@@ -47,9 +47,16 @@
                     <p>
                         <?php $products = $this->service->getProducts(); ?>
                         <?php if ($products->count()): ?>
-                            <?php foreach ($products as $ix => $product): ?>
+                            <?php
+                            foreach ($products as $ix => $product):
+                                $desc = $product->getProduct()->name . ' (';
+                                if ($serial = $product->getProduct()->serial) {
+                                    $desc .= $product->getProduct()->serial . ', ';
+                                }
+                                $desc .= $product->quantity . ' ' . $product->getProduct()->getUnit()->acronym . ')';
+                                ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
-                                <?php echo $product->name . ' (' . $product->serial . ')'; ?>
+                                <?php echo $desc; ?>
                             <?php endforeach; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>
@@ -275,9 +282,16 @@
                     <p>
                         <?php $products = $this->service->getProducts(); ?>
                         <?php if ($products->count()): ?>
-                            <?php foreach ($products as $ix => $product): ?>
+                            <?php
+                            foreach ($products as $ix => $product):
+                                $desc = $product->getProduct()->name . ' (';
+                                if ($serial = $product->getProduct()->serial) {
+                                    $desc .= $product->getProduct()->serial . ', ';
+                                }
+                                $desc .= $product->quantity . ' ' . $product->getProduct()->getUnit()->acronym . ')';
+                                ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
-                                <?php echo $product->name . ' (' . $product->serial . ')'; ?>
+                                <?php echo $desc; ?>
                             <?php endforeach; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>

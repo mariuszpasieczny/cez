@@ -465,7 +465,7 @@ table.dataTable thead .sorting:after {
     z-index: 0;
 }
 .zend_form.overflow, #basket {
-    max-height: 550px;
+    max-height: 750px;
     overflow: auto;
 }
 .form-group.inline {

@@ -49,7 +49,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
             $this->_products->setPageNumber($pageNumber);
         }
         $orderBy = $request->getParam('orderBy');
-        $columns = array('warehouse', 'name', 'quantity', 'qtyavailable', 'unit', 'serial', 'status');
+        $columns = array('warehouse', 'name', 'quantity', 'qtyavailable', 'unit', 'serial', 'pairedcard', 'status');
         if ($orderBy) {
             $orderBy = explode(" ", $orderBy);
             $this->_products->setOrderBy("{$columns[$orderBy[0] - 1]} {$orderBy[1]}");

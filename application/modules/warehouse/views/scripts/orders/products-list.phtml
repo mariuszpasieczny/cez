@@ -54,16 +54,16 @@
             </label>
         </div>
         </th>
-        <th>Magazyn</th>
-        <th>Data dodania</th>
+        <th style="max-width: 75px !important;">Magazyn</th>
+        <th style="max-width: 75px !important;">Data dodania</th>
         <?php if ($this->auth->role != 'technician'): ?>
-        <th>Technik</th>
+        <th style="max-width: 75px !important;">Technik</th>
         <?php endif; ?>
-        <th>Nazwa</th>
-        <th>SN</th>
-        <th>Ilość</th>
-        <th>Data wydania</th>
-        <th>ID Klienta</th>
+        <th style="max-width: 75px !important;">Nazwa</th>
+        <th style="max-width: 75px !important;">SN</th>
+        <th style="max-width: 55px !important;">Ilość wydana</th>
+        <th style="max-width: 55px !important;">Data wydania</th>
+        <th style="max-width: 55px !important;">ID Klienta</th>
         <th>Klient</th>
         <?php if ($this->auth->role != 'technician'): ?>
         <th>
@@ -92,7 +92,7 @@
                 <?php endif; ?>
                 <td><?php echo $this->escape($product->product); ?></td>
                 <td><?php echo $this->escape($product->serial); ?></td>
-                <td><?php echo $this->escape($product->quantity); ?></td>
+                <td><?php echo $this->escape($product->qtyreleased); ?></td>
                 <td><?php echo $this->escape($product->releasedate); ?></td>
                 <td><?php echo $product->clientnumber ? $this->escape($product->clientnumber) : '&nbsp;'; ?></td>
                 <td><?php echo $product->client ? $this->escape($product->client) : '&nbsp;'; ?></td>
@@ -103,11 +103,11 @@
                                 <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
                             </a>
                     <?php endif; ?>-->
-                    <?php if (/* $product->qtyreleased >= 0 && */$this->auth && $this->HasAccess($this->auth->role, 'orders', 'product-return')): ?>
+                    <?php if ($product->qtyavailable > 0 && !$product->client && $this->auth && $this->HasAccess($this->auth->role, 'orders', 'product-return')): ?>
                         <a href="<?php echo $this->baseUrl; ?>/warehouse/orders/product-return/id/<?php echo $product->id; ?>" data-target=".modal-body" class="popup-load" title="Zwrot">
                             <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
                         </a>
-                    <?php endif; ?>
+                    <?php else: echo '&nbsp;'; endif; ?>
                 </td>
                 <?php endif; ?>
             </tr>

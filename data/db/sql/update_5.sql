@@ -40,10 +40,15 @@ VIEW `orderlinesview` AS
         `ol`.`technicianid` AS `technicianid`,
         `ol`.`quantity` AS `quantity`,
         `ol`.`qtyavailable` AS `qtyavailable`,
-        `p`.`unitacronym`,
+        IF(ISNULL(`sp`.`quantity`),
+            `ol`.`quantity`,
+            `sp`.`quantity`) AS `qtyreleased`,
+        `p`.`unitacronym` AS `unitacronym`,
         `p`.`unitid` AS `unitid`,
         `ol`.`dateadd` AS `dateadd`,
-        `ol`.`releasedate` AS `releasedate`,
+        IF((UNIX_TIMESTAMP(`sp`.`dateadd`) IS NULL),
+            `ol`.`releasedate`,
+            `sp`.`dateadd`) AS `releasedate`,
         `sp`.`serviceid` AS `serviceid`,
         `ol`.`statusid` AS `statusid`,
         CONCAT(`u`.`lastname`, ' ', `u`.`firstname`) AS `technician`,
@@ -71,6 +76,7 @@ VIEW `orderlinesview` AS
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
         LEFT JOIN `clients` `c` ON ((`c`.`id` = `s`.`clientid`)));
 ALTER TABLE serviceproducts ADD quantity int(11) NOT NULL;
+ALTER TABLE serviceproducts ADD dateadd TIMESTAMP NOT NULL default NOW();
 update serviceproducts sp set quantity = (select quantity - qtyavailable from orderlines ol where ol.id = sp.productid);
 CREATE OR REPLACE
 VIEW `serviceproductsview` AS
@@ -79,11 +85,12 @@ VIEW `serviceproductsview` AS
         `sp`.`serviceid` AS `serviceid`,
         `sp`.`productid` AS `productid`,
         `sp`.`quantity` AS `quantity`,
-        IF(ISNULL(`p`.`product`),
+        IF(ISNULL(`p`.`name`),
             `sp`.`productname`,
-            `p`.`product`) AS `name`,
+            `p`.`name`) AS `name`,
         `p`.`serial` AS `serial`,
         `p`.`unitid` AS `unitid`
     FROM
-        (`serviceproducts` `sp`
-        LEFT JOIN `orderlinesview` `p` ON ((`sp`.`productid` = `p`.`id`)));
+        ((`serviceproducts` `sp`
+        LEFT JOIN `orderlines` `ol` ON ((`sp`.`productid` = `ol`.`id`)))
+        LEFT JOIN `products` `p` ON ((`p`.`id` = `ol`.`productid`)));

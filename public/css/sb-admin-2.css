@@ -467,12 +467,13 @@ table.dataTable thead .sorting:after {
 .zend_form.overflow, #basket {
     max-height: 750px;
     overflow: auto;
+    min-height: 350px;
 }
 .form-group.inline {
     display: inline;
 }
 .chosen-choices li.search-choice {
-    max-width: 95%
+    max-width: 95%;
 }
 .chosen-choices .search-field {
     width: 1px;

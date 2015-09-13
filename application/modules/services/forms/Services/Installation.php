@@ -88,7 +88,7 @@ class Application_Form_Services_Installation extends Application_Form {
                     if ($serial = $product->serial) {
                         $desc .= $product->serial . ', ';
                     }
-                    $desc .= $parent->qtyavailable . ' ' . $parent->unitacronym . ')';
+                    $desc .= $parent->qtyavailable . ' ' . $product->getUnit()->acronym . ')';
                 } else {
                     $desc .= 'brak danych';
                 }
@@ -199,7 +199,7 @@ class Application_Form_Services_Installation extends Application_Form {
             $attribs = $this->getElement($name)->getAttribs();
             $options = $attribs['options'];
             if (!isset($options[$value['productid']])) {
-                $this->getElement($name)->addMultiOption($value['productid'] < 0 ? $value['name'] : $value['productid'], $value['name'] . ' (' . $value['serial'] . ')');
+                $this->getElement($name)->addMultiOption($value['productid'] < 0 ? $value['name'] : $value['productid'], $value['name']/* . ' (' . $value['serial'] . ')'*/);
                 $selectedIds[] = $value['productid'] < 0 ? $value['name'] : $value['productid'];
             }
             preg_match("/\d+/", $name, $found);

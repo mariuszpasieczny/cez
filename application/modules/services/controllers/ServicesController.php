@@ -332,7 +332,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             
             $statusInvoiced = $this->_dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
             $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
-            $this->_orderlines->setLazyLoading(false);
+            //$this->_orderlines->setLazyLoading(false);
             if ($service->technicianid) {
                 $this->_orderlines->setWhere("technicianid = '{$service->technicianid}' AND (statusid = {$statusReleased->id} OR (statusid = {$statusInvoiced->id} AND serviceid = {$service->id}))");
                 $products = $this->_orderlines->getAll(
@@ -512,11 +512,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->_orderlines->setLazyLoading(true);
                 foreach ($service->getProducts() as $ix => $product) {
                     if ($orderLine = $this->_orderlines->find($product->productid)->current()) {
+                        //var_dump($orderLine->toArray(),$product->toArray());
                         $orderLine->statusid = $statusReleased->id;
                         $orderLine->serviceid = null;
                         $orderLine->qtyavailable += $product->quantity;
-                        if ($orderLine->quantity > $orderLine->qtyavailable) {
-                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
+                        if ($orderLine->qtyavailable > $orderLine->quantity) {
+                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił ze zmianą produktu'));
                             return;
                         }
                         $orderLine->save();
@@ -531,32 +532,37 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         $orderLineId = current($orderLineId);
                         preg_match("/\d+/", $ix, $found);
                         $ix = $found[0];
-                        $product = $products->find($orderLineId);
                         if (!($quantity = $quantities['quantity-' . $ix])) {
                             $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Brak ilości'));
                             return;
                         }
                         $params = array('serviceid' => $service->id, 'quantity' => $quantity);
-                        if (!$product) {
-                            $id = $ix + 1;
-                            $params['productid'] = "-$id";
-                            $params['productname'] = $orderLineId;
-                            $form->getElement('productid-' . $ix)->addMultiOption($orderLineId, $orderLineId);
-                            //continue;
-                        } else {
-                            $params['productid'] = $product->id;
-                            $params['productname'] = $product->getProduct()->name;
+                        if (preg_match("/\d+/", $orderLineId)) {
                             $orderLine = $this->_orderlines->find($orderLineId)->current();
-                            $orderLine->statusid = $status->id;
+                            $params['productid'] = $orderLine->id;
+                            $params['productname'] = $orderLine->getProduct()->name;
                             $orderLine->qtyavailable -= (int) $quantity;
                             if ($orderLine->qtyavailable < 0) {
                                 $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
                                 return;
                             }
+                            if ($orderLine->qtyavailable == 0) {
+                                $orderLine->statusid = $status->id;
+                            }
                             $orderLine->save();
+                        } else {
+                            $id = $ix + 1;
+                            $params['productid'] = "-$id";
+                            $params['productname'] = $orderLineId;
+                            $form->getElement('productid-' . $ix)->addMultiOption($orderLineId, $orderLineId);
                         }
                         //var_dump($orderLineId,$params);exit;
                         $serviceProduct = $table->createRow($params);
+                        if ($serviceProduct->quantity < 0) {
+                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
+                            return;
+                        }
+                        //var_dump($serviceProduct->toArray());
                         $serviceProduct->save();
                         //$this->_orderlines->update(array('statusid' => $status->id, 'serviceid' => $service->id), $this->_orderlines->getAdapter()->quoteInto('id = ?', $orderLineId));
                     }//exit;
@@ -1161,7 +1167,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         //$order = $this->_orders->getAll(array('technicianid' => $service->technicianid))->current();
         $statusInvoiced = $this->_dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
         $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
-        $this->_orderlines->setLazyLoading(false);
+        //$this->_orderlines->setLazyLoading(false);
         if ($service->technicianid) {
             $this->_orderlines->setWhere("technicianid = '{$service->technicianid}' AND (statusid = {$statusReleased->id} OR (statusid = {$statusInvoiced->id} AND serviceid = {$service->id}))");
             $products = $this->_orderlines->getAll(
@@ -1326,11 +1332,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->_orderlines->setLazyLoading(true);
                 foreach ($service->getProducts() as $ix => $product) {
                     if ($orderLine = $this->_orderlines->find($product->productid)->current()) {
+                        //var_dump($orderLine->toArray(),$product->toArray());
                         $orderLine->statusid = $statusReleased->id;
                         $orderLine->serviceid = null;
                         $orderLine->qtyavailable += $product->quantity;
-                        if ($orderLine->quantity > $orderLine->qtyavailable) {
-                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
+                        if ($orderLine->qtyavailable > $orderLine->quantity) {
+                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił ze zmianą produktu'));
                             return;
                         }
                         $orderLine->save();
@@ -1345,32 +1352,37 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         $orderLineId = current($orderLineId);
                         preg_match("/\d+/", $ix, $found);
                         $ix = $found[0];
-                        $product = $products->find($orderLineId);
                         if (!($quantity = $quantities['quantity-' . $ix])) {
                             $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Brak ilości'));
                             return;
                         }
                         $params = array('serviceid' => $service->id, 'quantity' => $quantity);
-                        if (!$product) {
-                            $id = $ix + 1;
-                            $params['productid'] = "-$id";
-                            $params['productname'] = $orderLineId;
-                            $form->getElement('productid-' . $ix)->addMultiOption($orderLineId, $orderLineId);
-                            //continue;
-                        } else {
-                            $params['productid'] = $product->id;
-                            $params['productname'] = $product->getProduct()->name;
+                        if (preg_match("/\d+/", $orderLineId)) {
                             $orderLine = $this->_orderlines->find($orderLineId)->current();
-                            $orderLine->statusid = $status->id;
+                            $params['productid'] = $orderLine->id;
+                            $params['productname'] = $orderLine->getProduct()->name;
                             $orderLine->qtyavailable -= (int) $quantity;
                             if ($orderLine->qtyavailable < 0) {
                                 $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
                                 return;
                             }
+                            if ($orderLine->qtyavailable == 0) {
+                                $orderLine->statusid = $status->id;
+                            }
                             $orderLine->save();
+                        } else {
+                            $id = $ix + 1;
+                            $params['productid'] = "-$id";
+                            $params['productname'] = $orderLineId;
+                            $form->getElement('productid-' . $ix)->addMultiOption($orderLineId, $orderLineId);
                         }
                         //var_dump($orderLineId,$params);exit;
                         $serviceProduct = $table->createRow($params);
+                        if ($serviceProduct->quantity < 0) {
+                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
+                            return;
+                        }
+                        //var_dump($serviceProduct->toArray());
                         $serviceProduct->save();
                         //$this->_orderlines->update(array('statusid' => $status->id, 'serviceid' => $service->id), $this->_orderlines->getAdapter()->quoteInto('id = ?', $orderLineId));
                     }//exit;
@@ -1541,7 +1553,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         //$order = $this->_orders->getAll(array('technicianid' => $service->technicianid))->current();
         $statusInvoiced = $this->_dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
         $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
-        $this->_orderlines->setLazyLoading(false);
+        //$this->_orderlines->setLazyLoading(false);
         if ($service->technicianid) {
             $this->_orderlines->setWhere("technicianid = '{$service->technicianid}' AND (statusid = {$statusReleased->id} OR (statusid = {$statusInvoiced->id} AND serviceid = {$service->id}))");
             $products = $this->_orderlines->getAll(
@@ -1609,11 +1621,15 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
             }
         }
-        foreach ($defaults['installationcodeid'] as $i => $item) {
-            $defaults['installationcodeid-' . $i] = $item;
+        if (!empty($defaults['installationcodeid'])) {
+            foreach ($defaults['installationcodeid'] as $i => $item) {
+                $defaults['installationcodeid-' . $i] = $item;
+            }
         }
-        foreach ($defaults['productid'] as $i => $item) {
-            $defaults['productid-' . $i] = $item;
+        if (!empty($defaults['productid'])) {
+            foreach ($defaults['productid'] as $i => $item) {
+                $defaults['productid-' . $i] = $item;
+            }
         }
         if ($types->find('installation', 'acronym')->id == $typeid /* && !in_array($this->_auth->getIdentity(), array('admin', 'coordinator')) */) {
             $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate)); //$service->timetill;
@@ -1623,12 +1639,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
         switch ($typeid) {
             // zlecenie instalacyjne
             case $types->find('installation', 'acronym')->id:
-                $form = new Application_Form_Services_Installation_Close(array('installationCodesCount' => sizeof($defaults['installationcodeid']),
+                $form = new Application_Form_Services_Installation_Close(array('installationCodesCount' => @sizeof($defaults['installationcodeid']),
                     'productsCount' => sizeof($defaults['productid'])));
                 break;
             // zlecenie serwisowe
             case $types->find('service', 'acronym')->id:
-                $form = new Application_Form_Services_Service_Close(array('installationCodesCount' => sizeof($defaults['installationcodeid']),
+                $form = new Application_Form_Services_Service_Close(array('installationCodesCount' => @sizeof($defaults['installationcodeid']),
                     'productsCount' => sizeof($defaults['productid'])));
                 break;
         }
@@ -1719,11 +1735,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->_orderlines->setLazyLoading(true);
                 foreach ($service->getProducts() as $ix => $product) {
                     if ($orderLine = $this->_orderlines->find($product->productid)->current()) {
+                        //var_dump($orderLine->toArray(),$product->toArray());
                         $orderLine->statusid = $statusReleased->id;
                         $orderLine->serviceid = null;
                         $orderLine->qtyavailable += $product->quantity;
-                        if ($orderLine->quantity > $orderLine->qtyavailable) {
-                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
+                        if ($orderLine->qtyavailable > $orderLine->quantity) {
+                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił ze zmianą produktu'));
                             return;
                         }
                         $orderLine->save();
@@ -1738,32 +1755,37 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         $orderLineId = current($orderLineId);
                         preg_match("/\d+/", $ix, $found);
                         $ix = $found[0];
-                        $product = $products->find($orderLineId);
                         if (!($quantity = $quantities['quantity-' . $ix])) {
                             $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Brak ilości'));
                             return;
                         }
                         $params = array('serviceid' => $service->id, 'quantity' => $quantity);
-                        if (!$product) {
-                            $id = $ix + 1;
-                            $params['productid'] = "-$id";
-                            $params['productname'] = $orderLineId;
-                            $form->getElement('productid-' . $ix)->addMultiOption($orderLineId, $orderLineId);
-                            //continue;
-                        } else {
-                            $params['productid'] = $product->id;
-                            $params['productname'] = $product->getProduct()->name;
+                        if (preg_match("/\d+/", $orderLineId)) {
                             $orderLine = $this->_orderlines->find($orderLineId)->current();
-                            $orderLine->statusid = $status->id;
+                            $params['productid'] = $orderLine->id;
+                            $params['productname'] = $orderLine->getProduct()->name;
                             $orderLine->qtyavailable -= (int) $quantity;
                             if ($orderLine->qtyavailable < 0) {
                                 $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
                                 return;
                             }
+                            if ($orderLine->qtyavailable == 0) {
+                                $orderLine->statusid = $status->id;
+                            }
                             $orderLine->save();
+                        } else {
+                            $id = $ix + 1;
+                            $params['productid'] = "-$id";
+                            $params['productname'] = $orderLineId;
+                            $form->getElement('productid-' . $ix)->addMultiOption($orderLineId, $orderLineId);
                         }
                         //var_dump($orderLineId,$params);exit;
                         $serviceProduct = $table->createRow($params);
+                        if ($serviceProduct->quantity < 0) {
+                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
+                            return;
+                        }
+                        //var_dump($serviceProduct->toArray());
                         $serviceProduct->save();
                         //$this->_orderlines->update(array('statusid' => $status->id, 'serviceid' => $service->id), $this->_orderlines->getAdapter()->quoteInto('id = ?', $orderLineId));
                     }//exit;

@@ -121,7 +121,7 @@ $(function() {
             if (value.length > 1900) {
                 //continue;
             }
-            url += '/' + params[i].name.replace('[]', '') + '/' + value;//;
+            url += '/' + params[i].name.replace('[]', '') + '/' + encodeURIComponent(value);//;
         }
         ;
         var params = $(this).parents('form').serialize();//console.log(url);

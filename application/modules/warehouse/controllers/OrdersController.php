@@ -93,7 +93,7 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
         if ($pageNumber) {
             $this->_orderlines->setPageNumber($pageNumber);
         }
-        $columns = array('warehouse', 'dateadd', 'technician', 'product', 'serial', 'quantity', 'releasedate', 'clientnumber', 'client');
+        $columns = array('warehouse', 'dateadd', 'technician', 'product', 'serial', 'quantity', 'releasedate', 'qtyreleased', 'clientnumber', 'client');
         $orderBy = $request->getParam('orderBy');
         if ($orderBy) {
             $orderBy = explode(" ", $orderBy);

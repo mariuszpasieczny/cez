@@ -70,8 +70,7 @@ VIEW `orderlinesview` AS
         LEFT JOIN `services` `s` ON ((`sp`.`serviceid` = `s`.`id`)))
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
         LEFT JOIN `clients` `c` ON ((`c`.`id` = `s`.`clientid`)));
-ALTER TABLE serviceproducts ADD quantity int(11);
-ALTER TABLE serviceproducts ADD unitid int(11);
+ALTER TABLE serviceproducts ADD quantity int(11) NOT NULL;
 update serviceproducts sp set quantity = (select quantity - qtyavailable from orderlines ol where ol.id = sp.productid);
 CREATE OR REPLACE
 VIEW `serviceproductsview` AS

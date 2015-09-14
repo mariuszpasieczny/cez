@@ -2009,7 +2009,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         //    'content' => $service->technicalcomments);
         $defaults = array('recipient' => $this->_auth->getIdentity()->role == 'technician' ? 
                 'koordynatorzy.lublin@nplay.pl' : 
-            $this->_config->get(APPLICATION_ENV)->reports->mail->recipients,
+            $this->_config->get(APPLICATION_ENV)->comments->mail->recipients,
             'content' => $service->technicalcomments);
         $dictionary = $this->_dictionaries->getDictionaryList('service');
         switch ($this->_getParam('typeid')) {
@@ -2058,12 +2058,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->_auth->getIdentity()->role == 'technician' ? 
                         $mail->setFrom($this->_auth->getIdentity()->email,$this->_auth->getIdentity()->email) :
                     //$mail->setFrom('koordynatorzy.lublin@nplay.pl','koordynatorzy.lublin@nplay.pl');
-                    $mail->setFrom($this->_config->get(APPLICATION_ENV)->reports->mail->from);
+                    $mail->setFrom($this->_config->get(APPLICATION_ENV)->comments->mail->from);
                 //$mail->setFrom($this->_auth->getIdentity()->email, $this->_auth->getIdentity()->lastname . ' ' . $this->_auth->getIdentity()->firstname);
                 foreach(explode(';',$values['recipient']) as $recipient)
                     $mail->addTo(trim($recipient));
-                if ($this->_config->get(APPLICATION_ENV)->reports->mail->bcc)
-                    $mail->addBcc($this->_config->get(APPLICATION_ENV)->reports->mail->bcc);
+                if ($this->_config->get(APPLICATION_ENV)->comments->mail->bcc)
+                    $mail->addBcc($this->_config->get(APPLICATION_ENV)->comments->mail->bcc);
                 $mail->setSubject($values['subject']);
                 $mail->setBodyHtml(nl2br($values['content']));//var_dump($mail);exit;
                 $log = $bootstrap->getResource('log');

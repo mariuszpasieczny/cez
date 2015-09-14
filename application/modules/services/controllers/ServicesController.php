@@ -2056,7 +2056,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $mail = new Zend_Mail('UTF-8');
                 $mail->setDefaultTransport($transport);
                 $this->_auth->getIdentity()->role == 'technician' ? 
-                        $mail->setFrom($this->_auth->email,$this->_auth->email) :
+                        $mail->setFrom($this->_auth->getIdentity()->email,$this->_auth->getIdentity()->email) :
                     //$mail->setFrom('koordynatorzy.lublin@nplay.pl','koordynatorzy.lublin@nplay.pl');
                     $mail->setFrom($this->_config->get(APPLICATION_ENV)->reports->mail->from);
                 //$mail->setFrom($this->_auth->getIdentity()->email, $this->_auth->getIdentity()->lastname . ' ' . $this->_auth->getIdentity()->firstname);

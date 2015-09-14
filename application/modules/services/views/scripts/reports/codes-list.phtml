@@ -1,0 +1,87 @@
+<h2 class="sub-header">
+    Raport kodów zamknięcia zleceń 
+        <?php if ($this->typeid == $this->types->find('installation', 'acronym')->id) : echo 'instalacyjnych'; endif;?>
+        <?php if ($this->typeid == $this->types->find('service', 'acronym')->id) : echo 'serwisowych'; endif;?>
+</h2>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-inline form-load" action="<?php
+        echo $this->url(
+                array('module' => 'services', 'controller' => 'reports', 'action' => 'codes-list'), 'default', true)
+        ?>">
+            <input type="hidden" name="typeid" value="<?php echo $this->request['typeid']; ?>" />
+            <input type="hidden" name="type" value="<?php echo $this->request['type']; ?>" />
+            <div class="form-group">
+                <select class="form-control chosen-select" name="technicianid[]" multiple data-placeholder="Wybierz technika" style="width: 150xp;">
+                    <option value="">Wybierz technika</option>
+                    <?php foreach ($this->technicians as $technician): ?>
+                        <option value="<?php echo $technician->id; ?>" <?php if (!empty($this->request['technicianid']) && in_array($technician->id, (array) $this->request['technicianid'])): ?>selected<?php endif; ?>><?php echo $technician->lastname . ' ' . $technician->firstname; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control chosen-select" name="codeacronym[]" multiple data-placeholder="Wybierz kod zamknięcia" style="width: 250px;">
+                    <option value="">Wybierz kod zamknięcia</option>
+                    <?php foreach ($this->codes as $code): ?>
+                        <option value="<?php echo $code->acronym; ?>" <?php if (!empty($this->request['codeacronym']) && in_array($code->acronym, (array) $this->request['codeacronym'])): ?>selected<?php endif; ?>><?php echo $code->acronym; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="planneddatefrom" id="planneddatefrom" placeholder="Data od" value="<?php if (!empty($this->request['planneddatefrom'])) echo $this->request['planneddatefrom']; ?>">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="planneddatetill" id="planneddatetill" placeholder="Data do" value="<?php if (!empty($this->request['planneddatetill'])) echo $this->request['planneddatetill']; ?>">
+            </div>
+            <button type="button" class="btn btn-default search">Szukaj</button>
+            <button type="button" class="btn btn-link xls">Zapisz XLS</button>
+        </form>
+    </div>
+</div>
+
+<?php if (isset($this->reports)): ?>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+        <thead>
+            <tr class="alternateRow">
+                <th colspan="1">Kod</th>
+                <?php foreach ($this->technicians as $technician):?>
+                <?php if (!empty($this->request['technicianid']) && !in_array($technician->id, (array) $this->request['technicianid'])): continue; endif; ?>
+                <?php echo "<th>{$technician}</th>"; ?>
+                <?php endforeach; ?>
+            </tr>
+        </thead>
+        <?php foreach ($this->codes as $code) : ?>
+        <?php if (!empty($this->request['codeacronym']) && !in_array($code->acronym, (array) $this->request['codeacronym'])): continue; endif; ?>
+            <tr>
+                <!--<th><?php echo $this->escape($code->name); ?></th>-->
+                <th><?php echo $this->escape($code->acronym); ?></th>
+                <?php foreach ($this->technicians as $technician):?>
+                <?php if (!empty($this->request['technicianid']) && !in_array($technician->id, (array) $this->request['technicianid'])): continue; endif; ?>
+                <td>
+                    <?php if (empty($this->reports[$technician->id])): echo '0'; continue; endif; ?>
+                    <?php if (empty($this->reports[$technician->id][$code->acronym])): echo '0'; continue; endif; ?>
+                    <?php if (empty($this->reports[$technician->id][$code->acronym]['quantity'])): echo '0'; continue; endif; ?>
+                    <?php echo $this->reports[$technician->id][$code->acronym]['quantity']; ?>
+                </td>
+                <?php endforeach; ?>
+            </tr>
+        <?php endforeach; ?> 
+    </table> 
+</div>
+<?php endif; ?>
+
+<script>
+    params = <?php echo Zend_Json::encode($this->request); ?>;
+    $("#planneddatefrom").datepicker({
+        dateFormat: "yy-mm-dd",
+    });
+    $("#planneddatetill").datepicker({
+        dateFormat: "yy-mm-dd",
+    });
+    $('.chosen-select').chosen({allow_single_deselect: true});
+</script>
+<!--<script src="/js/dataTables.js" />-->
+
+<iframe id="file-download" name="file-download" style="display: none"></iframe>

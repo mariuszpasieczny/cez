@@ -26,7 +26,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
                 ->addActionContext('list', array('html', 'json'))
                 ->addActionContext('generate', array('html', 'xls'))
                 ->addActionContext('send', 'html')
-                ->addActionContext('codes-list', array('html', 'json'))
+                ->addActionContext('codes-list', array('html', 'xls'))
                 ->setSuffix('html', '')
                 ->initContext();
 
@@ -268,6 +268,9 @@ class Services_ReportsController extends Application_Controller_Abstract {
             $request->setParam('planneddatetill', $planneddatetill);
         }
         $this->view->request = $request->getParams();
+        $this->view->filepath = '/../data/temp/';
+        $this->view->filename = 'Raport_kodow_instalacyjnych-' . date('YmdHis') . '.xls';
+        $this->view->rowNo = 1;
         
         if (!$this->getRequest()->isPost()) {
             return;

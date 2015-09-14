@@ -1,0 +1,53 @@
+<?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/../library/PHPExcel/PHPExcel.php';
+
+$filename = !empty($vars['filepath']) ? $_SERVER['DOCUMENT_ROOT'] . $vars['filepath'] : '';
+$filename .= !empty($vars['filename']) ? $vars['filename'] : 'document.xls';
+$template = !empty($vars['template']) ? $vars['template'] : '';
+
+if (!empty($template) && file_exists($template)) {
+    $objPHPExcel = PHPExcel_IOFactory::load($template);
+    //$objPHPExcel = PHPExcel_IOFactory::createReaderForFile($template);
+    //$objPHPExcel->load($template);
+    PHPExcel_Calculation::getInstance($objPHPExcel)->clearCalculationCache();
+    PHPExcel_Calculation::getInstance()->setCalculationCacheEnabled(FALSE);
+} else {
+    $objPHPExcel = new PHPExcel();
+}
+$objPHPExcel->setActiveSheetIndex(0);
+
+$rowNo = $vars['rowNo'];
+$i = 0;
+$key = PHPExcel_Cell::stringFromColumnIndex($i);
+$objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, 'Kod');
+foreach ($vars['technicians'] as $technician):
+    if (!empty($vars['request']['technicianid']) && !in_array($technician->id, (array) $vars['request']['technicianid'])): continue; endif;
+    $i++;
+    $key = PHPExcel_Cell::stringFromColumnIndex($i);
+    $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $technician);
+endforeach;
+foreach ($vars['codes'] as $code) :
+    if (!empty($vars['request']['codeacronym']) && !in_array($code->acronym, (array) $vars['request']['codeacronym'])): continue; endif;
+    $i = 0;
+    $rowNo++;
+    $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, $code->acronym);
+    foreach ($vars['technicians'] as $technician):
+        if (!empty($vars['request']['technicianid']) && !in_array($technician->id, (array) $vars['request']['technicianid'])): continue; endif;
+        $i++;
+        $key = PHPExcel_Cell::stringFromColumnIndex($i);
+        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, !empty($vars['reports'][$technician->id][$code->acronym]['quantity']) ? $vars['reports'][$technician->id][$code->acronym]['quantity'] : '0');
+    endforeach;
+endforeach;
+
+//$objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+$objWriter->setPreCalculateFormulas(false);
+
+//$objWriter->save('php://output');
+$objWriter->save($filename);
+//$result = $_SERVER['DOCUMENT_ROOT'] . '/some_excel_file.xlsx';
+//header('Content-Description: File Transfer');
+//header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//header('Content-Disposition: attachment; filename=' . ($vars['filename'] ? $vars['filename'] : 'document.xlsx'));
+?>

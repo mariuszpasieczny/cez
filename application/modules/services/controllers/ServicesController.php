@@ -285,6 +285,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $technicians = $this->_users->getAll();
         $statuses = $this->_dictionaries->getStatusList('service');
         $servicetypes = $this->_dictionaries->getDictionaryList('service', 'type');
+        $units = $this->_dictionaries->getDictionaryList('warehouse', 'unit');
         $options = array('types' => $types->toArray(),
             'warehouses' => $warehouses->toArray(),
             'clients' => $clients->toArray(),
@@ -483,10 +484,16 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $service = $this->_services->createRow($values);
                     $service->id = null;
                 }
-                if ($values['productreturnedid']) {
-                    $service->productsreturned = join(', ', $values['productreturnedid']);
-                    foreach($values['productreturnedid'] as $productId) {
+                if ($productsReturned = array_filter($values['productreturnedid'])) {
+                    //var_dump($productsReturned);exit;
+                    $service->productsreturned = join(', ', $productsReturned);
+                    $table = new Application_Model_Services_Returns_Table();
+                    $table->delete($this->_orderlines->getAdapter()->quoteInto('serviceid = ?', $service->id));
+                    foreach($productsReturned as $productId) {
                         $form->getElement('productreturnedid')->addMultiOption($productId, $productId);
+                        $params = array('serviceid' => $service->id, 'productname' => $productId, 'quantity' => 1, 'unitid' => $units->find('szt', 'acronym') -> id);
+                        $serviceProduct = $table->createRow($params);
+                        $serviceProduct->save();
                     }
                 } else {
                     $service->productsreturned = '';

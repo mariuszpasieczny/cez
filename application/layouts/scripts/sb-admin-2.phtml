@@ -151,12 +151,20 @@
                                                         array('module' => 'warehouse', 'controller' => 'products', 'action' => 'import'), 'default', true)
                                                 ?>" class="content-load">Imortuj</a></li>
                                                <?php endif; ?>
+                                        <li role="separator" class="divider"></li>
                                                <?php if ($this->auth && $this->HasAccess($this->auth->role, 'orders', 'products-list')): ?>
                                             <li><a href="<?php
                                                 echo $this->url(
                                                         array('module' => 'warehouse', 'controller' => 'orders', 'action' => 'products-list', 'released' => 1), 'default', true)
                                                 ?>" class="content-load">Wydania</a></li>
                                                <?php endif; ?>
+                                        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'products', 'migration')): ?>
+                                            <li><a href="<?php
+                                                echo $this->url(
+                                                        array('module' => 'warehouse', 'controller' => 'returns', 'action' => 'list'), 'default', true)
+                                                ?>" class="content-load">Zwroty klienta</a></li>
+                                               <?php endif; ?>
+                                        <li role="separator" class="divider"></li>
                                         <?php if ($this->auth && $this->HasAccess($this->auth->role, 'products', 'migration')): ?>
                                             <li><a href="<?php
                                                 echo $this->url(

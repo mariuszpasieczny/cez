@@ -18,26 +18,26 @@ class Application_Model_Returns_Row extends Application_Db_Table_Row {
 
     public function isNew() {
         try {
-            return !$this->technicianid && $this->statusacronym == 'new' ? true : false;
+            return $this->statusacronym == 'new' ? true : false;
         } catch (Exception $e) {
             
         }
         $dictionary = new Application_Model_Dictionaries_Table();
-        $status = $dictionary->getStatusList('orders')->find('new', 'acronym');
+        $status = $dictionary->getStatusList('returns')->find('new', 'acronym');
 
-        return !$this->technicianid && $this->statusid == $status->id ? true : false;
+        return $this->statusid == $status->id ? true : false;
     }
 
     public function isConfirmed() {
         try {
-            return $this->technicianid && $this->statusacronym == 'released' ? true : false;
+            return $this->statusacronym == 'accepted' ? true : false;
         } catch (Exception $e) {
             
         }
         $dictionary = new Application_Model_Dictionaries_Table();
-        $status = $dictionary->getStatusList('orders')->find('released', 'acronym');
+        $status = $dictionary->getStatusList('returns')->find('accepted', 'acronym');
 
-        return $this->technicianid && $this->statusid == $status->id ? true : false;
+        return $this->statusid == $status->id ? true : false;
     }
 
 }

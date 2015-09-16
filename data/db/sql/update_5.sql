@@ -3,9 +3,11 @@ CREATE TABLE `servicereturns` (
   `serviceid` int(11) DEFAULT NULL,
   `name` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
-  `dateadd` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `dateadd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `unitid` int(11) DEFAULT NULL,
   `demaged` int(1) DEFAULT 0,
+  `statusid` int(11) DEFAULT 0,
+  `waybill` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `productid` (`serviceid`,`productname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
@@ -23,7 +25,16 @@ VIEW `servicereturnsview` AS
         `s`.`number` AS `service`,
         `s`.`technicianid` AS `technicianid`,
         `s`.`clientnumber` AS `clientnumber`,
-        `s`.`client` AS `client`
+        `s`.`client` AS `client`,
+        `s`.`technician` AS `technician`,
+        `sr`.`statusid` AS `statusid`,
+        `d`.`name` AS `status`,
+        `sr`.`waybill`
     FROM
-        (`servicereturns` `sr`
-        JOIN `servicesview` `s` ON ((`s`.`id` = `sr`.`serviceid`)));
+        ((`servicereturns` `sr`
+        JOIN `servicesview` `s` ON ((`s`.`id` = `sr`.`serviceid`)))
+        LEFT JOIN `dictionaries` `d` ON ((`d`.`id` = `sr`.`statusid`)));
+insert into dictionaries (parentid,acronym,name) values (4,'returns','Statusy zwrotów');
+insert into dictionaries (parentid,acronym,name) values (2581,'new','Nowe');
+insert into dictionaries (parentid,acronym,name) values (2581,'accepted','Przyjęte');
+insert into dictionaries (parentid,acronym,name) values (2581,'sent','Wysłane');

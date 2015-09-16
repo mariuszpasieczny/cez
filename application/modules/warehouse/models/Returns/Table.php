@@ -38,4 +38,15 @@ class Application_Model_Returns_Table extends Application_Db_Table
         )
     );
     
+    public function getSearchFields() {
+        $fields = parent::getSearchFields();
+        $fields[] = 'technicianid';
+        $fields[] = 'technician';
+        $fields[] = 'status';
+        $fields[] = 'clientnumber';
+        $fields[] = 'client';
+        $fields[] = 'service';
+        return $fields;
+    }
+    
 }

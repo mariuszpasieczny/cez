@@ -1,0 +1,44 @@
+<?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/../library/PHPExcel/PHPExcel.php';
+
+$filename = !empty($vars['filepath']) ? $_SERVER['DOCUMENT_ROOT'] . $vars['filepath'] : '';
+$filename .= !empty($vars['filename']) ? $vars['filename'] : 'document.xlsx';
+
+$objPHPExcel = new PHPExcel();
+$objPHPExcel->setActiveSheetIndex(0);
+
+$rowNo = 1;
+$objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, 'Nazwa');
+$objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, 'Uszkodzony');
+$objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, 'Data');
+$objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, 'Numer zlecenia');
+$objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, 'Numer klienta');
+$objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, 'Adres');
+$objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, 'Technik');
+$objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, 'Status');
+$objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowNo, 'Nt listu');
+$rowNo = 2;
+foreach ($vars['returns'] as $product) {//var_dump($product);exit;
+    $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, $product->name);
+    $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, $product->demaged ? 'tak' : 'nie');
+    $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, $product->dateadd);
+    $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, $product->service);
+    $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, $product->clientnumber);
+    $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, $product->client);
+    $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, $product->technician);
+    $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, $product->waybill);
+    $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowNo, $product->status);
+    $rowNo++;
+}
+
+//$objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+//$objWriter->save('php://output');
+$objWriter->save($filename);
+//$result = $_SERVER['DOCUMENT_ROOT'] . '/some_excel_file.xlsx';
+//header('Content-Description: File Transfer');
+//header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//header('Content-Disposition: attachment; filename=' . ($vars['filename'] ? $vars['filename'] : 'document.xlsx'));
+
+?>

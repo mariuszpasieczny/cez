@@ -2054,6 +2054,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $service->save();
                     $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
                     $this->_orderlines->setLazyLoading(true);
+                    foreach ($service->getReturns() as $product) {
+                        $product->delete();
+                    }
                     foreach ($service->getProducts() as $product) {
                         if ($orderLine = $this->_orderlines->find($product->productid)->current()) {
                             $orderLine->statusid = $statusReleased->id;

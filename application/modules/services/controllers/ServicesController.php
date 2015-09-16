@@ -871,7 +871,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $data = $service->getServicetype();
                             $servicetype = $dictionary->find('type', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                             if (!$servicetype) {
-                                $servicetype = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('type', 'acronym')->id, 'acronym' => $data));
+                                $servicetype = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('type', 'acronym')->id, 'acronym' => strtoupper($data)));
                                 $servicetype->save();
                             }
                             $service->servicetypeid = $servicetype->id;
@@ -926,57 +926,57 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $service->addressid = $client->addressid;//var_dump($client->toArray());
                             if ($typeid == $types->find('service', 'acronym')->id) {
                                 if ($data = $service->getSystem()) {
-                                    $system = $dictionary->find('system', 'acronym')->getChildren()->find($data, 'acronym');
+                                    $system = $dictionary->find('system', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$system) {
-                                        $system = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('system', 'acronym')->id, 'acronym' => $data));
+                                        $system = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('system', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $system->save();
                                     }
                                     $service->systemid = $system->id;
                                 }
                                 if ($data = $service->getRegion()) {
-                                    $region = $dictionary->find('region', 'acronym')->getChildren()->find($data, 'acronym');
+                                    $region = $dictionary->find('region', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$region) {
-                                        $region = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('region', 'acronym')->id, 'acronym' => $data));
+                                        $region = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('region', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $region->save();
                                     }
                                     $service->regionid = $region->id;
                                 }
                                 if ($data = $service->getBlockadecode()) {
-                                    $blockadecode = $dictionary->find('blockadecode', 'acronym')->getChildren()->find($data, 'acronym');
+                                    $blockadecode = $dictionary->find('blockadecode', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$blockadecode) {
-                                        $blockadecode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('blockadecode', 'acronym')->id, 'acronym' => $data));
+                                        $blockadecode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('blockadecode', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $blockadecode->save();
                                     }
                                     $service->blockadecode = $blockadecode->id;
                                 }
                                 if ($data = $service->getLaborcode()) {
-                                    $laborcode = $dictionary->find('laborcode', 'acronym')->getChildren()->find($data, 'acronym');
+                                    $laborcode = $dictionary->find('laborcode', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$laborcode) {
-                                        $laborcode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('laborcode', 'acronym')->id, 'acronym' => $data));
+                                        $laborcode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('laborcode', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $laborcode->save();
                                     }
                                     $service->laborcodeid = $laborcode->id;
                                 }
                                 if ($data = $service->getComplaintcode()) {
-                                    $complaintcode = $dictionary->find('complaintcode', 'acronym')->getChildren()->find($data, 'acronym');
+                                    $complaintcode = $dictionary->find('complaintcode', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$complaintcode) {
-                                        $complaintcode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('complaintcode', 'acronym')->id, 'acronym' => $data));
+                                        $complaintcode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('complaintcode', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $complaintcode->save();
                                     }
                                     $service->complaintcodeid = $complaintcode->id;
                                 }
                                 if ($data = $service->getCalendar()) {
-                                    $calendar = $dictionary->find('calendar', 'acronym')->getChildren()->find($data, 'acronym');
+                                    $calendar = $dictionary->find('calendar', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$calendar) {
-                                        $calendar = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => $data));
+                                        $calendar = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $calendar->save();
                                     }
                                     $service->calendarid = $calendar->id;
                                 }
                                 if ($data = $service->getArea()) {
-                                    $area = $dictionary->find('area', 'acronym')->getChildren()->find($data, 'acronym');
+                                    $area = $dictionary->find('area', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$area) {
-                                        $area = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('area', 'acronym')->id, 'acronym' => $data));
+                                        $area = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('area', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $area->save();
                                     }
                                     $service->areaid = $area->id;
@@ -999,9 +999,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                 }
                             } else {
                                 if ($data = $service->getCalendar()) {
-                                    $calendar = $dictionary->find('calendar', 'acronym')->getChildren()->find($data, 'acronym');
+                                    $calendar = $dictionary->find('calendar', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$calendar) {
-                                        $calendar = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => $data));
+                                        $calendar = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $calendar->save();
                                     }
                                     $service->calendarid = $calendar->id;
@@ -2162,7 +2162,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         //    'content' => $service->technicalcomments);
         $defaults = array('recipient' => $this->_auth->getIdentity()->role == 'technician' ? 
                 'koordynatorzy.lublin@nplay.pl' : 
-            $this->_config->get(APPLICATION_ENV)->reports->mail->recipients,
+            $this->_config->get(APPLICATION_ENV)->comments->mail->recipients,
             'content' => $service->technicalcomments);
         $dictionary = $this->_dictionaries->getDictionaryList('service');
         switch ($this->_getParam('typeid')) {
@@ -2211,12 +2211,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->_auth->getIdentity()->role == 'technician' ? 
                         $mail->setFrom($this->_auth->getIdentity()->email,$this->_auth->getIdentity()->email) :
                     //$mail->setFrom('koordynatorzy.lublin@nplay.pl','koordynatorzy.lublin@nplay.pl');
-                    $mail->setFrom($this->_config->get(APPLICATION_ENV)->reports->mail->from);
+                    $mail->setFrom($this->_config->get(APPLICATION_ENV)->comments->mail->from);
                 //$mail->setFrom($this->_auth->getIdentity()->email, $this->_auth->getIdentity()->lastname . ' ' . $this->_auth->getIdentity()->firstname);
                 foreach(explode(';',$values['recipient']) as $recipient)
                     $mail->addTo(trim($recipient));
-                if ($this->_config->get(APPLICATION_ENV)->reports->mail->bcc)
-                    $mail->addBcc($this->_config->get(APPLICATION_ENV)->reports->mail->bcc);
+                if ($this->_config->get(APPLICATION_ENV)->comments->mail->bcc)
+                    $mail->addBcc($this->_config->get(APPLICATION_ENV)->comments->mail->bcc);
                 $mail->setSubject($values['subject']);
                 $mail->setBodyHtml(nl2br($values['content']));//var_dump($mail);exit;
                 $log = $bootstrap->getResource('log');
@@ -2322,7 +2322,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $data = $service->getServicetype();
                             $servicetype = $dictionary->find('type', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                             if (!$servicetype) {
-                                $servicetype = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('type', 'acronym')->id, 'acronym' => $data));
+                                $servicetype = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('type', 'acronym')->id, 'acronym' => strtoupper($data)));
                                 $servicetype->save();
                             }
                             $service->servicetypeid = $servicetype->id;
@@ -2368,7 +2368,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                 if ($data = $service->getCalendar()) {
                                     $calendar = $dictionary->find('calendar', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$calendar) {
-                                        $calendar = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => $data));
+                                        $calendar = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $calendar->save();
                                     }
                                     $service->calendarid = $calendar->id;
@@ -2383,7 +2383,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                 if ($data = $service->getCalendar()) {
                                     $calendar = $dictionary->find('calendar', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                                     if (!$calendar) {
-                                        $calendar = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => $data));
+                                        $calendar = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => strtoupper($data)));
                                         $calendar->save();
                                     }
                                     $service->calendarid = $calendar->id;
@@ -2462,13 +2462,13 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                         $solutioncode = $dictionary->find('solutioncode', 'acronym')->getChildren()->find(strtoupper($code), 'acronym');
                                         if (!$solutioncode) {
                                             $solutioncode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('solutioncode', 'acronym')->id,
-                                                'acronym' => $code));
+                                                'acronym' => strtoupper($code)));
                                             $solutioncode->save();
                                         }
                                         list($errcode) = explode('-', $code);
                                         if (!($errorcode = $dictionary->find('errorcode', 'acronym')->getChildren()->find(strtoupper($errcode), 'acronym'))) {
                                             $errorcode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('errorcode', 'acronym')->id,
-                                                'acronym' => $errcode));
+                                                'acronym' => strtoupper($errcode)));
                                             $errorcode->save();
                                         }
                                         $errorAttributeId = $dictionary->find('errorcode', 'acronym')->id;
@@ -2493,7 +2493,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                         $cancellationcode = $dictionary->find('cancellationcode', 'acronym')->getChildren()->find(strtoupper($code), 'acronym');
                                         if (!$cancellationcode) {
                                             $cancellationcode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('cancellationcode', 'acronym')->id,
-                                                'acronym' => $code));
+                                                'acronym' => strtoupper($code)));
                                             $cancellationcode->save();
                                         }
                                         $attributeId = $dictionary->find('cancellationcode', 'acronym')->id;
@@ -2511,7 +2511,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                         $modeminterchangecode = $dictionary->find('modeminterchangecode', 'acronym')->getChildren()->find(strtoupper($code), 'acronym');
                                         if (!$modeminterchangecode) {
                                             $modeminterchangecode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('modeminterchangecode', 'acronym')->id,
-                                                'acronym' => $code));
+                                                'acronym' => strtoupper($code)));
                                             $modeminterchangecode->save();
                                         }
                                         $attributeId = $dictionary->find('modeminterchangecode', 'acronym')->id;
@@ -2529,7 +2529,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                         $decoderinterchangecode = $dictionary->find('decoderinterchangecode', 'acronym')->getChildren()->find(strtoupper($code), 'acronym');
                                         if (!$decoderinterchangecode) {
                                             $decoderinterchangecode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('decoderinterchangecode', 'acronym')->id,
-                                                'acronym' => $code));
+                                                'acronym' => strtoupper($code)));
                                             $decoderinterchangecode->save();
                                         }
                                         $attributeId = $dictionary->find('decoderinterchangecode', 'acronym')->id;
@@ -2548,7 +2548,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                         $installationcode = $dictionary->find('installationcode', 'acronym')->getChildren()->find(strtoupper($code), 'acronym');
                                         if (!$installationcode) {
                                             $installationcode = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('installationcode', 'acronym')->id,
-                                                'acronym' => $code));
+                                                'acronym' => strtoupper($code)));
                                             $installationcode->save();
                                         }
                                         $attributeId = $dictionary->find('installationcode', 'acronym')->id;

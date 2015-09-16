@@ -356,6 +356,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             $productsReturned = explode(',', $service->productsreturned);
             $productsReturned = array_combine($productsReturned, $productsReturned);
             $defaults['productreturnedid'] = $productsReturned;
+            $defaults['productreturnedid'] = $service->getReturns()->toArray();
             $serialsReturned = explode(',', $service->serialnumbers);
             $serialsReturned = array_combine($serialsReturned, $serialsReturned);
             $serialsReturned = array_merge($serialsReturned, $productsReturned);
@@ -387,6 +388,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
             foreach ($defaults['installationcodeid'] as $i => $item) {
                 $defaults['installationcodeid-' . $i] = $item;
             }
+            foreach ($defaults['productreturnedid'] as $i => $item) {
+                $defaults['productreturnedid-' . $i] = $item;
+            }
         } else {
             $defaults = array('warehouseid' => $warehouseid,
                 'clientid' => $clientid,
@@ -395,14 +399,23 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     //'performed' => $request->getParam('performed') !== null ? $request->getParam('performed') : 1
             );
         }
+        $productsReturnedCount = sizeof($defaults['productreturnedid']);
+        $installationCodesCount = sizeof($defaults['installationcodeid']);
+        if ($this->getRequest()->isPost()) {
+            $data = $request->getPost();
+            $productsReturnedCount = sizeof($this->getRequest()->getParam('productreturnedid'));
+            $installationCodesCount = sizeof($this->getRequest()->getParam('installationcodeid'));
+        }
         switch ($typeid) {
             // zlecenie instalacyjne
             case $types->find('installation', 'acronym')->id:
-                $form = new Application_Form_Services_Installation(array('installationCodesCount' => sizeof($defaults['installationcodeid'])));
+                $form = new Application_Form_Services_Installation(array('installationCodesCount' => $installationCodesCount,
+                    'productsReturnedCount' => $productsReturnedCount));
                 break;
             // zlecenie serwisowe
             case $types->find('service', 'acronym')->id:
-                $form = new Application_Form_Services_Service(array('installationCodesCount' => sizeof($defaults['installationcodeid'])));
+                $form = new Application_Form_Services_Service(array('installationCodesCount' => $installationCodesCount,
+                    'productsReturnedCount' => $productsReturnedCount));
                 break;
         }
         if ($service) {
@@ -418,7 +431,14 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $this->view->types = $types;
 
         if ($this->getRequest()->isPost()) {
-            if ($form->isValid($request->getPost())) {
+            $data = $request->getPost();
+            foreach ($data['productreturnedid'] as $key => $value) {
+                $data[$key] = $value;
+            }
+            foreach ($data['demaged'] as $key => $value) {
+                $data[$key] = $value;
+            }
+            if ($form->isValid($data)) {
                 $values = $form->getValues();
                 /* if ($service && $service->isAssigned() && !$values['technicianid'] && $values['statusid'] != $statuses->find('new', 'acronym')->id) {
                   $form->getElement('statusid')->setErrors(array('statusid' => 'Nie można usunąć przypisanego technika dla przypisanego zlecenia'));
@@ -484,20 +504,40 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $service = $this->_services->createRow($values);
                     $service->id = null;
                 }
-                if ($productsReturned = array_filter($values['productreturnedid'])) {
-                    //var_dump($productsReturned);exit;
-                    $service->productsreturned = join(', ', $productsReturned);
+                foreach ($service->getReturns() as $product) {
+                    $product->delete();
+                }
+                if ($productsReturned = array_filter((array)$request->getParam('productreturnedid'))) {
+                    $demaged = array_filter((array)$request->getParam('demaged'));
+                    $returns = array();
                     $table = new Application_Model_Services_Returns_Table();
                     $table->delete($this->_orderlines->getAdapter()->quoteInto('serviceid = ?', $service->id));
-                    foreach($productsReturned as $productId) {
-                        $form->getElement('productreturnedid')->addMultiOption($productId, $productId);
-                        $params = array('serviceid' => $service->id, 'productname' => $productId, 'quantity' => 1, 'unitid' => $units->find('szt', 'acronym') -> id);
-                        $serviceProduct = $table->createRow($params);
-                        $serviceProduct->save();
+                    foreach($productsReturned as $ix => $productId) {
+                        $productId = current($productId);//var_dump($productId);exit;
+                        preg_match("/\d+/", $ix, $found);
+                        $ix = $found[0];
+                        //if (!$form->getElement('productreturnedid-' . $ix)) {
+                        //    var_dump($ix,$productId,$data,array_keys($form->getElements()));exit;
+                        //}
+                        //$form->getElement('productreturnedid-' . $ix)->addMultiOption($productId, $productId);
+                        $params = array('serviceid' => $service->id, 
+                            'name' => $productId, 
+                            'quantity' => 1, 
+                            'unitid' => $units->find('szt', 'acronym') -> id,
+                            'demaged' => (int)$demaged['demaged-' . $ix]);
+                        $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
+                        try {
+                            $serviceProduct->save();
+                        } catch (Exception $e) {
+                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            return;
+                        }
+                        $returns[] = $productId;
                     }
+                    $service->productsreturned = join(', ', $returns);
                 } else {
                     $service->productsreturned = '';
-                }
+                }//var_dump($data,$values);return;
                 $service->save();
                 $status = $this->_dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
                 $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
@@ -1131,6 +1171,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         //$order = $this->_orders->getAll(array('technicianid' => $service->technicianid))->current();
         $statusInvoiced = $this->_dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
         $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
+        $units = $this->_dictionaries->getDictionaryList('warehouse', 'unit');
         if ($service->technicianid) {
             $this->_orderlines->setWhere("technicianid = '{$service->technicianid}' AND (statusid = {$statusReleased->id} OR (statusid = {$statusInvoiced->id} AND serviceid = {$service->id}))");
             $products = $this->_orderlines->getAll(
@@ -1158,6 +1199,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $productsReturned = explode(',', $service->productsreturned);
         $productsReturned = array_combine($productsReturned, $productsReturned);
         $defaults['productreturnedid'] = $productsReturned;
+        $defaults['productreturnedid'] = $service->getReturns()->toArray();
         $serialsReturned = explode(',', $service->serialnumbers);
         $serialsReturned = array_combine($serialsReturned, $serialsReturned);
         $serialsReturned = array_merge($serialsReturned, $productsReturned);
@@ -1201,19 +1243,31 @@ class Services_ServicesController extends Application_Controller_Abstract {
         foreach ($defaults['installationcodeid'] as $i => $item) {
             $defaults['installationcodeid-' . $i] = $item;
         }
+        foreach ($defaults['productreturnedid'] as $i => $item) {
+            $defaults['productreturnedid-' . $i] = $item;
+        }
         if ($types->find('installation', 'acronym')->id == $typeid /* && !in_array($this->_auth->getIdentity(), array('admin', 'coordinator')) */) {
             $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate)); //$service->timetill;
         } else if ($types->find('service', 'acronym')->id == $typeid) {
             $service->datefinished = date('H:i', strtotime($service->datefinished ? $service->datefinished : time())); //$service->timetill;
         }
+        $productsReturnedCount = sizeof($defaults['productreturnedid']);
+        $installationCodesCount = sizeof($defaults['installationcodeid']);
+        if ($this->getRequest()->isPost()) {
+            $data = $request->getPost();
+            $productsReturnedCount = sizeof($this->getRequest()->getParam('productreturnedid'));
+            $installationCodesCount = sizeof($this->getRequest()->getParam('installationcodeid'));
+        }
         switch ($typeid) {
             // zlecenie instalacyjne
             case $types->find('installation', 'acronym')->id:
-                $form = new Application_Form_Services_Installation_Finish(array('installationCodesCount' => sizeof($defaults['installationcodeid'])));
+                $form = new Application_Form_Services_Installation_Finish(array('installationCodesCount' => $installationCodesCount,
+                    'productsReturnedCount' => $productsReturnedCount));
                 break;
             // zlecenie serwisowe
             case $types->find('service', 'acronym')->id:
-                $form = new Application_Form_Services_Service_Finish(array('installationCodesCount' => sizeof($defaults['installationcodeid'])));
+                $form = new Application_Form_Services_Service_Finish(array('installationCodesCount' => $installationCodesCount,
+                    'productsReturnedCount' => $productsReturnedCount));
                 break;
         }
         if ($service) {
@@ -1226,7 +1280,14 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $this->view->types = $types;
 
         if ($this->getRequest()->isPost()) {
-            if ($form->isValid($request->getPost())) {
+            $data = $request->getPost();
+            foreach ($data['productreturnedid'] as $key => $value) {
+                $data[$key] = $value;
+            }
+            foreach ($data['demaged'] as $key => $value) {
+                $data[$key] = $value;
+            }
+            if ($form->isValid($data)) {
                 if (!$service->isAssigned()) {
                     //$form->setDescription('Nieprawidłowy status zlecenia');
                     //return;
@@ -1271,9 +1332,40 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
-                if (!empty($values['productreturnedid'])) {
-                    $service->productsreturned = join(', ', $values['productreturnedid']);
+                foreach ($service->getReturns() as $product) {
+                    $product->delete();
                 }
+                if ($productsReturned = array_filter((array)$request->getParam('productreturnedid'))) {
+                    $demaged = array_filter((array)$request->getParam('demaged'));
+                    $returns = array();
+                    $table = new Application_Model_Services_Returns_Table();
+                    $table->delete($this->_orderlines->getAdapter()->quoteInto('serviceid = ?', $service->id));
+                    foreach($productsReturned as $ix => $productId) {
+                        $productId = current($productId);//var_dump($productId);exit;
+                        preg_match("/\d+/", $ix, $found);
+                        $ix = $found[0];
+                        //if (!$form->getElement('productreturnedid-' . $ix)) {
+                        //    var_dump($ix,$productId,$data,array_keys($form->getElements()));exit;
+                        //}
+                        //$form->getElement('productreturnedid-' . $ix)->addMultiOption($productId, $productId);
+                        $params = array('serviceid' => $service->id, 
+                            'name' => $productId, 
+                            'quantity' => 1, 
+                            'unitid' => $units->find('szt', 'acronym') -> id,
+                            'demaged' => (int)$demaged['demaged-' . $ix]);
+                        $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
+                        try {
+                            $serviceProduct->save();
+                        } catch (Exception $e) {
+                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            return;
+                        }
+                        $returns[] = $productId;
+                    }
+                    $service->productsreturned = join(', ', $returns);
+                } else {
+                    $service->productsreturned = '';
+                }//var_dump($data,$values);return;
                 $service->save();
                 $status = $this->_dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
                 $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
@@ -1477,6 +1569,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         //$order = $this->_orders->getAll(array('technicianid' => $service->technicianid))->current();
         $statusInvoiced = $this->_dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
         $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
+        $units = $this->_dictionaries->getDictionaryList('warehouse', 'unit');
         if ($service->technicianid) {
             $this->_orderlines->setWhere("technicianid = '{$service->technicianid}' AND (statusid = {$statusReleased->id} OR (statusid = {$statusInvoiced->id} AND serviceid = {$service->id}))");
             $products = $this->_orderlines->getAll(
@@ -1504,6 +1597,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $productsReturned = explode(',', $service->productsreturned);
         $productsReturned = array_combine($productsReturned, $productsReturned);
         $defaults['productreturnedid'] = $productsReturned;
+        $defaults['productreturnedid'] = $service->getReturns()->toArray();
         $serialsReturned = explode(',', $service->serialnumbers);
         $serialsReturned = array_combine($serialsReturned, $serialsReturned);
         $serialsReturned = array_merge($serialsReturned, $productsReturned);
@@ -1544,22 +1638,36 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
             }
         }
-        foreach ($defaults['installationcodeid'] as $i => $item) {
-            $defaults['installationcodeid-' . $i] = $item;
-        }
+        if (!empty($defaults['installationcodeid']))
+            foreach ($defaults['installationcodeid'] as $i => $item) {
+                $defaults['installationcodeid-' . $i] = $item;
+            }
+        if (!empty($defaults['productreturnedid']))
+            foreach ($defaults['productreturnedid'] as $i => $item) {
+                $defaults['productreturnedid-' . $i] = $item;
+            }
         if ($types->find('installation', 'acronym')->id == $typeid /* && !in_array($this->_auth->getIdentity(), array('admin', 'coordinator')) */) {
             $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate)); //$service->timetill;
         } else if ($types->find('service', 'acronym')->id == $typeid) {
             $service->datefinished = date('H:i', strtotime($service->datefinished ? $service->datefinished : time())); //$service->timetill;
         }
+        $productsReturnedCount = @sizeof($defaults['productreturnedid']);
+        $installationCodesCount = @sizeof($defaults['installationcodeid']);
+        if ($this->getRequest()->isPost()) {
+            $data = $request->getPost();
+            $productsReturnedCount = sizeof($this->getRequest()->getParam('productreturnedid'));
+            $installationCodesCount = sizeof($this->getRequest()->getParam('installationcodeid'));
+        }
         switch ($typeid) {
             // zlecenie instalacyjne
             case $types->find('installation', 'acronym')->id:
-                $form = new Application_Form_Services_Installation_Close(array('installationCodesCount' => sizeof($defaults['installationcodeid'])));
+                $form = new Application_Form_Services_Installation_Close(array('installationCodesCount' => $installationCodesCount,
+                    'productsReturnedCount' => $productsReturnedCount));
                 break;
             // zlecenie serwisowe
             case $types->find('service', 'acronym')->id:
-                $form = new Application_Form_Services_Service_Close(array('installationCodesCount' => sizeof($defaults['installationcodeid'])));
+                $form = new Application_Form_Services_Service_Close(array('installationCodesCount' => $installationCodesCount,
+                    'productsReturnedCount' => $productsReturnedCount));
                 break;
         }
         if ($service) {
@@ -1577,7 +1685,14 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $status = $this->_dictionaries->getStatusList('service')->find('closed', 'acronym');
 
         if ($this->getRequest()->isPost()) {
-            if ($form->isValid($request->getPost())) {
+            $data = $request->getPost();
+            foreach ($data['productreturnedid'] as $key => $value) {
+                $data[$key] = $value;
+            }
+            foreach ($data['demaged'] as $key => $value) {
+                $data[$key] = $value;
+            }
+            if ($form->isValid($data)) {
                 if (!$service->isAssigned()) {
                     //$form->setDescription('Nieprawidłowy status zlecenia');
                     //return;
@@ -1630,9 +1745,40 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
-                if (!empty($values['productreturnedid'])) {
-                    $service->productsreturned = join(', ', $values['productreturnedid']);
+                foreach ($service->getReturns() as $product) {
+                    $product->delete();
                 }
+                if ($productsReturned = array_filter((array)$request->getParam('productreturnedid'))) {
+                    $demaged = array_filter((array)$request->getParam('demaged'));
+                    $returns = array();
+                    $table = new Application_Model_Services_Returns_Table();
+                    $table->delete($this->_orderlines->getAdapter()->quoteInto('serviceid = ?', $service->id));
+                    foreach($productsReturned as $ix => $productId) {
+                        $productId = current($productId);//var_dump($productId);exit;
+                        preg_match("/\d+/", $ix, $found);
+                        $ix = $found[0];
+                        //if (!$form->getElement('productreturnedid-' . $ix)) {
+                        //    var_dump($ix,$productId,$data,array_keys($form->getElements()));exit;
+                        //}
+                        //$form->getElement('productreturnedid-' . $ix)->addMultiOption($productId, $productId);
+                        $params = array('serviceid' => $service->id, 
+                            'name' => $productId, 
+                            'quantity' => 1, 
+                            'unitid' => $units->find('szt', 'acronym') -> id,
+                            'demaged' => (int)$demaged['demaged-' . $ix]);
+                        $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
+                        try {
+                            $serviceProduct->save();
+                        } catch (Exception $e) {
+                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            return;
+                        }
+                        $returns[] = $productId;
+                    }
+                    $service->productsreturned = join(', ', $returns);
+                } else {
+                    $service->productsreturned = '';
+                }//var_dump($data,$values);return;
                 $service->save();
                 $status = $this->_dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
                 $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');

@@ -13,6 +13,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
     protected $_servicetype;
     protected $_calendar;
     protected $_productsreleased;
+    protected $_productsreturned;
 
     public function __get($columnName) {
         try {
@@ -58,9 +59,27 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         return $this->_productsreleased;
     }
 
+    public function getProductsreturned() {
+        if (!$this->_productsreturned) {
+            $products = array();
+            foreach ($this->getReturns() as $product) {
+                $products[] = $product->serial ? $product->serial : $product->name;
+            }
+            $this->_productsreturned = @join(',', array_filter($products));
+        }
+        return $this->_productsreturned;
+    }
+
     public function getProducts() {
         //return $this->findDependentRowset('Application_Model_Services_Products_Table', 'Service');
         $products = new Application_Model_Services_Products_Table();
+        $products->setLazyLoading(false);
+        return $products->getAll(array('serviceid' => $this->id));
+    }
+
+    public function getReturns() {
+        //return $this->findDependentRowset('Application_Model_Services_Products_Table', 'Service');
+        $products = new Application_Model_Services_Returns_Table();
         $products->setLazyLoading(false);
         return $products->getAll(array('serviceid' => $this->id));
     }

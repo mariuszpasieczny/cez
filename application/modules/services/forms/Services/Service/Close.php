@@ -9,6 +9,11 @@
 class Application_Form_Services_Service_Close extends Application_Form {
 
     protected $_defaultDisplayGroupClass = 'Application_Form_DisplayGroup';
+    protected $_productsReturnedCount = 1;
+
+    public function setProductsReturnedCount($productsReturnedCount) {
+        $this->_productsReturnedCount = $productsReturnedCount;
+    }
 
     public function __construct($options = null) {
         $this->addPrefixPath('Application_Form', 'Application/Form');
@@ -22,18 +27,20 @@ class Application_Form_Services_Service_Close extends Application_Form {
         $element = $this->getElement('productid');
         //$element->addMultiOption(null, 'Please select...');
         foreach ($config as $parent) {
-            $element->addMultiOption($parent['id'], $parent->getProduct()->name . ' (' . $parent->getProduct()->serial . ')');
+            $element->addMultiOption($parent['id'], $parent->getProduct() ? ($parent->getProduct()->name . ' (' . $parent->getProduct()->serial . ')') : '');
         }
     }
 
     public function setProductsreturned($config) {
-        if (!$element = $this->getElement('productreturnedid')) {
-            return;
-        }
-        $element->addMultiOption(null, 'Wybierz opcję...');
-        $selected = array();
-        foreach ($config as $parent) {
-            $element->addMultiOption(trim($parent), trim($parent));
+        for ($i = 0; $i <= $this->_productsReturnedCount; $i++) {
+            $element = $this->getElement('productreturnedid-' . $i);
+            if (!$element) {
+                return;
+            }
+            //$element->addMultiOption(null, 'Wybierz opcję...');
+            foreach ($config as $parent) {
+                $element->addMultiOption(trim($parent), trim($parent));
+            }
         }
     }
 
@@ -85,6 +92,19 @@ class Application_Form_Services_Service_Close extends Application_Form {
 
     public function setDefault($name, $value) {
         $name = (string) $name;
+        if (strpos($name, 'productreturnedid') !== false) {
+            $selectedIds = array();
+            $selectedIds[] = $value['name'];
+            $attribs = $this->getElement($name)->getAttribs();
+            $options = $attribs['options'];
+            if (!isset($options[$value['name']])) {
+                $this->getElement($name)->addMultiOption($value['name'], $value['name']);
+                $selectedIds[] = $value['name'];
+            }
+            preg_match("/\d+/", $name, $found);
+            $this->getElement('demaged-' . $found[0])->setValue($value['demaged']);
+            $value = $selectedIds;
+        }
         switch ($name) {
             case 'productid':
                 $selectedIds = array();
@@ -235,7 +255,7 @@ class Application_Form_Services_Service_Close extends Application_Form {
                 ))->setAttribs(array('multiple' => 'multiple', 'placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
         $this->addElement($element);
 
-        $element = $this->createElement('select', 'productreturnedid', array(
+        /*$element = $this->createElement('select', 'productreturnedid', array(
                     'label' => 'Produkty odebrane:',
                     //'required'   => true,
                     //'filters' => array('StringTrim'),
@@ -244,7 +264,52 @@ class Application_Form_Services_Service_Close extends Application_Form {
                     ),
                     'class' => 'form-control chosen-select',
                 ))->setAttribs(array('multiple' => 'multiple', 'placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
+        $this->addElement($element);*/
+        
+        $element = $this->createElement('select', 'productreturnedid-0', array(
+                    'label' => 'Produkty odebrane:',
+                    //'required'   => true,
+                    //'filters'    => array('StringTrim'),
+                    //'validators' => array(
+                    //    array('lessThan', true, array('score')),
+                    //),
+                    'belongsTo' => 'productreturnedid',
+                    'class' => 'form-control chosen-select',
+                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 65%;'))->setRegisterInArrayValidator(false);
+        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
         $this->addElement($element);
+        $element = $this->createElement('checkbox', 'demaged-0', array(
+            'label' => 'uszkodzony',
+            'belongsTo' => 'demaged',
+            'class' => 'form-group input-small',
+        ))->setAttribs(array('style' => 'width: 50px;'));
+        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+        $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'append'));
+        $this->addElement($element);
+        
+        for ($i = 1; $i <= $this->_productsReturnedCount; $i++) {
+            $element = $this->createElement('select', 'productreturnedid-' . $i, array(
+                    //'label' => 'Produkty:',
+                    //'required'   => true,
+                    //'filters'    => array('StringTrim'),
+                    //'validators' => array(
+                    //    array('lessThan', true, array('score')),
+                    //),
+                    'belongsTo' => 'productreturnedid',
+                    'class' => 'form-control chosen-select',
+                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 65%;'))->setRegisterInArrayValidator(false);
+            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+            $element->addDecorator('Label', array('tag' => ''));
+            $this->addElement($element);
+            $element = $this->createElement('checkbox', 'demaged-' . $i, array(
+                'label' => 'uszkodzony',
+                'belongsTo' => 'demaged',
+                'class' => 'form-group input-small',
+            ))->setAttribs(array('style' => 'width: 50px;'));
+            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+            $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'append'));
+            $this->addElement($element);
+        }
 
         $element = $this->createElement('textarea', 'technicalcomments', array(
                     'label' => 'Komentarz techniczny:',

@@ -15,13 +15,11 @@ VIEW `servicecodesview` AS
         `a`.`acronym` AS `attributeacronym`,
         `a`.`name` AS `attributename`,
         `d`.`acronym` AS `codeacronym`,
-        `d`.`name` AS `codename`,
-        `d`.`errorcodeacronym` AS `errorcodeacronym`,
-        `d`.`errorcodename` AS `errorcodename`
+        `d`.`name` AS `codename`
     FROM
         (((`servicecodes` `sc`
         JOIN `servicesview` `s` ON ((`s`.`id` = `sc`.`serviceid`)))
-        LEFT JOIN `dictionariesview` `d` ON ((`sc`.`codeid` = `d`.`id`)))
+        LEFT JOIN `dictionaries` `d` ON ((`sc`.`codeid` = `d`.`id`)))
         LEFT JOIN `dictionaries` `a` ON ((`sc`.`attributeid` = `a`.`id`)));
 CREATE 
     OR REPLACE

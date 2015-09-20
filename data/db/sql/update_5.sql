@@ -9,7 +9,7 @@ CREATE TABLE `servicereturns` (
   `statusid` int(11) DEFAULT 0,
   `waybill` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `productid` (`serviceid`,`productname`)
+  UNIQUE KEY `productid` (`serviceid`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 CREATE 
     OR REPLACE

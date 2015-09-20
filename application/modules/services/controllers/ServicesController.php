@@ -524,7 +524,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'name' => $productId, 
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
-                            'demaged' => (int)$demaged['demaged-' . $ix]);
+                            'demaged' => (int)$demaged['demaged-' . $ix],
+                            //'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')
+                            );
                         $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
                         try {
                             $serviceProduct->save();
@@ -1352,7 +1354,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'name' => $productId, 
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
-                            'demaged' => (int)$demaged['demaged-' . $ix]);
+                            'demaged' => (int)$demaged['demaged-' . $ix],
+                            //'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')
+                            );
                         $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
                         try {
                             $serviceProduct->save();
@@ -1765,7 +1769,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'name' => $productId, 
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
-                            'demaged' => (int)$demaged['demaged-' . $ix]);
+                            'demaged' => (int)$demaged['demaged-' . $ix],
+                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym'));
                         $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
                         try {
                             $serviceProduct->save();

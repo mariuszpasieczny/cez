@@ -1,7 +1,7 @@
 CREATE TABLE `servicereturns` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `serviceid` int(11) DEFAULT NULL,
-  `name` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `name` varchar(45) CHARACTER SET latin1 DEFAULT NOT NULL,
   `quantity` int(11) DEFAULT NULL,
   `dateadd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `unitid` int(11) DEFAULT NULL,

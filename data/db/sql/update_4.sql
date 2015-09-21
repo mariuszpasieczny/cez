@@ -29,8 +29,6 @@ VIEW `servicecodesstatistics` AS
         IF(ISNULL(`servicecodesview`.`technicianid`),
             'nieprzypisane',
             `servicecodesview`.`technician`) AS `technician`,
-        `servicecodesview`.`datefinished` AS `datefinished`,
-        `servicecodesview`.`planneddate` AS `planneddate`,
         `servicecodesview`.`attributeacronym` AS `attributeacronym`,
         `servicecodesview`.`codeacronym` AS `codeacronym`,
         COUNT(`servicecodesview`.`id`) AS `quantity`

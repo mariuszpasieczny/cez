@@ -277,6 +277,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
         }
         
         $model = new Application_Model_Services_Statistics_Servicecodes_Table();
+        $model->setLazyLoading(false);
         $model->setItemCountPerPage(null);
         $model->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : 'technicianid');
 

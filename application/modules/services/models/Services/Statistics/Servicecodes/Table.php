@@ -32,6 +32,21 @@ class Application_Model_Services_Statistics_Servicecodes_Table extends Applicati
         )
     );
     
+    public function select() {
+        if ($this->_lazyLoading === true) {
+            return parent::select();
+        }
+        $select = parent::select()
+            ->setIntegrityCheck(false)
+            ->from('servicecodesview', array('technicianid', new Zend_Db_Expr("IF( ISNULL(  `servicecodesview`.`technicianid` ) ,  'nieprzypisane',  `servicecodesview`.`technician` )"),
+                'technician' => 
+                'attributeacronym',
+                'codeacronym',
+                'quantity' => new Zend_Db_Expr("COUNT(  `servicecodesview`.`id` )")))
+                ->group(array('technicianid', 'technician', 'attributeacronym', 'codeacronym'));
+        return $select;
+    }
+    
     public function getAll($params = array(), $rows = null, $root = null) {
         if (!empty($params['planneddatefrom'])) {
             $this->setWhere($this->getAdapter()->quoteInto("planneddate >= ?", $params['planneddatefrom']));

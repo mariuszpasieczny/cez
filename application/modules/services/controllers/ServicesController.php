@@ -531,7 +531,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         try {
                             $serviceProduct->save();
                         } catch (Exception $e) {
-                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            $form->getElement('productreturnedid-' . $ix)->setErrors(array('productreturnedid-' . $ix => $e->getMessage()));
                             return;
                         }
                         $returns[] = $productId;
@@ -632,7 +632,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 return;
                                             }
                                             if (!array_filter($productsReturned) && !array_filter($values['productreturnedid'])) {
-                                                $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
+                                                $form->getElement('productreturnedid-0')->setErrors(array('productreturnedid-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
                                             break;
@@ -1361,7 +1361,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         try {
                             $serviceProduct->save();
                         } catch (Exception $e) {
-                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            $form->getElement('productreturnedid-' . $ix)->setErrors(array('productreturnedid-' . $ix => $e->getMessage()));
                             return;
                         }
                         $returns[] = $productId;
@@ -1466,7 +1466,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 return;
                                             }
                                             if (!array_filter($productsReturned) && !array_filter($values['productreturnedid'])) {
-                                                $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
+                                                $form->getElement('productreturnedid-0')->setErrors(array('productreturnedid-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
                                             break;
@@ -1775,7 +1775,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         try {
                             $serviceProduct->save();
                         } catch (Exception $e) {
-                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            $form->getElement('productreturnedid-' . $ix)->setErrors(array('productreturnedid-' . $ix => $e->getMessage()));
                             return;
                         }
                         $returns[] = $productId;
@@ -1880,7 +1880,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 return;
                                             }
                                             if (!array_filter($productsReturned) && !array_filter($values['productreturnedid'])) {
-                                                $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
+                                                $form->getElement('productreturnedid-0')->setErrors(array('productreturnedid-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
                                             break;

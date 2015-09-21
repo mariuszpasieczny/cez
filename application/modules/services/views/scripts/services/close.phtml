@@ -237,7 +237,7 @@
         function setPerformed() {
             var performed = $('[name=performed]').val();
 
-            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid'], function(key, value) {
+            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid', 'demaged'], function(key, value) {
                 switch (value) {
                     case 'cancellationcodeid':
                     case 'installationcancelcodeid':
@@ -255,6 +255,7 @@
                     case 'decoderinterchangecodeid':
                     case 'productid':
                     case 'productreturnedid':
+                    case 'demaged':
                         if (performed == 1) {
                             $('[name^=' + value + ']').parents('dd').show();
                             $('[name^=' + value + ']').parents('dd').prev().show();

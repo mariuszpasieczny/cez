@@ -62,8 +62,7 @@
                 <td>
                     <?php if (empty($this->reports[$technician->id])): echo '0'; continue; endif; ?>
                     <?php if (empty($this->reports[$technician->id][$code->acronym])): echo '0'; continue; endif; ?>
-                    <?php if (empty($this->reports[$technician->id][$code->acronym]['quantity'])): echo '0'; continue; endif; ?>
-                    <?php echo $this->reports[$technician->id][$code->acronym]['quantity']; ?>
+                    <?php echo $this->reports[$technician->id][$code->acronym]; ?>
                 </td>
                 <?php endforeach; ?>
             </tr>

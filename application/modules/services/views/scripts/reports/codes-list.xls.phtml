@@ -36,7 +36,7 @@ foreach ($vars['codes'] as $code) :
         if (!empty($vars['request']['technicianid']) && !in_array($technician->id, (array) $vars['request']['technicianid'])): continue; endif;
         $i++;
         $key = PHPExcel_Cell::stringFromColumnIndex($i);
-        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, !empty($vars['reports'][$technician->id][$code->acronym]['quantity']) ? $vars['reports'][$technician->id][$code->acronym]['quantity'] : '0');
+        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, !empty($vars['reports'][$technician->id][$code->acronym]) ? $vars['reports'][$technician->id][$code->acronym] : '0');
     endforeach;
 endforeach;
 

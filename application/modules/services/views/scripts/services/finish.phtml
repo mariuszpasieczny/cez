@@ -79,7 +79,7 @@
         });
         onProductReturnedChange();
         function onProductReturnedChange() {
-            $(".chosen-select[name^=productreturnedid]").off();
+            //$(".chosen-select[name^=productreturnedid]").off();
             $(".chosen-select[name^=productreturnedid]").on("change", function(e) {
                 if (!e.currentTarget.value) {
                     $($(e.currentTarget).parents('.form-group.inline').last().next().next()).remove();

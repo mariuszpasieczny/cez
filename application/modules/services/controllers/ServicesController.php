@@ -525,9 +525,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
-                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')
+                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')->id
                             );
-                        $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
+                        $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());exit;
                         try {
                             $serviceProduct->save();
                         } catch (Exception $e) {
@@ -1355,9 +1355,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
-                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')
+                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')->id
                             );
-                        $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
+                        $serviceProduct = $table->createRow($params);
                         try {
                             $serviceProduct->save();
                         } catch (Exception $e) {
@@ -1770,7 +1770,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
-                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym'));
+                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')->id
+                        );
                         $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
                         try {
                             $serviceProduct->save();

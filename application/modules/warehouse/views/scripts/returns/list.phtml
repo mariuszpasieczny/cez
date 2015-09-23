@@ -23,7 +23,8 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="text" class="form-control" name="name" placeholder="Nazwa" value="<?php if (!empty($this->request['name'])) echo $this->request['name']; ?>">
+                <!--<input type="text" class="form-control" name="name" placeholder="Nazwa" value="<?php if (!empty($this->request['name'])) echo $this->request['name']; ?>">-->
+                <textarea class="form-control" name="name" placeholder="SN"><?php if (!empty($this->request['name'])): $names = preg_split("/[\s,]+/", $this->request['name']); echo join(",\r\n", $names); endif; ?></textarea>
             </div>
             <div class="form-group">
                 <input type="text" class="form-control" name="clientnumber" placeholder="Nr klienta" value="<?php if (!empty($this->request['clientnumber'])) echo $this->request['clientnumber']; ?>">

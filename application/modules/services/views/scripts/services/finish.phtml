@@ -42,9 +42,12 @@
         });
         onInstallationCodeChange();
         function onInstallationCodeChange() {
-            $(".chosen-select[name^=installationcodeid]").off();
+            //$(".chosen-select[name^=installationcodeid]").off();
             $(".chosen-select[name^=installationcodeid]").on("change", function(e) {
                 if (!e.currentTarget.value) {
+                    if ($(".chosen-select[name^=installationcodeid]").size() == 1) {
+                        return false;
+                    }
                     $(e.currentTarget).next('.chosen-container').remove();
                 } else {
                     div = $('[name="installationcodeid[installationcodeid-0][]"]').parents('.form-group.inline').clone();
@@ -82,13 +85,15 @@
             //$(".chosen-select[name^=productreturnedid]").off();
             $(".chosen-select[name^=productreturnedid]").on("change", function(e) {
                 if (!e.currentTarget.value) {
-                    $($(e.currentTarget).parents('.form-group.inline').last().next().next()).remove();
-                    $($(e.currentTarget).parents('.form-group.inline').last().next()).remove();
+                    if ($(".chosen-select[name^=productreturnedid]").size() == 1) {
+                        return false;
+                    }
+                    $($(e.currentTarget).parents('.form-group.inline').last().nextUntil('dd')).remove();
                     $(e.currentTarget).next('.chosen-container').remove();
                 } else {
-                    div = $('[name="productreturnedid[productreturnedid-0][]"]').parents('.form-group.inline').clone();
-                    div2 = $('[name="productreturnedid[productreturnedid-0][]"]').parents('.form-group.inline').next().clone();
-                    div3 = $('[name="productreturnedid[productreturnedid-0][]"]').parents('.form-group.inline').next().next().clone();
+                    div = $(e.currentTarget).parents('.form-group.inline').last().clone();
+                    div2 = $(e.currentTarget).parents('.form-group.inline').last().next().clone();
+                    div3 = $(e.currentTarget).parents('.form-group.inline').last().next().next().clone();
                     if (div.size()) {
                         length = $('.chosen-select[name^="productreturnedid"]').length;
                         div.find('.chosen-container').remove();

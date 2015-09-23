@@ -283,7 +283,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
             'belongsTo' => 'demaged',
             'class' => 'form-group input-small',
         ))->setAttribs(array('style' => 'width: 50px;'));
-        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+        $element->addDecorator('HtmlTag', array('tag' => 'span', 'class' => 'form-group inline'));
         $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
         $this->addElement($element);
         
@@ -306,7 +306,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
                 'belongsTo' => 'demaged',
                 'class' => 'form-group input-small',
             ))->setAttribs(array('style' => 'width: 50px;'));
-            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+            $element->addDecorator('HtmlTag', array('tag' => 'span', 'class' => 'form-group inline'));
             $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
             $this->addElement($element);
         }

@@ -525,7 +525,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
-                            //'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')
+                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')
                             );
                         $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
                         try {
@@ -1355,7 +1355,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
-                            //'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')
+                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')
                             );
                         $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
                         try {

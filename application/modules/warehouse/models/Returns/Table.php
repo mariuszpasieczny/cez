@@ -49,4 +49,27 @@ class Application_Model_Returns_Table extends Application_Db_Table
         return $fields;
     }
     
+    public function getAll($params = array(), $rows = null, $root = null) {
+        if (!empty($params['name'])) {
+            if (strpos($params['name'], ',') !== false) {
+                $names = explode(',', $params['name']);
+            }
+            if (strpos($params['name'], "\r\n") !== false) {
+                $names = explode("\r\n", $params['name']);
+            }
+            $trim = function ($item) {return trim($item, "\r\n,");};
+            $names = array_map($trim, $names);
+            if (!empty($names)) {
+                if (sizeof($names) > 30) {
+                    //throw new Exception('Zbyt wiele numerów seryjnych');
+                }
+                $this->setWhere($this->getAdapter()->quoteInto("name IN (?)", $names));
+            } else {
+                $this->setWhere($this->getAdapter()->quoteInto("name LIKE ?", "%{$params['name']}%"));
+            }
+            unset($params['name']);
+        }
+        return parent::getAll($params, $rows, $root);
+    }
+    
 }

@@ -28,7 +28,8 @@ VIEW `servicereturnsview` AS
         `s`.`client` AS `client`,
         `s`.`technician` AS `technician`,
         `sr`.`statusid` AS `statusid`,
-        `d`.`name` AS `statusacronym`,
+        `d`.`name` AS `status`,
+        `d`.`acronym` AS `statusacronym`,
         `sr`.`waybill`
     FROM
         ((`servicereturns` `sr`

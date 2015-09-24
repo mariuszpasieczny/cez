@@ -85,6 +85,7 @@ class Warehouse_ReturnsController extends Application_Controller_Abstract {
         if (!$product) {
             throw new Exception('Nie znaleziono zwrotu');
         }
+        $this->view->productsCount = $product->count();
         $form = new  Application_Form_Returns_Accept(array('productsCount' => $product->count()));
         $form->setProducts($product);
         $status = $this->_dictionaries->getStatusList('returns')->find('accepted', 'acronym');
@@ -122,6 +123,7 @@ class Warehouse_ReturnsController extends Application_Controller_Abstract {
         if (!$product) {
             throw new Exception('Nie znaleziono zwrotu');
         }
+        $this->view->productsCount = $product->count();
         $form = new  Application_Form_Returns_Send(array('productsCount' => $product->count()));
         $form->setProducts($product);
         $status = $this->_dictionaries->getStatusList('returns')->find('sent', 'acronym');

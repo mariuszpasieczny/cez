@@ -30,6 +30,13 @@ class Application_Form_Returns_Accept extends Application_Form
     {
         parent::init();
         $this->setAttrib('class', 'form-inline form-load');
+        $this->setDecorators(
+            array(
+                'FormElements',
+                'Form',
+                array('HtmlTag', array('tag' => 'dl', 'class' => 'overflow zend_form')),
+            )
+        );
         //$this->setAttrib('action', '/warehouse/orders/product-delete');
         //$this->setIsArray(true);
         

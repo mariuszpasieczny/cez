@@ -48,7 +48,7 @@ class Application_Form_Returns_Accept extends Application_Form
                 //'isArray' => true
             ));
 
-            $this->addDisplayGroup(array('id-' . $i), 'product-' . $i);
+            $this->addDisplayGroup(array('id-' . $i), 'product-' . $i, array('style' => 'height: 10px;'));
         }
     }
     

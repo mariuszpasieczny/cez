@@ -60,7 +60,7 @@ class Application_Form_Orders_Release extends Application_Form {
             $element->addDecorator('HtmlTag', array('class' => 'form-group'));
             $this->addElement($element);
 
-            $this->addDisplayGroup(array('id-' . $i), 'product-' . $i);
+            $this->addDisplayGroup(array('id-' . $i), 'product-' . $i, array('style' => 'height: 10px;'));
         }
 
         $element = $this->createElement('select', 'technicianid', array(
@@ -70,8 +70,9 @@ class Application_Form_Orders_Release extends Application_Form {
             'validators' => array(
                 array('lessThan', true, array('score')),
             ),
-            'class' => 'form-control chosen-select',
+            'class' => 'form-control chosen-select'
         ));
+        $element->addDecorator('Label', array('tag' => 'label', 'placement' => 'prepend', 'style' => 'margin-top: 25px;'));
         $this->addElement($element);
 
         $element = $this->createElement('checkbox', 'print', array(

@@ -41,7 +41,7 @@ class Application_Form_Products_Delete extends Application_Form
                 //'isArray' => true
             ));
 
-            $this->addDisplayGroup(array('id-' . $i), 'product-' . $i);
+            $this->addDisplayGroup(array('id-' . $i), 'product-' . $i, array('style' => 'height: 10px;'));
         }
     }
     

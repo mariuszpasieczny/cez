@@ -81,7 +81,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             case $types->find('installation', 'acronym')->id:
                 $this->_services->setRowClass('Application_Model_Services_XLS_Installation');
                 $this->view->filename = 'Zestawienie_instalacyjne-' . date('YmdHis') . '.xlsx';
-                $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zestawienie instalacyjne puste.xlsx';
+                $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zestawienie instalacyjne puste.xls';
                 $this->view->rowNo = 2;
                 $columns = array('planneddate', 'timefrom', 'servicetype', 'calendar', 'number', 'clientid', 'client', 'technician', 'documentspassed', 'closedupc', 'status', 'performed');
                 $this->view->codeTypes = array('installation', 'installationcancel');

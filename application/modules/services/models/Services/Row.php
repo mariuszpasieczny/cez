@@ -90,7 +90,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         $codes->setLazyLoading(false);
         return $codes->getAll(array('serviceid' => $this->id));
     }
-
+        
     public function getWarehouse() {
         if (empty($this->warehouseid)) {
             return null;

@@ -93,7 +93,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
                 $this->_services->setRowClass('Application_Model_Services_XLS_Installation');
                 //$this->view->filename = date('YmdH') . '_zestawienie_instalacyjne-' . date('YmdHis') . '.xlsx';
                 $this->view->filename = '_NPLAY_zestawienie_instalacyjne.xlsx';
-                $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zestawienie instalacyjne puste.xlsx';
+                $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zestawienie instalacyjne puste.xls';
                 $this->view->rowNo = 2;
                 $this->view->codeTypes = array('installation', 'installationcancel');
                 break;

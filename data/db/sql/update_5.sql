@@ -36,6 +36,7 @@ VIEW `servicereturnsview` AS
         JOIN `servicesview` `s` ON ((`s`.`id` = `sr`.`serviceid`)))
         LEFT JOIN `dictionaries` `d` ON ((`d`.`id` = `sr`.`statusid`)));
 insert into dictionaries (parentid,acronym,name) values (4,'returns','Statusy zwrotów');
-insert into dictionaries (parentid,acronym,name) values (2581,'new','Nowe');
-insert into dictionaries (parentid,acronym,name) values (2581,'accepted','Przyjęte');
-insert into dictionaries (parentid,acronym,name) values (2581,'sent','Wysłane');
+-- __ID__ = select max(id) from dictionaries;
+insert into dictionaries (parentid,acronym,name) values (__ID__,'new','Nowe');
+insert into dictionaries (parentid,acronym,name) values (__ID__,'accepted','Przyjęte');
+insert into dictionaries (parentid,acronym,name) values (__ID__,'sent','Wysłane');

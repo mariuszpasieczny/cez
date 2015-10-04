@@ -10,7 +10,7 @@ class Application_Model_Services_Returns_Table extends Application_Db_Table
 {
     protected $_name = 'servicereturns';// table name
     protected $_primary = 'id'; // primary column name
-    protected $_rowClass = 'Application_Db_Table_Row';
+    protected $_rowClass = 'Application_Model_Returns_Row';
     
     protected $_referenceMap = array(
         'Service' => array(

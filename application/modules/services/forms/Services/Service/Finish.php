@@ -284,7 +284,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
             'class' => 'form-group input-small',
         ))->setAttribs(array('style' => 'width: 50px;'));
         $element->addDecorator('HtmlTag', array('tag' => 'span', 'class' => 'form-group inline'));
-        $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
+        $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'append'));
         $this->addElement($element);
         
         for ($i = 1; $i <= $this->_productsReturnedCount; $i++) {
@@ -307,7 +307,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
                 'class' => 'form-group input-small',
             ))->setAttribs(array('style' => 'width: 50px;'));
             $element->addDecorator('HtmlTag', array('tag' => 'span', 'class' => 'form-group inline'));
-            $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
+            $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'append'));
             $this->addElement($element);
         }
 

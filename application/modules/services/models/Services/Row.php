@@ -62,7 +62,8 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
     public function getProductsreturned() {
         if (!$this->_productsreturned) {
             $products = array();
-            foreach ($this->getReturns() as $product) {
+            $returns = $this->getReturns();
+            foreach ($returns as $product) {
                 $products[] = $product->serial ? $product->serial : $product->name;
             }
             $this->_productsreturned = @join(',', array_filter($products));

@@ -508,14 +508,33 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $service = $this->_services->createRow($values);
                     $service->id = null;
                 }
+                $productsReturned = array_filter((array)$request->getParam('productreturnedid'));
+                $demaged = array_filter((array)$request->getParam('demaged'));
+                $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
-                    $product->delete();
+                    $return = null;
+                    foreach ($productsReturned as $ix => $productId) {
+                        $productId = current($productId);
+                        preg_match("/\d+/", $ix, $found);
+                        $ix = $found[0];
+                        if ($productId == $product->name) {
+                            $return = $table->find($product->id)->current();
+                            unset($productsReturned['productreturnedid-' . $ix]);
+                            break;
+                        }
+                    }
+                    if (!$product->isNew()) {
+                        continue;
+                    }
+                    if ($return) {
+                        $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix]))->save();
+                    } else {
+                        $product->delete();
+                        continue;
+                    }
                 }
-                if ($productsReturned = array_filter((array)$request->getParam('productreturnedid'))) {
-                    $demaged = array_filter((array)$request->getParam('demaged'));
+                if ($productsReturned) {
                     $returns = array();
-                    $table = new Application_Model_Services_Returns_Table();
-                    $table->delete($this->_orderlines->getAdapter()->quoteInto('serviceid = ?', $service->id));
                     foreach($productsReturned as $ix => $productId) {
                         $productId = current($productId);//var_dump($productId);exit;
                         preg_match("/\d+/", $ix, $found);
@@ -1342,14 +1361,33 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
+                $productsReturned = array_filter((array)$request->getParam('productreturnedid'));
+                $demaged = array_filter((array)$request->getParam('demaged'));
+                $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
-                    $product->delete();
+                    $return = null;
+                    foreach ($productsReturned as $ix => $productId) {
+                        $productId = current($productId);
+                        preg_match("/\d+/", $ix, $found);
+                        $ix = $found[0];
+                        if ($productId == $product->name) {
+                            $return = $table->find($product->id)->current();
+                            unset($productsReturned['productreturnedid-' . $ix]);
+                            break;
+                        }
+                    }
+                    if (!$product->isNew()) {
+                        continue;
+                    }
+                    if ($return) {
+                        $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix]))->save();
+                    } else {
+                        $product->delete();
+                        continue;
+                    }
                 }
-                if ($productsReturned = array_filter((array)$request->getParam('productreturnedid'))) {
-                    $demaged = array_filter((array)$request->getParam('demaged'));
+                if ($productsReturned) {
                     $returns = array();
-                    $table = new Application_Model_Services_Returns_Table();
-                    $table->delete($this->_orderlines->getAdapter()->quoteInto('serviceid = ?', $service->id));
                     foreach($productsReturned as $ix => $productId) {
                         $productId = current($productId);//var_dump($productId);exit;
                         preg_match("/\d+/", $ix, $found);
@@ -1759,14 +1797,33 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
+                $productsReturned = array_filter((array)$request->getParam('productreturnedid'));
+                $demaged = array_filter((array)$request->getParam('demaged'));
+                $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
-                    $product->delete();
+                    $return = null;
+                    foreach ($productsReturned as $ix => $productId) {
+                        $productId = current($productId);
+                        preg_match("/\d+/", $ix, $found);
+                        $ix = $found[0];
+                        if ($productId == $product->name) {
+                            $return = $table->find($product->id)->current();
+                            unset($productsReturned['productreturnedid-' . $ix]);
+                            break;
+                        }
+                    }
+                    if (!$product->isNew()) {
+                        continue;
+                    }
+                    if ($return) {
+                        $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix]))->save();
+                    } else {
+                        $product->delete();
+                        continue;
+                    }
                 }
-                if ($productsReturned = array_filter((array)$request->getParam('productreturnedid'))) {
-                    $demaged = array_filter((array)$request->getParam('demaged'));
+                if ($productsReturned) {
                     $returns = array();
-                    $table = new Application_Model_Services_Returns_Table();
-                    $table->delete($this->_orderlines->getAdapter()->quoteInto('serviceid = ?', $service->id));
                     foreach($productsReturned as $ix => $productId) {
                         $productId = current($productId);//var_dump($productId);exit;
                         preg_match("/\d+/", $ix, $found);

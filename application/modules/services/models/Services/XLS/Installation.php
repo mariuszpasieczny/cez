@@ -24,9 +24,14 @@ class Application_Model_Services_XLS_Installation extends Application_Model_Serv
     const COLUMN_DATEFINISHED = 'O';
     const COLUMN_INSTALLATIONCODE = 'P';
     const COLUMN_INSTALLATIONCANCELCODE = 'Q';
-    const COLUMN_PRODUCTS = 'R';
-    const COLUMN_TECHNICALCOMMENTS = 'S';
-    const COLUMN_COORDINATORCOMMENTS = 'T';
+    const COLUMN_PRODUCTSRELEASED = 'R';
+    const COLUMN_PRODUCTSRETURNED = 'S';
+    const COLUMN_TECHNICALCOMMENTS = 'T';
+    const COLUMN_COORDINATORCOMMENTS = 'U';
+    const COLUMN_DOCUMENTSPASSED = 'V';
+    const COLUMN_CLOSEDUPC = 'W';
+    const COLUMN_PERFORMED = 'X';
+    const COLUMN_STATUS = 'Y';
 
     public function toXlsArray() {//var_dump($this->toArray());exit;
         $array = array();

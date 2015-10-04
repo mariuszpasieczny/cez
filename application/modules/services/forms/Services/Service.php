@@ -23,7 +23,8 @@ class Application_Form_Services_Service extends Application_Form {
     public function setDefaults(array $defaults) {
         parent::setDefaults($defaults);
         $dictionary = new Application_Model_Dictionaries_Table();
-        $status = $dictionary->getStatusList('service')->find($defaults['statusid']);
+        if (!empty($defaults['statusid']))
+            $status = $dictionary->getStatusList('service')->find($defaults['statusid']);
         if (empty($defaults['id'])) {
             return $this;
             $dissallowedElements = array('datefinished',

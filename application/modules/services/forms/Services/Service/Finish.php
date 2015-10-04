@@ -245,7 +245,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
         $this->addElement($element);
 
         $element = $this->createElement('select', 'productid', array(
-                    'label' => 'Produkty:',
+                    'label' => 'Sprzęt wydany:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
                     //'validators' => array(

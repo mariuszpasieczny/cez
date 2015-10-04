@@ -81,7 +81,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             case $types->find('installation', 'acronym')->id:
                 $this->_services->setRowClass('Application_Model_Services_XLS_Installation');
                 $this->view->filename = 'Zestawienie_instalacyjne-' . date('YmdHis') . '.xlsx';
-                $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zestawienie instalacyjne puste.xlsx';
+                $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zlecenia instalacyjne.xls';
                 $this->view->rowNo = 2;
                 $columns = array('planneddate', 'timefrom', 'servicetype', 'calendar', 'number', 'clientid', 'client', 'technician', 'documentspassed', 'closedupc', 'status', 'performed');
                 $this->view->codeTypes = array('installation', 'installationcancel');
@@ -90,10 +90,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
                 break;
             case $types->find('service', 'acronym')->id:
-                $this->_services->setRowClass('Application_Model_Services_XLS_Service');
+                $this->_services->setRowClass('Application_Model_Services_XLS_Export');
                 $this->view->filename = 'Zestawienie_serwisowe-' . date('YmdHis') . '.xlsx';
-                $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zestawienie serwisowe puste.xls';
-                $this->view->rowNo = 3;
+                $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zlecenia serwisowe.xls';
+                $this->view->rowNo = 2;
                 $columns = array('planneddate', 'timefrom', 'timetill', 'number', 'clientid', 'client', 'technician', 'status', 'performed');
                 $this->view->codeTypes = array('error', 'solution', 'cancellation', 'modeminterchange', 'decoderinterchange');
                 if ($this->_auth->getIdentity()->role == 'technician') {
@@ -327,7 +327,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     //$service->datefinished = $service->planneddate . ' ' . date('H:i'); //$service->timetill;
                     $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate));
                 } else if ($types->find('service', 'acronym')->id == $typeid) {
-                    $service->datefinished = date('H:i', strtotime($service->datefinished ? $service->datefinished : time())); //$service->timetill;
+                    $service->datefinished = $service->datefinished ? date('H:i', strtotime($service->datefinished)) : null; //$service->timetill;
                 }
             }
             
@@ -385,9 +385,11 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     }
                 }
             }
+            if (!empty($defaults['installationcodeid']))
             foreach ($defaults['installationcodeid'] as $i => $item) {
                 $defaults['installationcodeid-' . $i] = $item;
             }
+            if (!empty($defaults['productreturnedid']))
             foreach ($defaults['productreturnedid'] as $i => $item) {
                 $defaults['productreturnedid-' . $i] = $item;
             }
@@ -399,12 +401,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     //'performed' => $request->getParam('performed') !== null ? $request->getParam('performed') : 1
             );
         }
-        $productsReturnedCount = sizeof($defaults['productreturnedid']);
-        $installationCodesCount = sizeof($defaults['installationcodeid']);
+        $productsReturnedCount = @sizeof($defaults['productreturnedid']);
+        $installationCodesCount = @sizeof($defaults['installationcodeid']);
         if ($this->getRequest()->isPost()) {
             $data = $request->getPost();
-            $productsReturnedCount = sizeof($this->getRequest()->getParam('productreturnedid'));
-            $installationCodesCount = sizeof($this->getRequest()->getParam('installationcodeid'));
+            $productsReturnedCount = @sizeof($this->getRequest()->getParam('productreturnedid'));
+            $installationCodesCount = @sizeof($this->getRequest()->getParam('installationcodeid'));
         }
         switch ($typeid) {
             // zlecenie instalacyjne
@@ -432,12 +434,14 @@ class Services_ServicesController extends Application_Controller_Abstract {
 
         if ($this->getRequest()->isPost()) {
             $data = $request->getPost();
-            foreach ($data['productreturnedid'] as $key => $value) {
-                $data[$key] = $value;
-            }
-            foreach ($data['demaged'] as $key => $value) {
-                $data[$key] = $value;
-            }
+            if (!empty($data['productreturnedid']))
+                foreach ($data['productreturnedid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+            if (!empty($data['demaged']))
+                foreach ($data['demaged'] as $key => $value) {
+                    $data[$key] = $value;
+                }
             if ($form->isValid($data)) {
                 $values = $form->getValues();
                 /* if ($service && $service->isAssigned() && !$values['technicianid'] && $values['statusid'] != $statuses->find('new', 'acronym')->id) {
@@ -1242,23 +1246,25 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
             }
         }
+        if (!empty($defaults['installationcodeid']))
         foreach ($defaults['installationcodeid'] as $i => $item) {
             $defaults['installationcodeid-' . $i] = $item;
         }
+        if (!empty($defaults['productreturnedid']))
         foreach ($defaults['productreturnedid'] as $i => $item) {
             $defaults['productreturnedid-' . $i] = $item;
         }
         if ($types->find('installation', 'acronym')->id == $typeid /* && !in_array($this->_auth->getIdentity(), array('admin', 'coordinator')) */) {
             $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate)); //$service->timetill;
         } else if ($types->find('service', 'acronym')->id == $typeid) {
-            $service->datefinished = date('H:i', strtotime($service->datefinished ? $service->datefinished : time())); //$service->timetill;
+            $service->datefinished = $service->datefinished ? date('H:i', strtotime($service->datefinished)) : null; //$service->timetill;
         }
-        $productsReturnedCount = sizeof($defaults['productreturnedid']);
-        $installationCodesCount = sizeof($defaults['installationcodeid']);
+        $productsReturnedCount = @sizeof($defaults['productreturnedid']);
+        $installationCodesCount = @sizeof($defaults['installationcodeid']);
         if ($this->getRequest()->isPost()) {
             $data = $request->getPost();
-            $productsReturnedCount = sizeof($this->getRequest()->getParam('productreturnedid'));
-            $installationCodesCount = sizeof($this->getRequest()->getParam('installationcodeid'));
+            $productsReturnedCount = @sizeof($this->getRequest()->getParam('productreturnedid'));
+            $installationCodesCount = @sizeof($this->getRequest()->getParam('installationcodeid'));
         }
         switch ($typeid) {
             // zlecenie instalacyjne
@@ -1283,12 +1289,14 @@ class Services_ServicesController extends Application_Controller_Abstract {
 
         if ($this->getRequest()->isPost()) {
             $data = $request->getPost();
-            foreach ($data['productreturnedid'] as $key => $value) {
-                $data[$key] = $value;
-            }
-            foreach ($data['demaged'] as $key => $value) {
-                $data[$key] = $value;
-            }
+            if (!empty($data['productreturnedid']))
+                foreach ($data['productreturnedid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+            if (!empty($data['demaged']))
+                foreach ($data['demaged'] as $key => $value) {
+                    $data[$key] = $value;
+                }
             if ($form->isValid($data)) {
                 if (!$service->isAssigned()) {
                     //$form->setDescription('Nieprawidłowy status zlecenia');
@@ -1653,7 +1661,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if ($types->find('installation', 'acronym')->id == $typeid /* && !in_array($this->_auth->getIdentity(), array('admin', 'coordinator')) */) {
             $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate)); //$service->timetill;
         } else if ($types->find('service', 'acronym')->id == $typeid) {
-            $service->datefinished = date('H:i', strtotime($service->datefinished ? $service->datefinished : time())); //$service->timetill;
+            $service->datefinished = $service->datefinished ? date('H:i', strtotime($service->datefinished)) : null; //$service->timetill;
         }
         $productsReturnedCount = @sizeof($defaults['productreturnedid']);
         $installationCodesCount = @sizeof($defaults['installationcodeid']);
@@ -1690,12 +1698,14 @@ class Services_ServicesController extends Application_Controller_Abstract {
 
         if ($this->getRequest()->isPost()) {
             $data = $request->getPost();
-            foreach ($data['productreturnedid'] as $key => $value) {
-                $data[$key] = $value;
-            }
-            foreach ($data['demaged'] as $key => $value) {
-                $data[$key] = $value;
-            }
+            if (!empty($data['productreturnedid']))
+                foreach ($data['productreturnedid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+            if (!empty($data['demaged']))
+                foreach ($data['demaged'] as $key => $value) {
+                    $data[$key] = $value;
+                }
             if ($form->isValid($data)) {
                 if (!$service->isAssigned()) {
                     //$form->setDescription('Nieprawidłowy status zlecenia');
@@ -1721,18 +1731,18 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         $form->getElement('technicalcomments')->setErrors(array('technicalcomments' => 'Wymagane podanie uzasadnienia'));
                         return;
                     }
+                    if ($values['performed'] === '1' && empty($data['installationcodeid'])) {
+                        $form->getElement('installationcodeid-0')->setErrors(array('installationcodeid-0' => 'Wymagane podanie kodu instalacji'));
+                        return;
+                    }
                 }
                 if ($values['performed'] === '0' && !$values['datefinished']) {
                     $form->getElement('datefinished')->setErrors(array('datefinished' => 'Wymagane podanie daty zakończenia'));
                     return;
                 }
-                //if ($values['performed'] === '0' && !$values['technicalcomments']) {
-                //    $form->getElement('technicalcomments')->setErrors(array('technicalcomments' => 'Wymagane podanie uzasadnienia'));
-                //    return;
-                //}
                 if (($service->isAssigned() || $types->find('installation', 'acronym')->id == $typeid) && $values['performed'] === '0' && !$values['technicalcomments'] && !$values['coordinatorcomments']) {
-                    $form->getElement('coordinatorcomments')->setErrors(array('coordinatorcomments' => 'Wymagane podanie komentarza koordynatora'));
-                    return;
+                    //$form->getElement('coordinatorcomments')->setErrors(array('coordinatorcomments' => 'Wymagane podanie komentarza koordynatora'));
+                    //return;
                 }
                 $service->technicalcomments = $values['technicalcomments'];
                 $service->coordinatorcomments = $values['coordinatorcomments'];

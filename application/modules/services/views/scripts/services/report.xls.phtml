@@ -59,39 +59,35 @@ foreach ($vars['services'] as $service) {
             $key = Application_Model_Services_XLS_Installation::COLUMN_TIMETILL;
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
-        $value = $service->documentspassed;
-        $value = isset($value) ? ($value ? 'tak' : 'nie') : '';
-        $key = Application_Model_Services_XLS_Installation::COLUMN_DOCUMENTSPASSED;
-        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
-        $value = $service->closedupc;
-        $value = isset($value) ? ($value ? 'tak' : 'nie') : '';
-        $key = Application_Model_Services_XLS_Installation::COLUMN_CLOSEDUPC;
-        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
     }
     if ($vars['typeid'] == $vars['types']->find('service', 'acronym')->id) {
         if ($technician = $service->getTechnician()) {
-            $value = $service->getTechnician()->symbol;
+            $value = $technician->symbol;
             $column = 'COLUMN_TECHNICIANCODE';
-            $key = constant("Application_Model_Services_XLS_Export::$column");
+            $key = constant("Application_Model_Services_XLS_Service::$column");
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
+        $value = 'UNP';
+        $column = 'COLUMN_TECHNICIAN';
+        $key = constant("Application_Model_Services_XLS_Service::$column");
+        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         if ($value = $service->datefinished) {
             $value = date('H:i', strtotime($value));
-            $key = Application_Model_Services_XLS_Export::COLUMN_DATEFINISHED;
+            $key = Application_Model_Services_XLS_Service::COLUMN_DATEFINISHED;
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
         if ($value = $service->timefrom) {
             $value = date('Gi', strtotime($value));
-            $key = Application_Model_Services_XLS_Export::COLUMN_TIMEFROM;
+            $key = Application_Model_Services_XLS_Service::COLUMN_TIMEFROM;
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
         if ($value = $service->timetill) {
             $value = date('Gi', strtotime($value));
-            $key = Application_Model_Services_XLS_Export::COLUMN_TIMETILL;
+            $key = Application_Model_Services_XLS_Service::COLUMN_TIMETILL;
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
         if ($value = $service->getProductsreleased()) {
-            $key = Application_Model_Services_XLS_Export::COLUMN_PRODUCTSRELEASED;
+            $key = Application_Model_Services_XLS_Service::COLUMN_PRODUCTSRELEASED;
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
         if ($value = $service->technicalcommentsrequired) {
@@ -108,12 +104,8 @@ foreach ($vars['services'] as $service) {
         }
         //$objPHPExcel->getActiveSheet()->getStyle("AO$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('A1A1A1');
     }
-    $value = $service->performed;
-    $value = isset($value) ? ($value ? 'tak' : 'nie') : '';
-    $key = Application_Model_Services_XLS_Installation::COLUMN_PERFORMED;
-    $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
     //var_dump($vars['codeTypes']);
-    /*foreach ($vars['codeTypes'] as $type) {
+    foreach ($vars['codeTypes'] as $type) {
         $code = $vars['dictionary']->find($type . 'code', 'acronym');
         $attributeId = $code->id;
         if ($codes = $service->getCodes()->filter(array('attributeid' => $attributeId))) {
@@ -141,7 +133,7 @@ foreach ($vars['services'] as $service) {
                 $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',', $errors));
             }
         }
-    }*/
+    }
     $rowNo++;
 }
 

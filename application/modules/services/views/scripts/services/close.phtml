@@ -120,6 +120,9 @@
                 }
             });
         };
+        $('select[disabled=disabled]').each(function (i, e) {
+            $($(e).parents('dd')).append($('<input type="hidden" name="' + e.name + '" value="' + e.value + '">'));
+        });
     <?php if ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
             $("#datefinished").timepicker({
                 timeFormat: 'HH:mm',

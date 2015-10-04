@@ -120,6 +120,9 @@
                 }
             });
         };
+        $('select[disabled=disabled]').each(function (i, e) {
+            $($(e).parents('dd')).append($('<input type="hidden" name="' + e.name + '" value="' + e.value + '">'));
+        });
 
         /*var select, chosen;
          // cache the select element as we'll be using it a few times

@@ -97,12 +97,16 @@ class Application_Form_Services_Service_Close extends Application_Form {
             $selectedIds[] = $value['name'];
             $attribs = $this->getElement($name)->getAttribs();
             $options = $attribs['options'];
-            if (!isset($options[$value['name']])) {
-                $this->getElement($name)->addMultiOption($value['name'], $value['name']);
-                $selectedIds[] = $value['name'];
+            if (!isset($options[$value->name])) {
+                $this->getElement($name)->addMultiOption($value->name, $value->name);
+                $selectedIds[] = $value->name;
             }
             preg_match("/\d+/", $name, $found);
-            $this->getElement('demaged-' . $found[0])->setValue($value['demaged']);
+            $this->getElement('demaged-' . $found[0])->setValue($value->demaged);
+            if (!$value->isNew()) {
+                $this->getElement('demaged-' . $found[0])->setAttrib('disabled', 'disabled');
+                $this->getElement('productreturnedid-' . $found[0])->setAttrib('disabled', 'disabled');
+            }
             $value = $selectedIds;
         }
         switch ($name) {

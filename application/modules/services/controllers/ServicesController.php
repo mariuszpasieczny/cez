@@ -356,7 +356,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             $productsReturned = explode(',', $service->productsreturned);
             $productsReturned = array_combine($productsReturned, $productsReturned);
             $defaults['productreturnedid'] = $productsReturned;
-            $defaults['productreturnedid'] = $service->getReturns()->toArray();
+            $defaults['productreturnedid'] = $service->getReturns();
             $serialsReturned = explode(',', $service->serialnumbers);
             $serialsReturned = array_combine($serialsReturned, $serialsReturned);
             $serialsReturned = array_merge($serialsReturned, $productsReturned);
@@ -523,12 +523,18 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             break;
                         }
                     }
-                    if (!$product->isNew()) {
-                        continue;
-                    }
+                    
                     if ($return) {
+                        if (!$product->isNew() && $return->demaged != (int)$demaged['demaged-' . $ix]) {
+                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => 'Nie można zmodyfikować potwierdzonego zwrotu'));
+                            return;
+                        }
                         $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix]))->save();
                     } else {
+                        if (!$product->isNew()) {
+                            $form->setDescription('Nie można usunąć potwierdzonego zwrotu');
+                            return;
+                        }
                         $product->delete();
                         continue;
                     }
@@ -554,7 +560,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         try {
                             $serviceProduct->save();
                         } catch (Exception $e) {
-                            $form->getElement('productreturnedid-' . $ix)->setErrors(array('productreturnedid-' . $ix => $e->getMessage()));
+                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
                             return;
                         }
                         $returns[] = $productId;
@@ -1224,7 +1230,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $productsReturned = explode(',', $service->productsreturned);
         $productsReturned = array_combine($productsReturned, $productsReturned);
         $defaults['productreturnedid'] = $productsReturned;
-        $defaults['productreturnedid'] = $service->getReturns()->toArray();
+        $defaults['productreturnedid'] = $service->getReturns();
         $serialsReturned = explode(',', $service->serialnumbers);
         $serialsReturned = array_combine($serialsReturned, $serialsReturned);
         $serialsReturned = array_merge($serialsReturned, $productsReturned);
@@ -1376,12 +1382,18 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             break;
                         }
                     }
-                    if (!$product->isNew()) {
-                        continue;
-                    }
+                    
                     if ($return) {
+                        if (!$product->isNew() && $return->demaged != (int)$demaged['demaged-' . $ix]) {
+                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => 'Nie można zmodyfikować potwierdzonego zwrotu'));
+                            return;
+                        }
                         $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix]))->save();
                     } else {
+                        if (!$product->isNew()) {
+                            $form->setDescription('Nie można usunąć potwierdzonego zwrotu');
+                            return;
+                        }
                         $product->delete();
                         continue;
                     }
@@ -1407,7 +1419,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         try {
                             $serviceProduct->save();
                         } catch (Exception $e) {
-                            $form->getElement('productreturnedid-' . $ix)->setErrors(array('productreturnedid-' . $ix => $e->getMessage()));
+                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
                             return;
                         }
                         $returns[] = $productId;
@@ -1647,7 +1659,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $productsReturned = explode(',', $service->productsreturned);
         $productsReturned = array_combine($productsReturned, $productsReturned);
         $defaults['productreturnedid'] = $productsReturned;
-        $defaults['productreturnedid'] = $service->getReturns()->toArray();
+        $defaults['productreturnedid'] = $service->getReturns();
         $serialsReturned = explode(',', $service->serialnumbers);
         $serialsReturned = array_combine($serialsReturned, $serialsReturned);
         $serialsReturned = array_merge($serialsReturned, $productsReturned);
@@ -1812,12 +1824,18 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             break;
                         }
                     }
-                    if (!$product->isNew()) {
-                        continue;
-                    }
+                    
                     if ($return) {
+                        if (!$product->isNew() && $return->demaged != (int)$demaged['demaged-' . $ix]) {
+                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => 'Nie można zmodyfikować potwierdzonego zwrotu'));
+                            return;
+                        }
                         $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix]))->save();
                     } else {
+                        if (!$product->isNew()) {
+                            $form->setDescription('Nie można usunąć potwierdzonego zwrotu');
+                            return;
+                        }
                         $product->delete();
                         continue;
                     }
@@ -1843,7 +1861,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         try {
                             $serviceProduct->save();
                         } catch (Exception $e) {
-                            $form->getElement('productreturnedid-' . $ix)->setErrors(array('productreturnedid-' . $ix => $e->getMessage()));
+                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
                             return;
                         }
                         $returns[] = $productId;

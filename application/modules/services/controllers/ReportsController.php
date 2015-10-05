@@ -191,7 +191,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
                 //$mail->setFrom($this->_auth->getIdentity()->email, $this->_auth->getIdentity()->lastname . ' ' . $this->_auth->getIdentity()->firstname);
                 $mail->setFrom($this->_config->get(APPLICATION_ENV)->reports->mail->from);
                 $mail->setSubject(basename($report->file));
-                $mail->setBodyHtml($values['content']);
+                $mail->setBodyHtml(nl2br($values['content']));
                 $at = $mail->createAttachment(file_get_contents($_SERVER['DOCUMENT_ROOT'] . $report->file));
                 $at->type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
                 $at->disposition = Zend_Mime::DISPOSITION_INLINE;

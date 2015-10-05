@@ -193,8 +193,8 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                     }
                     if ($item->qtyavailable == 0) {
                         $status = $this->_dictionaries->getStatusList('products')->find('reserved', 'acronym');
+                        $item->statusid = $status->id;
                     }
-                    $item->statusid = $status->id;
                     $item->save();
                     $status = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
                     $line->statusid = $status->id;
@@ -267,14 +267,14 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                         $form->getElement('quantity-' . $i)->setErrors(array('quantity-' . $i => 'Zbyt duża wartość w polu ilość'));
                         return;
                     }
-                    if ($item->qtyavailable == 0) {
-                        $status = $this->_dictionaries->getStatusList('products')->find('reserved', 'acronym');
-                        $item->statusid = $status->id;
-                    }
                     $item->qtyreserved += $values['quantity-' . $i];
                     if ($item->qtyreserved > $item->quantity) {
                         $form->getElement('quantity-' . $i)->setErrors(array('quantity-' . $i => 'Zbyt duża wartość w polu ilość'));
                         return;
+                    }
+                    if ($item->qtyavailable == 0) {
+                        $status = $this->_dictionaries->getStatusList('products')->find('reserved', 'acronym');
+                        $item->statusid = $status->id;
                     }
                     $item->save();
                     $counter++;

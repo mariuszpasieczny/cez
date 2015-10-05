@@ -76,7 +76,7 @@ $(function() {
                 if (!$(elements[i]).val() || !$(elements[i]).attr('name')) {
                     continue;
                 }
-                url += '/' + $(elements[i]).attr('name') + '/' + $(elements[i]).val();
+                url += '/' + $(elements[i]).attr('name') + '/' + encodeURI($(elements[i]).val());
             }
         }
         $('#myModal').modal({
@@ -121,7 +121,7 @@ $(function() {
             if (value.length > 1900) {
                 //continue;
             }
-            url += '/' + params[i].name.replace('[]', '') + '/' + value;//;
+            url += '/' + params[i].name.replace('[]', '') + '/' + encodeURI(value);//;
         }
         ;
         var params = $(this).parents('form').serialize();//console.log(url);
@@ -247,7 +247,7 @@ $(function() {
                 if (!$(elements[i]).val() || !$(elements[i]).attr('name')) {
                     continue;
                 }
-                url += '/' + $(elements[i]).attr('name') + '/' + $(elements[i]).val();
+                url += '/' + $(elements[i]).attr('name') + '/' + encodeURI($(elements[i]).val());
             }
         }
         $(target).html('<img src="/css/images/ajax-loader.gif">');

@@ -61,7 +61,7 @@
                 <select class="form-control chosen-select" name="documentspassed" data-placeholder="Dokumenty">
                     <option value="">Dokumenty</option>
                     <?php
-                    foreach (array('0' => 'brak', '1' => 'tak') as $key => $name): 
+                    foreach (array('0' => 'nie', '1' => 'tak') as $key => $name): 
                         ?>
                         <option value="<?php echo $key; ?>" <?php if (isset($this->request['documentspassed']) && strlen($this->request['documentspassed']) && $key == $this->request['documentspassed']): ?>selected<?php endif; ?>><?php echo $name; ?></option>
                     <?php endforeach; ?>

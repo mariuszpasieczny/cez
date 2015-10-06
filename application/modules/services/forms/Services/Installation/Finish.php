@@ -243,7 +243,7 @@ class Application_Form_Services_Installation_Finish extends Application_Form
         $this->addElement($element);*/
         
         $element = $this->createElement('select', 'productreturnedid-0', array(
-                    'label' => 'Produkty odebrane:',
+                    'label' => 'Sprzęt odebrany:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
                     //'validators' => array(

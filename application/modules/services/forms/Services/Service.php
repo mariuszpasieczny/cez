@@ -610,7 +610,7 @@ class Application_Form_Services_Service extends Application_Form {
         $this->addElement($element);
 
         $element = $this->createElement('select', 'productid', array(
-                    'label' => 'Produkty:',
+                    'label' => 'Sprzęt wydany:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
                     //'validators' => array(
@@ -632,7 +632,7 @@ class Application_Form_Services_Service extends Application_Form {
         $this->addElement($element);*/
         
         $element = $this->createElement('select', 'productreturnedid-0', array(
-                    'label' => 'Produkty odebrane:',
+                    'label' => 'Sprzęt odebrany:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
                     //'validators' => array(

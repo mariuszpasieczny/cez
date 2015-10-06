@@ -63,7 +63,7 @@
                     <?php
                     foreach (array('0' => 'brak', '1' => 'tak') as $key => $name): 
                         ?>
-                        <option value="<?php echo $key; ?>" <?php if (strlen($this->request['documentspassed']) && $key == $this->request['documentspassed']): ?>selected<?php endif; ?>><?php echo $name; ?></option>
+                        <option value="<?php echo $key; ?>" <?php if (isset($this->request['documentspassed']) && strlen($this->request['documentspassed']) && $key == $this->request['documentspassed']): ?>selected<?php endif; ?>><?php echo $name; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -73,7 +73,7 @@
                     <?php
                     foreach (array('0' => 'nie', '1' => 'tak') as $key => $name): 
                         ?>
-                        <option value="<?php echo $key; ?>" <?php if (strlen($this->request['closedupc']) && $key == $this->request['closedupc']): ?>selected<?php endif; ?>><?php echo $name; ?></option>
+                        <option value="<?php echo $key; ?>" <?php if (isset($this->request['closedupc']) && strlen($this->request['closedupc']) && $key == $this->request['closedupc']): ?>selected<?php endif; ?>><?php echo $name; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -355,7 +355,7 @@
         });
         $('[name=clientid]').outerWidth(200);
         $('.chosen-select').chosen({allow_single_deselect: true});
-        $("select[name=clientstreet].chosen-select").data('chosen').allow_single_deselect = true;
+        $("select[name=clientstreet].chosen-select");
     });
 <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
     <?php if ($this->auth->role == 'technician'): ?>

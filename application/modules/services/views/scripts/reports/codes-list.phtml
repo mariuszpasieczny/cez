@@ -13,13 +13,26 @@
             <input type="hidden" name="typeid" value="<?php echo $this->request['typeid']; ?>" />
             <input type="hidden" name="type" value="<?php echo $this->request['type']; ?>" />
             <div class="form-group">
-                <select class="form-control chosen-select" name="technicianid[]" multiple data-placeholder="Wybierz technika" style="width: 150xp;">
+                <select class="form-control chosen-select" name="statusid[]" multiple data-placeholder="Wybierz status">
+                    <option value="">Wybierz status</option>
+                    <?php
+                    foreach ($this->statuses as $status): if ($status['acronym'] == 'deleted'): continue;
+                        endif;
+                        ?>
+                        <option value="<?php echo $status->id; ?>" <?php if (!empty($this->request['statusid']) && in_array($status->id, (array) $this->request['statusid'])): ?>selected<?php endif; ?>><?php echo $status->name; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php if ($this->auth->role != 'technician'): ?>
+            <div class="form-group">
+                <select class="form-control chosen-select" name="technicianid[]" multiple data-placeholder="Wybierz technika">
                     <option value="">Wybierz technika</option>
                     <?php foreach ($this->technicians as $technician): ?>
                         <option value="<?php echo $technician->id; ?>" <?php if (!empty($this->request['technicianid']) && in_array($technician->id, (array) $this->request['technicianid'])): ?>selected<?php endif; ?>><?php echo $technician->lastname . ' ' . $technician->firstname; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
+            <?php endif; ?>
             <div class="form-group">
                 <select class="form-control chosen-select" name="codeacronym[]" multiple data-placeholder="Wybierz kod zamknięcia" style="width: 250px;">
                     <option value="">Wybierz kod zamknięcia</option>

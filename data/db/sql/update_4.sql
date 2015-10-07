@@ -8,6 +8,7 @@ VIEW `servicecodesview` AS
         `s`.`technician` AS `technician`,
         `s`.`statusacronym` AS `statusacronym`,
         `s`.`status` AS `status`,
+        `s`.`statusid` AS `statusid`,
         `s`.`datefinished` AS `datefinished`,
         `s`.`planneddate` AS `planneddate`,
         `sc`.`attributeid` AS `attributeid`,

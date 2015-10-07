@@ -253,12 +253,30 @@ class Services_ReportsController extends Application_Controller_Abstract {
         $status = $this->_dictionaries->getStatusList('users')->find('active', 'acronym');
         $params['statusid'] = $status->id;
         $params['role'] = 'technician';
+        if ($this->_auth->getIdentity()->role == 'technician') {
+            $params['id'] = $this->_auth->getIdentity()->id;
+        }
         $this->_users->setOrderBy(array('lastname','firstname'));
         $technicians = $this->_users->getAll($params);
         $this->view->technicians = $technicians;
         $dictionary = $this->_dictionaries->getDictionaryList('service');
-        $this->view->codes = $dictionary->find("{$type}code", 'acronym')->getChildren();
+        $statusDeleted = $this->_dictionaries->getStatusList('dictionaries', 'deleted')->current();
+        $codes = array(); 
+        foreach ($dictionary->find("{$type}code", 'acronym')->getChildren() as $row) {
+            if ($row['statusid'] == $statusDeleted->id) {
+                continue;
+            }
+            if ($row['datefrom'] && strtotime($row['datefrom']) < time()) {
+                //continue;
+            }
+            if ($row['datetill'] && strtotime($row['datetill']) < time()) {
+                //continue;
+            }
+            $codes[] = $row;
+        }
+        $this->view->codes = $codes;
         $this->view->types = $types;
+        $this->view->statuses = $this->_dictionaries->getStatusList('service');
         $params = array_filter(array_intersect_key($request->getParams(), array_flip(array('technicianid', 'codeacronym', 'planneddatefrom', 'planneddatetill'))));
         if (empty($params)) {
             $planneddatefrom = date('Y-m-01');
@@ -272,6 +290,9 @@ class Services_ReportsController extends Application_Controller_Abstract {
         $this->view->filepath = '/../data/temp/';
         $this->view->filename = 'Raport_kodow_instalacyjnych-' . date('YmdHis') . '.xls';
         $this->view->rowNo = 1;
+        if ($this->_auth->getIdentity()->role == 'technician') {
+            $request->setParam('technicianid', $this->_auth->getIdentity()->id);
+        }
         
         if (!$this->getRequest()->isPost()) {
             return;

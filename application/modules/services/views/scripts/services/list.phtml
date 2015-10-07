@@ -25,6 +25,7 @@
                     <?php endforeach; ?>
                 </select>
             </div>
+            <?php if ($this->auth->role != 'technician'): ?>
             <div class="form-group">
                 <select class="form-control chosen-select" name="technicianid[]" multiple data-placeholder="Wybierz technika">
                     <option value="">Wybierz technika</option>
@@ -33,6 +34,7 @@
                     <?php endforeach; ?>
                 </select>
             </div>
+            <?php endif; ?>
             <div class="form-group">
                 <input type="text" style="width:150px;" class="form-control" name="clientnumber" placeholder="Nr klienta" value="<?php if (!empty($this->request['clientnumber'])) echo $this->request['clientnumber']; ?>">
             </div>

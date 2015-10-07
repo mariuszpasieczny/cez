@@ -32,6 +32,12 @@ class Application_Model_Services_Statistics_Servicecodes_Table extends Applicati
         )
     );
     
+    public function getSearchFields() {
+        $fields = parent::getSearchFields();
+        $fields[] = 'statusid';
+        return $fields;
+    }
+    
     public function select() {
         if ($this->_lazyLoading === true) {
             return parent::select();

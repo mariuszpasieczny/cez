@@ -81,6 +81,12 @@
                                                         array('module' => 'services', 'controller' => 'services', 'action' => 'import', 'typeid' => $this->types ? $this->types->find('service', 'acronym')->id : ''), 'default', true)
                                                 ?>" class="content-load">Imortuj zlecenia serwisowe</a></li>
                                                <?php endif; ?>
+                                               <?php if ($this->auth && $this->HasAccess($this->auth->role, 'reports', 'codes-list')): ?>
+                                            <li><a href="<?php
+                                                echo $this->url(
+                                                        array('module' => 'services', 'controller' => 'reports', 'action' => 'codes-list', 'typeid' => $this->types ? $this->types->find('service', 'acronym')->id : '', 'type' => 'solution'), 'default', true)
+                                                ?>" class="content-load">Raport zamknięcia</a></li>
+                                               <?php endif; ?>
                                                <?php if ($this->auth && $this->HasAccess($this->auth->role, 'reports', 'generate')): ?>
                                             <li><a href="<?php
                                                 echo $this->url(

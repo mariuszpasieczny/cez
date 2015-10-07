@@ -80,5 +80,6 @@
 </div>
 <?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
 <script>
+    $('.chosen-select').chosen({allow_single_deselect: true});
     params = <?php echo Zend_Json::encode($this->request); ?>;
 </script>

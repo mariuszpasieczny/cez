@@ -114,6 +114,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
 
         $this->view->form = $form;
         $this->view->types = $types;
+        $this->view->serviceCode = $this->_config->get(APPLICATION_ENV)->reports->servicecode;
 
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($request->getPost())) {

@@ -67,7 +67,7 @@ foreach ($vars['services'] as $service) {
             $key = constant("Application_Model_Services_XLS_Service::$column");
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
-        $value = 'UNP';
+        $value = $vars['serviceCode'];
         $column = 'COLUMN_TECHNICIAN';
         $key = constant("Application_Model_Services_XLS_Service::$column");
         $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);

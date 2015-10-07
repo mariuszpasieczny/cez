@@ -193,7 +193,7 @@ class Application_Model_Services_XLS_Service extends Application_Model_Services_
                 case self::COLUMN_MACNUMBERS:
                     $this->macnumbers = $cell->getValue();
                     break;
-                case self::COLUMN_TECHNICIAN:
+                case self::COLUMN_TECHNICIANCODE:
                     $technician = $cell->getCalculatedValue();
                     if (!empty($technician)) {
                         //@list($firstName, $lastName) = @explode('.', $technician);

@@ -660,8 +660,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 $form->getElement('productid')->setErrors(array('productid' => 'Wymagane kody produktów wydanych'));
                                                 return;
                                             }
-                                            if (!array_filter($productsReturned) && !array_filter($values['productreturnedid'])) {
-                                                $form->getElement('productreturnedid-0')->setErrors(array('productreturnedid-0' => 'Wymagane kody produktów odebranych'));
+                                            if (!array_unique($productsReturned) && !array_unique($values['productreturnedid']) && !array_unique((array)$request->getParam('productreturnedid'))) {
+                                                $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
                                             break;
@@ -1523,8 +1523,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 $form->getElement('productid')->setErrors(array('productid' => 'Wymagane kody produktów wydanych'));
                                                 return;
                                             }
-                                            if (!array_filter($productsReturned) && !array_filter($values['productreturnedid'])) {
-                                                $form->getElement('productreturnedid-0')->setErrors(array('productreturnedid-0' => 'Wymagane kody produktów odebranych'));
+                                            if (!array_unique($productsReturned) && !array_unique($values['productreturnedid']) && !array_unique((array)$request->getParam('productreturnedid'))) {
+                                                $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
                                             break;
@@ -1965,8 +1965,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 $form->getElement('productid')->setErrors(array('productid' => 'Wymagane kody produktów wydanych'));
                                                 return;
                                             }
-                                            if (!array_filter($productsReturned) && !array_filter($values['productreturnedid'])) {
-                                                $form->getElement('productreturnedid-0')->setErrors(array('productreturnedid-0' => 'Wymagane kody produktów odebranych'));
+                                            if (!array_unique($productsReturned) && !array_unique($values['productreturnedid']) && !array_unique((array)$request->getParam('productreturnedid'))) {
+                                                $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
                                             break;

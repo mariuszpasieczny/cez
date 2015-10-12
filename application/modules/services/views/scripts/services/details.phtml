@@ -63,11 +63,11 @@
                 </div>
                 <div class="col-xs-7 content no-top-border">
                     <p>
-                        <?php $products = explode(',', $this->service->productsreturned); ?>
+                        <?php $products = $this->service->getReturns(); ?>
                         <?php if ($products): ?>
                             <?php foreach ($products as $ix => $product): ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
-                                <?php echo $product; ?>
+                                <?php echo $product->name . ($product->demaged ? (' (uszkodzony)') : ''); ?>
                             <?php endforeach; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>
@@ -287,15 +287,15 @@
             <div class="row">
                 <div class="col-xs-3 date">
                     <i class="fa"></i>
-                    Sprzęt zdjęty
+                    Sprzęt zwrócony
                 </div>
                 <div class="col-xs-7 content no-top-border">
                     <p>
-                        <?php $products = explode(',', $this->service->productsreturned); ?>
+                        <?php $products = $this->service->getReturns(); ?>
                         <?php if ($products): ?>
                             <?php foreach ($products as $ix => $product): ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
-                                <?php echo $product; ?>
+                                <?php echo $product->name . ($product->demaged ? (' (uszkodzony)') : ''); ?>
                             <?php endforeach; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>

@@ -508,8 +508,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $service = $this->_services->createRow($values);
                     $service->id = null;
                 }
-                $productsReturned = array_filter((array)$request->getParam('productreturnedid'));
-                $demaged = array_filter((array)$request->getParam('demaged'));
+                $productsReturned = array_unique((array)$request->getParam('productreturnedid'));
+                $demaged = array_unique((array)$request->getParam('demaged'));
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -1367,8 +1367,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
-                $productsReturned = array_filter((array)$request->getParam('productreturnedid'));
-                $demaged = array_filter((array)$request->getParam('demaged'));
+                $productsReturned = array_unique((array)$request->getParam('productreturnedid'));
+                $demaged = array_unique((array)$request->getParam('demaged'));
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -1809,8 +1809,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
-                $productsReturned = array_filter((array)$request->getParam('productreturnedid'));
-                $demaged = array_filter((array)$request->getParam('demaged'));
+                $productsReturned = array_unique((array)$request->getParam('productreturnedid'));
+                $demaged = array_unique((array)$request->getParam('demaged'));
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;

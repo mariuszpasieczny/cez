@@ -63,9 +63,24 @@ foreach ($vars['services'] as $service) {
         foreach ($service->getReturns() as $return) {
             $returns[] = $return->name;
         }
-        $key = Application_Model_Services_XLS_Installation::COLUMN_PRODUCTSRETURNED;
-        if ($returns)
-            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$returns));
+        if ($returns = $service->getReturns()) {
+            $value = array();
+            foreach ($returns as $return) {
+                $value[] = $return->name;
+            }
+            $column = 'COLUMN_PRODUCTSRETURNED';
+            $key = constant("Application_Model_Services_XLS_Installation::$column");
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$value));
+        }
+        if ($returns = $service->getProducts()) {
+            $value = array();
+            foreach ($returns as $return) {
+                $value[] = $return->name;
+            }
+            $column = 'COLUMN_PRODUCTSRELEASED';
+            $key = constant("Application_Model_Services_XLS_Installation::$column");
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$value));
+        }
     }
     if ($vars['typeid'] == $vars['types']->find('service', 'acronym')->id) {
         if ($technician = $service->getTechnician()) {
@@ -110,13 +125,31 @@ foreach ($vars['services'] as $service) {
             $objPHPExcel->getActiveSheet()->getStyle("A$rowNo:AC$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('92d050');
         }
         //$objPHPExcel->getActiveSheet()->getStyle("AO$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('A1A1A1');
-        $returns = array();
-        foreach ($service->getReturns() as $return) {
-            $returns[] = $return->name;
+        if ($returns = $service->getReturns()) {
+            $value = array();
+            foreach ($returns as $return) {
+                $value[] = $return->name;
+            }
+            $column = 'COLUMN_PRODUCTSRETURNED';
+            $key = constant("Application_Model_Services_XLS_Service::$column");
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$value));
         }
-        $key = Application_Model_Services_XLS_Service::COLUMN_PRODUCTSRETURNED;
-        if ($returns)
-            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$returns));
+        if ($returns = $service->getProducts()) {
+            $value = array();
+            foreach ($returns as $return) {
+                $value[] = $return->name;
+            }
+            $column = 'COLUMN_PRODUCTSRELEASED';
+            $key = constant("Application_Model_Services_XLS_Service::$column");
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$value));
+        }
+        if ($solution = $service->solutioncode) {
+            list($errorCode, $solutionCode) = explode('-', $solution);
+            $key = Application_Model_Services_XLS_Service::COLUMN_ERRORCODE;
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $errorCode);
+            $key = Application_Model_Services_XLS_Service::COLUMN_SOLUTIONCODE;
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $solutionCode);
+        }
     }
     //var_dump($service->getReturns()->toArray());//exit;
     //var_dump($vars['codeTypes']);

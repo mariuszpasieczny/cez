@@ -76,6 +76,15 @@ foreach ($vars['services'] as $service) {
             $key = constant("Application_Model_Services_XLS_Installation::$column");
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$value));
         }
+        if ($returns = $service->getProducts()) {
+            $value = array();
+            foreach ($returns as $return) {
+                $value[] = $return->name;
+            }
+            $column = 'COLUMN_PRODUCTSRELEASED';
+            $key = constant("Application_Model_Services_XLS_Installation::$column");
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$value));
+        }
     }
     if ($vars['typeid'] == $vars['types']->find('service', 'acronym')->id) {
         if ($technician = $service->getTechnician()) {
@@ -122,6 +131,15 @@ foreach ($vars['services'] as $service) {
                 $value[] = $return->name;
             }
             $column = 'COLUMN_PRODUCTSRETURNED';
+            $key = constant("Application_Model_Services_XLS_Export::$column");
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$value));
+        }
+        if ($returns = $service->getProducts()) {
+            $value = array();
+            foreach ($returns as $return) {
+                $value[] = $return->name;
+            }
+            $column = 'COLUMN_PRODUCTSRELEASED';
             $key = constant("Application_Model_Services_XLS_Export::$column");
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, join(',',$value));
         }

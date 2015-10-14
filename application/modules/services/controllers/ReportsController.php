@@ -288,7 +288,14 @@ class Services_ReportsController extends Application_Controller_Abstract {
         }
         $this->view->request = $request->getParams();
         $this->view->filepath = '/../data/temp/';
-        $this->view->filename = 'Raport_kodow_instalacyjnych-' . date('YmdHis') . '.xls';
+        switch ($this->_getParam('typeid')) {
+            case $types->find('installation', 'acronym')->id:
+                $this->view->filename = 'Raport_kodow_instalacyjnych-' . date('YmdHis') . '.xls';
+                break;
+            case $types->find('service', 'acronym')->id:
+                $this->view->filename = 'Raport_kodow_serwisowych-' . date('YmdHis') . '.xls';
+                break;
+        }
         $this->view->rowNo = 1;
         if ($this->_auth->getIdentity()->role == 'technician') {
             $request->setParam('technicianid', $this->_auth->getIdentity()->id);

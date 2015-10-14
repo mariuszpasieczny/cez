@@ -66,7 +66,7 @@
                             </a>
                         <?php endif; ?>
                     <?php endif; ?>
-                    <?php if (@!in_array($this->parent->id, array($this->solutionCode))):; ?>
+                    <?php if (@!in_array($this->parent->id, array($this->solutionCode))||1):; ?>
                         <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'delete')): ?>
                             <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/delete/id/<?php echo $dictionary->id; ?>" data-target=".modal-body" class="popup-load" title="Usuń">
                                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>

@@ -191,7 +191,7 @@
                     Godzina wykonania/odwołania
                 </div>
                 <div class="col-xs-7 content no-top-border">
-                    <p><?php echo date('H:i', strtotime($this->service->datefinished)); ?></p>
+                    <p><?php if ($this->service->datefinished): echo date('H:i', strtotime($this->service->datefinished)); endif; ?></p>
                 </div>
             </div>
             <div class="row">

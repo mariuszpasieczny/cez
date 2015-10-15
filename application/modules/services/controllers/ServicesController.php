@@ -482,6 +482,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $form->getElement('technicalcomments')->setErrors(array('technicalcomments' => 'Wymagane podanie uzasadnienia'));
                             return;
                         }
+                    if ($values['performed'] === '1' && empty($data['installationcodeid'])) {
+                        $form->getElement('installationcodeid-0')->setErrors(array('installationcodeid-0' => 'Wymagane podanie kodu instalacji'));
+                        return;
+                    }
                     }
                     if ($values['performed'] === '0' && !$values['datefinished']) {
                         $form->getElement('datefinished')->setErrors(array('datefinished' => 'Wymagane podanie daty zakończenia'));
@@ -1345,6 +1349,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     }
                     if ($values['performed'] === '0' && !$values['technicalcomments']) {
                         $form->getElement('technicalcomments')->setErrors(array('technicalcomments' => 'Wymagane podanie uzasadnienia'));
+                        return;
+                    }
+                    if ($values['performed'] === '1' && empty($data['installationcodeid'])) {
+                        $form->getElement('installationcodeid-0')->setErrors(array('installationcodeid-0' => 'Wymagane podanie kodu instalacji'));
                         return;
                     }
                 }

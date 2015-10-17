@@ -250,11 +250,11 @@
                     case 'cancellationcodeid':
                     case 'installationcancelcodeid':
                         if (performed === '0') {
-                            $('[name^=' + value + ']').parents('dd').show();
-                            $('[name^=' + value + ']').parents('dd').prev().show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                         } else {
-                            $('[name^=' + value + ']').parents('dd').hide();
-                            $('[name^=' + value + ']').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
                         }
                         break;
                     case 'installationcodeid':
@@ -264,34 +264,34 @@
                     case 'productid':
                     case 'productreturnedid':
                         if (performed == 1) {
-                            $('[name^=' + value + ']').parents('dd').show();
-                            $('[name^=' + value + ']').parents('dd').prev().show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                             $($(".chosen-select[name^=productreturnedid]").parents('.form-group.inline').last().nextAll().filter('span')).show();
                         } else {
-                            $('[name^=' + value + ']').parents('dd').hide();
-                            $('[name^=' + value + ']').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
                             $($(".chosen-select[name^=productreturnedid]").parents('.form-group.inline').last().nextAll().filter('span')).hide();
                         }
                     case 'demaged':
                         if (performed == 1) {
-                            $('[name^=' + value + ']').parents('dd').show();
-                            $('[name^=' + value + ']').parents('dd').prev().show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                         } else {
-                            $('[name^=' + value + ']').parents('dd').hide();
-                            $('[name^=' + value + ']').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
                         }
                         break;
                 }
             });
             $.each(['datefinished', 'technicalcomments'], function(key, value) {
                 if (performed !== '') {
-                    $('#' + value).parents('dd').show();
-                    $('#' + value).parents('dd').prev().show();
+                    $('#' + value).removeAttr('disabled').parents('dd').show();
+                    $('#' + value).removeAttr('disabled').parents('dd').prev().show();
                     $('#submit').parents('dd').show();
                     $('#cancel').show();
                 } else {
-                    $('#' + value).parents('dd').hide();
-                    $('#' + value).parents('dd').prev().hide();
+                    $('#' + value).attr('disabled','disabled').parents('dd').hide();
+                    $('#' + value).attr('disabled','disabled').parents('dd').prev().hide();
                     $('#submit').parents('dd').hide();
                     $('#cancel').hide();
                 }

@@ -274,11 +274,11 @@
                     case 'cancellationcodeid':
                     case 'installationcancelcodeid':
                         if (performed === '0') {
-                            $('[name^=' + value + ']').parents('dd').show();
-                            $('[name^=' + value + ']').parents('dd').prev().show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                         } else {
-                            $('[name^=' + value + ']').parents('dd').hide();
-                            $('[name^=' + value + ']').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
                         }
                         break;
                     case 'installationcodeid':
@@ -288,31 +288,31 @@
                     case 'productid':
                     case 'productreturnedid':
                         if (performed == 1) {
-                            $('[name^=' + value + ']').parents('dd').show();
-                            $('[name^=' + value + ']').parents('dd').prev().show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                             $($(".chosen-select[name^=productreturnedid]").parents('.form-group.inline').last().nextAll().filter('span')).show();
                         } else {
-                            $('[name^=' + value + ']').parents('dd').hide();
-                            $('[name^=' + value + ']').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
                             $($(".chosen-select[name^=productreturnedid]").parents('.form-group.inline').last().nextAll().filter('span')).hide();
                         }
                         break;
                     case 'demaged':
                         if (performed == 1) {
-                            $('[name^=' + value + ']').parents('dd').show();
-                            $('[name^=' + value + ']').parents('dd').prev().show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                         } else {
-                            $('[name^=' + value + ']').parents('dd').hide();
-                            $('[name^=' + value + ']').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
                         }
                         break;
                     case 'datefinished':
                         if (performed !== '') {
-                            $('[name^=' + value + ']').parents('dd').show();
-                            $('[name^=' + value + ']').parents('dd').prev().show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                         } else {
-                            $('[name^=' + value + ']').parents('dd').hide();
-                            $('[name^=' + value + ']').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
                         }
                 }
             });

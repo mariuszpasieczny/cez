@@ -42,6 +42,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 ->addActionContext('assign', 'html')
                 ->addActionContext('finish', 'html')
                 ->addActionContext('close', 'html')
+                ->addActionContext('close-multi', 'html')
                 ->addActionContext('return', 'html')
                 ->addActionContext('delete', 'html')
                 ->addActionContext('withdraw', 'html')
@@ -296,7 +297,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             // zlecenie instalacyjne
             case $types->find('installation', 'acronym')->id:
                 //$form = new Application_Form_Services_Installation();
-                $codeTypes = array('installation', 'installationcancel');
+                $codeTypes = array('installation', 'installationcancel', 'modeminterchange', 'decoderinterchange');
                 $this->_services->setRowClass('Application_Model_Services_Installation');
                 break;
             // zlecenie serwisowe
@@ -385,6 +386,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     }
                 }
             }
+            $options['demagecodes'] = array_merge($options['modeminterchangecodes'], $options['decoderinterchangecodes']);
             if (!empty($defaults['installationcodeid']))
             foreach ($defaults['installationcodeid'] as $i => $item) {
                 $defaults['installationcodeid-' . $i] = $item;
@@ -440,6 +442,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
             if (!empty($data['demaged']))
                 foreach ($data['demaged'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+            if (!empty($data['demagecodeid']))
+                foreach ($data['demagecodeid'] as $key => $value) {
                     $data[$key] = $value;
                 }
             if ($form->isValid($data)) {
@@ -512,8 +518,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $service = $this->_services->createRow($values);
                     $service->id = null;
                 }
-                $productsReturned = array_unique((array)$request->getParam('productreturnedid'));
-                $demaged = array_unique((array)$request->getParam('demaged'));
+                $productsReturned = (array)$request->getParam('productreturnedid');
+                $demaged = (array)$request->getParam('demaged');
+                $demagecode = (array)$request->getParam('demagecodeid');
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -529,11 +536,14 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     }
                     
                     if ($return) {
-                        if (!$product->isNew() && $return->demaged != (int)$demaged['demaged-' . $ix]) {
+                        if (!$product->isNew()
+                                && $return->demaged != (int)$demaged['demaged-' . $ix]
+                                 && $return->demagecodeid != (int)$demagecode['demagecodeid-' . $ix]) {
                             $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => 'Nie można zmodyfikować potwierdzonego zwrotu'));
                             return;
                         }
-                        $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix]))->save();
+                        $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix],
+                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix]))->save();
                     } else {
                         if (!$product->isNew()) {
                             $form->setDescription('Nie można usunąć potwierdzonego zwrotu');
@@ -558,6 +568,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
+                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix],
                             'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')->id
                             );
                         $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());exit;
@@ -632,6 +643,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         }
                         $attributeId = $code->id;
                         foreach ((array) $this->_getParam($type . 'codeid') as $codeId) {
+                            if (empty($codeId)) {
+                                continue;
+                            }
                             switch ($type) {
                                 case 'solution':
                                     $code = $dictionary->find($type . 'code', 'acronym')->getChildren()->find($codeId);
@@ -664,7 +678,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 $form->getElement('productid')->setErrors(array('productid' => 'Wymagane kody produktów wydanych'));
                                                 return;
                                             }
-                                            if (!array_unique($productsReturned) && !array_unique($values['productreturnedid']) && !array_unique((array)$request->getParam('productreturnedid'))) {
+                                            if (!array_filter((array)$request->getParam('productreturnedid')) && !$values['productreturnedid']) {
                                                 $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
@@ -1242,7 +1256,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         switch ($service->typeid) {
             // zlecenie instalacyjne
             case $types->find('installation', 'acronym')->id:
-                $codeTypes = array('installation', 'installationcancel');
+                $codeTypes = array('installation', 'installationcancel', 'modeminterchange', 'decoderinterchange');
                 break;
             // zlecenie serwisowe
             case $types->find('service', 'acronym')->id:
@@ -1275,6 +1289,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
             }
         }
+        $options['demagecodes'] = array_merge($options['modeminterchangecodes'], $options['decoderinterchangecodes']);
         if (!empty($defaults['installationcodeid']))
         foreach ($defaults['installationcodeid'] as $i => $item) {
             $defaults['installationcodeid-' . $i] = $item;
@@ -1326,6 +1341,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 foreach ($data['demaged'] as $key => $value) {
                     $data[$key] = $value;
                 }
+            if (!empty($data['demagecodeid']))
+                foreach ($data['demagecodeid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
             if ($form->isValid($data)) {
                 if (!$service->isAssigned()) {
                     //$form->setDescription('Nieprawidłowy status zlecenia');
@@ -1375,8 +1394,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
-                $productsReturned = array_unique((array)$request->getParam('productreturnedid'));
-                $demaged = array_unique((array)$request->getParam('demaged'));
+                $productsReturned = (array)$request->getParam('productreturnedid');
+                $demaged = (array)$request->getParam('demaged');
+                $demagecode = (array)$request->getParam('demagecodeid');
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -1392,11 +1412,14 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     }
                     
                     if ($return) {
-                        if (!$product->isNew() && $return->demaged != (int)$demaged['demaged-' . $ix]) {
+                        if (!$product->isNew()
+                                && $return->demaged != (int)$demaged['demaged-' . $ix]
+                                 && $return->demagecodeid != (int)$demagecode['demagecodeid-' . $ix]) {
                             $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => 'Nie można zmodyfikować potwierdzonego zwrotu'));
                             return;
                         }
-                        $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix]))->save();
+                        $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix],
+                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix]))->save();
                     } else {
                         if (!$product->isNew()) {
                             $form->setDescription('Nie można usunąć potwierdzonego zwrotu');
@@ -1421,6 +1444,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
+                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix],
                             'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')->id
                             );
                         $serviceProduct = $table->createRow($params);
@@ -1499,6 +1523,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         }
                         $attributeId = $code->id;
                         foreach ((array) $this->_getParam($type . 'codeid') as $codeId) {
+                            if (empty($codeId)) {
+                                continue;
+                            }
                             switch ($type) {
                                 case 'solution':
                                     $code = $dictionary->find($type . 'code', 'acronym')->getChildren()->find($codeId);
@@ -1531,7 +1558,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 $form->getElement('productid')->setErrors(array('productid' => 'Wymagane kody produktów wydanych'));
                                                 return;
                                             }
-                                            if (!array_unique($productsReturned) && !array_unique($values['productreturnedid']) && !array_unique((array)$request->getParam('productreturnedid'))) {
+                                            if (!array_filter((array)$request->getParam('productreturnedid')) && !$values['productreturnedid']) {
                                                 $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
@@ -1675,7 +1702,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         switch ($service->typeid) {
             // zlecenie instalacyjne
             case $types->find('installation', 'acronym')->id:
-                $codeTypes = array('installation', 'installationcancel');
+                $codeTypes = array('installation', 'installationcancel', 'modeminterchange', 'decoderinterchange');
                 break;
             // zlecenie serwisowe
             case $types->find('service', 'acronym')->id:
@@ -1708,6 +1735,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
             }
         }
+        $options['demagecodes'] = array_merge($options['modeminterchangecodes'], $options['decoderinterchangecodes']);
         if (!empty($defaults['installationcodeid']))
             foreach ($defaults['installationcodeid'] as $i => $item) {
                 $defaults['installationcodeid-' . $i] = $item;
@@ -1764,6 +1792,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 foreach ($data['demaged'] as $key => $value) {
                     $data[$key] = $value;
                 }
+            if (!empty($data['demagecodeid']))
+                foreach ($data['demagecodeid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
             if ($form->isValid($data)) {
                 if (!$service->isAssigned()) {
                     //$form->setDescription('Nieprawidłowy status zlecenia');
@@ -1817,8 +1849,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
-                $productsReturned = array_unique((array)$request->getParam('productreturnedid'));
-                $demaged = array_unique((array)$request->getParam('demaged'));
+                $productsReturned = (array)$request->getParam('productreturnedid');
+                $demaged = (array)$request->getParam('demaged');
+                $demagecode = (array)$request->getParam('demagecodeid');
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -1834,11 +1867,14 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     }
                     
                     if ($return) {
-                        if (!$product->isNew() && $return->demaged != (int)$demaged['demaged-' . $ix]) {
+                        if (!$product->isNew()
+                                && $return->demaged != (int)$demaged['demaged-' . $ix]
+                                 && $return->demagecodeid != (int)$demagecode['demagecodeid-' . $ix]) {
                             $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => 'Nie można zmodyfikować potwierdzonego zwrotu'));
                             return;
                         }
-                        $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix]))->save();
+                        $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix],
+                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix]))->save();
                     } else {
                         if (!$product->isNew()) {
                             $form->setDescription('Nie można usunąć potwierdzonego zwrotu');
@@ -1863,6 +1899,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
+                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix],
                             'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')->id
                         );
                         $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
@@ -1941,6 +1978,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         }
                         $attributeId = $code->id;
                         foreach ((array) $this->_getParam($type . 'codeid') as $codeId) {
+                            if (empty($codeId)) {
+                                continue;
+                            }
                             switch ($type) {
                                 case 'solution':
                                     $code = $dictionary->find($type . 'code', 'acronym')->getChildren()->find($codeId);
@@ -1973,7 +2013,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 $form->getElement('productid')->setErrors(array('productid' => 'Wymagane kody produktów wydanych'));
                                                 return;
                                             }
-                                            if (!array_unique($productsReturned) && !array_unique($values['productreturnedid']) && !array_unique((array)$request->getParam('productreturnedid'))) {
+                                            if (!array_filter((array)$request->getParam('productreturnedid')) && !$values['productreturnedid']) {
                                                 $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
@@ -2216,6 +2256,51 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
                 Zend_Db_Table::getDefaultAdapter()->commit();
                 $this->view->success = 'Zgłoszenie usunięte';
+            }
+        }
+    }
+
+    public function closeMultiAction() {
+        $request = $this->getRequest();
+        $id = (array) $request->getParam('id');
+        $typeid = $request->getParam('typeid');
+        //$id = array_unique((array)$id);
+        $types = $this->_dictionaries->getTypeList('service');
+        switch ($this->_getParam('typeid')) {
+            case $types->find('installation', 'acronym')->id:
+                $this->_services->setRowClass('Application_Model_Services_Installation');
+                break;
+            case $types->find('service', 'acronym')->id:
+                $this->_services->setRowClass('Application_Model_Services_Service');
+                break;
+            default:
+                throw new Exception('Nieprawidłowy typ zlecenia');
+        }
+        $service = $this->_services->get($id);
+        if (!$service) {
+            throw new Exception('Nie znaleziono zgłoszenia');
+        }
+        $form = new Application_Form_Services_Delete(array('servicesCount' => $service->count()));
+        $form->setServices($service);
+        $status = $this->_dictionaries->getStatusList('service')->find('closed', 'acronym');
+        $this->view->form = $form;
+        $this->view->service = $service;
+        $this->view->types = $types;
+
+        if ($this->getRequest()->isPost()) {
+            if ($form->isValid($request->getPost())) {
+                $values = $form->getValues();
+                Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                foreach ($service as $i => $item) {
+                    if ($item->isClosed()) {
+                        $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Nieprawidłowy status zlecenia'));
+                        return;
+                    }
+                    $item->statusid = $status->id;
+                    $item->save();
+                }
+                Zend_Db_Table::getDefaultAdapter()->commit();
+                $this->view->success = 'Zgłoszenie zamknięte';
             }
         }
     }

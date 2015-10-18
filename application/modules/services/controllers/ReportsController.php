@@ -219,8 +219,21 @@ class Services_ReportsController extends Application_Controller_Abstract {
             throw new Exception("Brak typu zleceń");
         }
         $this->view->typeid = $typeid;
+        $types = $this->_dictionaries->getTypeList('service');
+        switch ($typeid) {
+            // zlecenie instalacyjne
+            case $types->find('installation', 'acronym')->id:
+                $codeTypes = array('installation', 'installationcancel');
+                break;
+            // zlecenie serwisowe
+            case $types->find('service', 'acronym')->id:
+                $codeTypes = array('error', 'solution', 'cancellation', 'modeminterchange', 'decoderinterchange');
+                break;
+            default:
+                throw new Exception('Nieprawidłowy typ zlecenia');
+        }
         if (!$type = $request->getParam('type')) {
-            throw new Exception("Brak typu raportu");
+        //    throw new Exception("Brak typu raportu");
         }
         $this->view->type = $type;
         $request->setParam('attributeacronym', "{$type}code");
@@ -262,17 +275,22 @@ class Services_ReportsController extends Application_Controller_Abstract {
         $dictionary = $this->_dictionaries->getDictionaryList('service');
         $statusDeleted = $this->_dictionaries->getStatusList('dictionaries', 'deleted')->current();
         $codes = array(); 
-        foreach ($dictionary->find("{$type}code", 'acronym')->getChildren() as $row) {
-            if ($row['statusid'] == $statusDeleted->id) {
+        foreach ($codeTypes as $codeType) {
+            if ($type && $type != $codeType) {
                 continue;
             }
-            if ($row['datefrom'] && strtotime($row['datefrom']) < time()) {
-                //continue;
+            foreach ($dictionary->find("{$codeType}code", 'acronym')->getChildren() as $row) {
+                if ($row['statusid'] == $statusDeleted->id) {
+                    continue;
+                }
+                if ($row['datefrom'] && strtotime($row['datefrom']) < time()) {
+                    //continue;
+                }
+                if ($row['datetill'] && strtotime($row['datetill']) < time()) {
+                    //continue;
+                }
+                $codes[] = $row;
             }
-            if ($row['datetill'] && strtotime($row['datetill']) < time()) {
-                //continue;
-            }
-            $codes[] = $row;
         }
         $this->view->codes = $codes;
         $this->view->types = $types;

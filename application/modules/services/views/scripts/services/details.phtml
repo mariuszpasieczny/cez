@@ -67,7 +67,7 @@
                         <?php if ($products): ?>
                             <?php foreach ($products as $ix => $product): ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
-                                <?php echo $product->name . ($product->demaged ? (' (uszkodzony)') : ''); ?>
+                                <?php echo $product->name . ($product->demaged ? (' (uszkodzony)') : '') . ($product->demagecodeid ? (' (' . $product->demagecodeacronym . ' - ' . $product->demagecodename . ')') : ''); ?>
                             <?php endforeach; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>
@@ -295,7 +295,7 @@
                         <?php if ($products): ?>
                             <?php foreach ($products as $ix => $product): ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
-                                <?php echo $product->name . ($product->demaged ? (' (uszkodzony)') : ''); ?>
+                                <?php echo $product->name . ($product->demaged ? (' (uszkodzony)') : '') . ($product->demagecodeid ? (' (' . $product->demagecodeacronym . ' - ' . $product->demagecodename . ')') : ''); ?>
                             <?php endforeach; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>

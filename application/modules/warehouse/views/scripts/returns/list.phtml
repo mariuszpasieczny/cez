@@ -51,6 +51,7 @@
         </th>
         <th>Nazwa</th>
         <th style="max-width: 55px !important;">Uszkodzony</th>
+        <th style="max-width: 55px !important;">Kod uszkodzenia</th>
         <th style="max-width: 125px !important;">Data</th>
         <th style="max-width: 75px !important;">Nr zlecenia</th>
         <th style="max-width: 75px !important;">Nr klienta</th>
@@ -87,6 +88,11 @@
                 <td><?php
                         if ($return->demaged != null): echo $return->demaged ? 'tak' : 'nie';
                         else: echo "nie";
+                        endif;
+                        ?></td>
+                <td><?php
+                        if ($return->demaged != null): echo $return->demagecodeacronym ? $return->demagecodeacronym : '&nbsp;';
+                        else: echo "&nbsp;";
                         endif;
                         ?></td>
                 <td><?php echo $this->escape($return->dateadd); ?></td>
@@ -143,7 +149,7 @@
             },
             {
                 'bSortable': false,
-                'aTargets': [10]
+                'aTargets': [11]
             }];
     });
 </script>

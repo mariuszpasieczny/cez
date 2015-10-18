@@ -28,6 +28,9 @@ body {
     #page {
         border-top: 1px solid #e7e7e7;
     }
+    .modal-dialog {
+        width: 650px;
+    }
 }
 
 .navbar-top-links {

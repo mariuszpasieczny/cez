@@ -45,7 +45,7 @@ class Warehouse_ReturnsController extends Application_Controller_Abstract {
             $this->_returns->setPageNumber($pageNumber);
         }
         $orderBy = $request->getParam('orderBy');
-        $columns = array('name', 'demaged', 'dateadd', 'service', 'clientnumber', 'client', 'technician', 'waybill', 'status');
+        $columns = array('name', 'demaged', 'demagecodeacronym', 'dateadd', 'service', 'clientnumber', 'client', 'technician', 'waybill', 'status');
         if ($orderBy) {
             $orderBy = explode(" ", $orderBy);
             $this->_returns->setOrderBy("{$columns[$orderBy[0] - 1]} {$orderBy[1]}");
@@ -61,7 +61,7 @@ class Warehouse_ReturnsController extends Application_Controller_Abstract {
         $request->setParam('orderBy', $orderBy);
         $request->setParam('count', $this->_returns->getItemCountPerPage());
         $this->view->filepath = '/../data/temp/';
-        $this->view->filename = 'Zestawienie_zwrotow.xlsx';
+        $this->view->filename = 'Zestawienie_zwrotow-' . date('YmdHis') . '.xlsx';
         
         $this->_returns->setLazyLoading(false);
         $this->view->returns = $this->_returns->getAll($request->getParams());

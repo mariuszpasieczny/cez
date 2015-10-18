@@ -93,31 +93,36 @@
                     if ($(".chosen-select[name^=productreturnedid]").size() == 1) {
                         return false;
                     }
-                    $($(e.currentTarget).parents('.form-group.inline').last().nextUntil('dd')).remove();
-                    $(e.currentTarget).next('.chosen-container').remove();
+                    $(e.currentTarget).parents('div.form-group').remove();
                 } else {
-                    div = $(e.currentTarget).parents('.form-group.inline').last().clone();
-                    div2 = $(e.currentTarget).parents('.form-group.inline').last().next().clone();
-                    div3 = $(e.currentTarget).parents('.form-group.inline').last().next().next().clone();
+                    div = $(e.currentTarget).parents('div.form-group').clone();
                     if (div.size()) {
-                        length = $('.chosen-select[name^="productreturnedid"]').length;
+                        tmp = $('.chosen-select[name^="productreturnedid"]').last().attr('name').match(/\d+/);
+                        length = parseInt(tmp[0]) + 1;
                         div.find('.chosen-container').remove();
                         div.find('select').show();
                         div.find('select').val([]);
-                        div.find('select').attr('name', 'productreturnedid[productreturnedid-' + length + '][]');
-                        div.find('select').attr('id', 'productreturnedid-productreturnedid-' + length + '');
-                        $(div).insertAfter($($(e.currentTarget).parents('.form-group.inline').last().next().next()));
-                        div2.find('input').attr('name', 'demaged[demaged-' + length + ']');
-                        div2.find('input').attr('id', 'demaged-demaged-' + length + '');
-                        $(div2).insertAfter($(div));
-                        div3.attr('id', 'demaged-' + length + '-label');
-                        div3.find('label').attr('for', 'demaged-demaged-' + length + '');
-                        $(div3).insertAfter($(div2));
+                        div.find('select[name^=productreturnedid]').attr('name', 'productreturnedid[productreturnedid-' + length + '][]');
+                        div.find('select[name^=productreturnedid]').attr('id', 'productreturnedid-productreturnedid-' + length + '');
+                        div.find('select[name^=demagecodeid]').attr('name', 'demagecodeid[demagecodeid-' + length + '][]');
+                        div.find('select[name^=demagecodeid]').attr('id', 'demagecodeid-demagecodeid-' + length + '');
+                        div.find('input').attr('name', 'demaged[demaged-' + length + ']');
+                        div.find('input').attr('id', 'demaged-demaged-' + length + '');
+                        div.attr('id', 'demaged-' + length + '-label');
+                        div.find('label').attr('for', 'demaged-demaged-' + length + '');
+                        $(div).insertAfter($(e.currentTarget).parents('div.form-group'));
                         $('.chosen-select[name^="productreturnedid[productreturnedid-' + length + ']"]').chosen({
                             search_contains: true,
                             allow_single_deselect: true,
                             multiple: false,
                             placeholder_text_multiple: 'dodaj',
+                            max_selected_options: 1
+                        });
+                        $('.chosen-select[name^="demagecodeid[demagecodeid-' + length + ']"]').chosen({
+                            search_contains: true,
+                            allow_single_deselect: true,
+                            multiple: false,
+                            placeholder_text_multiple: 'wybierz',
                             max_selected_options: 1
                         });
                         onProductReturnedChange();
@@ -269,7 +274,7 @@
         function setPerformed() {
             var performed = $('#performed').val();
 
-            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid', 'demaged', 'datefinished'], function(key, value) {
+            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'demagecodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid', 'demaged', 'datefinished'], function(key, value) {
                 switch (value) {
                     case 'cancellationcodeid':
                     case 'installationcancelcodeid':
@@ -290,14 +295,17 @@
                         if (performed == 1) {
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
-                            $($(".chosen-select[name^=productreturnedid]").parents('.form-group.inline').last().nextAll().filter('span')).show();
+                            $(".chosen-select[name^=productreturnedid]").parents('div.form-group').show();
+                            $('#return-label').show();
                         } else {
                             $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
                             $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
-                            $($(".chosen-select[name^=productreturnedid]").parents('.form-group.inline').last().nextAll().filter('span')).hide();
+                            $(".chosen-select[name^=productreturnedid]").parents('div.form-group').hide();
+                            $('#return-label').hide();
                         }
                         break;
                     case 'demaged':
+                    case 'demagecodeid':
                         if (performed == 1) {
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();

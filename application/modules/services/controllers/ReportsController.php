@@ -292,6 +292,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
                 $codes[] = $row;
             }
         }
+        $request->setParam('attributeacronym', $type ? ($type . 'code') : array_map(function ($n) {return($n . 'code');}, $codeTypes));
         $this->view->codes = $codes;
         $this->view->types = $types;
         $this->view->statuses = $this->_dictionaries->getStatusList('service');

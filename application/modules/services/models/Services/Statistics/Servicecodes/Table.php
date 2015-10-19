@@ -35,6 +35,7 @@ class Application_Model_Services_Statistics_Servicecodes_Table extends Applicati
     public function getSearchFields() {
         $fields = parent::getSearchFields();
         $fields[] = 'statusid';
+        $fields[] = 'attributeacronym';
         return $fields;
     }
     
@@ -59,6 +60,10 @@ class Application_Model_Services_Statistics_Servicecodes_Table extends Applicati
         }
         if (!empty($params['planneddatetill'])) {
             $this->setWhere($this->getAdapter()->quoteInto("planneddate <= ?", $params['planneddatetill']));
+        }
+        if (!empty($params['type'])) {
+            $this->setWhere("attributeacronym IN ('" . join("','", array_map(function ($n) {return($n . 'code');}, $params['type'])) . "')");
+            unset($params['type']);
         }
         return parent::getAll($params, $rows, $root);
     }

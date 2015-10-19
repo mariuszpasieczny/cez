@@ -140,6 +140,8 @@
                 $('#decoderinterchangecodeid-label').hide();
                 $('#modeminterchangecodeid-element').hide();
                 $('#modeminterchangecodeid-label').hide();
+                $('[name^=demagecodeid]').first().parents('span.form-group').show();
+                $('[name^=demagecodeid]').first().parents('span.form-group').prev().show();
                 e.preventDefault();
                 var errorCodes = [];
                 $.each($(this).find('option:selected'), function(key, value) {
@@ -159,6 +161,8 @@
                                     $('#modeminterchangecodeid-label').hide();
                                     $('#decoderinterchangecodeid-element').show();
                                     $('#decoderinterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -169,6 +173,8 @@
                                     $('#modeminterchangecodeid-label').hide();
                                     $('#decoderinterchangecodeid-element').show();
                                     $('#decoderinterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -181,6 +187,8 @@
                                     $('#decoderinterchangecodeid-label').hide();
                                     $('#modeminterchangecodeid-element').show();
                                     $('#modeminterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -191,6 +199,8 @@
                                     $('#decoderinterchangecodeid-label').hide();
                                     $('#modeminterchangecodeid-element').show();
                                     $('#modeminterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -201,6 +211,8 @@
                                     $('#decoderinterchangecodeid-label').hide();
                                     $('#modeminterchangecodeid-element').show();
                                     $('#modeminterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -220,6 +232,8 @@
                                     $('#decoderinterchangecodeid-label').show();
                                     $('#modeminterchangecodeid-element').show();
                                     $('#modeminterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -227,6 +241,30 @@
                 }
                 return false;
             });
+            function onModemCodeChange() {
+                if ($("#modeminterchangecodeid-element").is(':visible')) {
+                    if ($("#modeminterchangecodeid").val()) {
+                        $('[name^=demagecodeid]').first().val($("#modeminterchangecodeid").val()).trigger("chosen:updated");
+                    } else {
+                        $('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
+                    }
+                }
+            };
+            function onDecoderCodeChange() {
+                if ($("#decoderinterchangecodeid-element").is(':visible')) {
+                    if ($("#decoderinterchangecodeid").val()) {
+                        $('[name^=demagecodeid]').first().val($("#decoderinterchangecodeid").val()).trigger("chosen:updated");
+                    } else {
+                        $('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
+                    }
+                }
+            };
+            $("#solutioncodeid,#performed,#decoderinterchangecodeid,#modeminterchangecodeid").on("change", function(e) {
+                onModemCodeChange();
+                onDecoderCodeChange();
+            });
+            onModemCodeChange();
+            onDecoderCodeChange();
 
     <?php elseif ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
             /*$("#datefinished").datetimepicker({

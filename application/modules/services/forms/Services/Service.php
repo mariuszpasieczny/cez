@@ -624,6 +624,28 @@ class Application_Form_Services_Service extends Application_Form {
         $element->setAttribs(array('placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
         $this->addElement($element);
 
+        $element = $this->createElement('select', 'modeminterchangecodeid', array(
+                    'label' => 'Kod wymiany modemu:',
+                    //'required'   => true,
+                    //'filters'    => array('StringTrim'),
+                    //'validators' => array(
+                    //    array('lessThan', true, array('score')),
+                    //),
+                    'class' => 'form-control chosen-select',
+                ))->setAttribs(array('placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
+        $this->addElement($element);
+
+        $element = $this->createElement('select', 'decoderinterchangecodeid', array(
+                    'label' => 'Kod wymiany dekodera:',
+          //'required'   => true,
+          //'filters'    => array('StringTrim'),
+          //'validators' => array(
+          //    array('lessThan', true, array('score')),
+          //),
+          'class' => 'form-control chosen-select',
+                ))->setAttribs(array('placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
+        $this->addElement($element);
+
         $element = $this->createElement('select', 'productid', array(
                     'label' => 'Sprzęt wydany:',
                     //'required'   => true,
@@ -756,28 +778,6 @@ class Application_Form_Services_Service extends Application_Form {
                     //),
                     'class' => 'form-control chosen-select',
           )) */
-
-        $element = $this->createElement('select', 'modeminterchangecodeid', array(
-                    'label' => 'Kod wymiany modemu:',
-                    //'required'   => true,
-                    //'filters'    => array('StringTrim'),
-                    //'validators' => array(
-                    //    array('lessThan', true, array('score')),
-                    //),
-                    'class' => 'form-control chosen-select',
-                ))->setAttribs(array('placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
-        $this->addElement($element);
-
-        $element = $this->createElement('select', 'decoderinterchangecodeid', array(
-                    'label' => 'Kod wymiany dekodera:',
-          //'required'   => true,
-          //'filters'    => array('StringTrim'),
-          //'validators' => array(
-          //    array('lessThan', true, array('score')),
-          //),
-          'class' => 'form-control chosen-select',
-                ))->setAttribs(array('placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
-        $this->addElement($element);
 
         $element = $this->createElement('textarea', 'technicalcomments', array(
                     'label' => 'Komentarz techniczny:',

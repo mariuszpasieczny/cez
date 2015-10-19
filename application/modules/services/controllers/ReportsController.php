@@ -223,11 +223,16 @@ class Services_ReportsController extends Application_Controller_Abstract {
         switch ($typeid) {
             // zlecenie instalacyjne
             case $types->find('installation', 'acronym')->id:
-                $codeTypes = array('installation', 'installationcancel');
+                $codeTypes = array('Kodów instalacji' => 'installation', 'Kodów odwołania' => 'installationcancel');
                 break;
             // zlecenie serwisowe
             case $types->find('service', 'acronym')->id:
-                $codeTypes = array('error', 'solution', 'cancellation', 'modeminterchange', 'decoderinterchange');
+                $codeTypes = array('Kodów błędu' => 'error', 
+                    'Kodów rozwiązania' => 'solution', 
+                    'Kodów odwołania' => 'cancellation', 
+                    //'Kodów wymiany modemu' => 'modeminterchange', 
+                    //'Kodów wymiany dekodera' => 'decoderinterchange'
+                    );
                 break;
             default:
                 throw new Exception('Nieprawidłowy typ zlecenia');
@@ -236,7 +241,6 @@ class Services_ReportsController extends Application_Controller_Abstract {
         //    throw new Exception("Brak typu raportu");
         }
         $this->view->type = $type;
-        $request->setParam('attributeacronym', "{$type}code");
         if ($warehouseid) {
             $warehouse = $this->_warehouses->get($warehouseid);
             $this->view->warehouse = $warehouse;
@@ -274,9 +278,9 @@ class Services_ReportsController extends Application_Controller_Abstract {
         $this->view->technicians = $technicians;
         $dictionary = $this->_dictionaries->getDictionaryList('service');
         $statusDeleted = $this->_dictionaries->getStatusList('dictionaries', 'deleted')->current();
-        $codes = array(); 
+        $codes = array();
         foreach ($codeTypes as $codeType) {
-            if ($type && $type != $codeType) {
+            if ($type && !in_array($codeType, (array) $type)) {
                 continue;
             }
             foreach ($dictionary->find("{$codeType}code", 'acronym')->getChildren() as $row) {
@@ -292,9 +296,9 @@ class Services_ReportsController extends Application_Controller_Abstract {
                 $codes[] = $row;
             }
         }
-        $request->setParam('attributeacronym', $type ? ($type . 'code') : array_map(function ($n) {return($n . 'code');}, $codeTypes));
         $this->view->codes = $codes;
         $this->view->types = $types;
+        $this->view->codeTypes = $codeTypes;
         $this->view->statuses = $this->_dictionaries->getStatusList('service');
         $params = array_filter(array_intersect_key($request->getParams(), array_flip(array('technicianid', 'codeacronym', 'planneddatefrom', 'planneddatetill'))));
         if (empty($params)) {

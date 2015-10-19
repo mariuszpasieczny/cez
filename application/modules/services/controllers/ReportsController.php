@@ -15,6 +15,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
         $this->_servicereports = new Application_Model_Services_Reports_Table();
         $this->_servicereports->setItemCountPerPage($this->_hasParam('count') ? $this->_getParam('count') : Application_Db_Table::ITEMS_PER_PAGE);
         $this->_servicereports->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : 'id DESC');
+        $this->_users = new Application_Model_Users_Table();
         $this->_services = new Application_Model_Services_Table();
         $this->_services->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : array('planneddate', new Zend_Db_Expr('clientstreet COLLATE utf8_polish_ci'), 'clientstreetno', 'clientapartment'));
 
@@ -25,6 +26,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
                 ->addActionContext('list', array('html', 'json'))
                 ->addActionContext('generate', array('html', 'xls'))
                 ->addActionContext('send', 'html')
+                ->addActionContext('codes-list', array('html', 'xls'))
                 ->setSuffix('html', '')
                 ->initContext();
 
@@ -205,6 +207,84 @@ class Services_ReportsController extends Application_Controller_Abstract {
                 $this->view->success = 'Wysłano raport';
             }
         }
+    }
+
+    public function codesListAction() {
+        // action body
+
+        $request = $this->getRequest();
+        $warehouseid = $request->getParam('warehouseid');
+        if (!$typeid = $request->getParam('typeid')) {
+            throw new Exception("Brak typu zleceń");
+        }
+        $this->view->typeid = $typeid;
+        if (!$type = $request->getParam('type')) {
+            throw new Exception("Brak typu raportu");
+        }
+        $this->view->type = $type;
+        $request->setParam('attributeacronym', "{$type}code");
+        if ($warehouseid) {
+            $warehouse = $this->_warehouses->get($warehouseid);
+            $this->view->warehouse = $warehouse;
+        }
+        $pageNumber = $request->getParam('page');
+        if ($pageNumber) {
+            $this->_servicereports->setPageNumber($pageNumber);
+        }
+        $orderBy = $request->getParam('orderBy');
+        /*$columns = array('number', 'servicetype', 'client', 'technician', 'planneddate', 'status');
+        if ($orderBy) {
+            $orderBy = explode(" ", $orderBy);
+            $this->_servicereports->setOrderBy("{$columns[$orderBy[0]]} {$orderBy[1]}");
+        }
+        $orderBy = explode(" ", $this->_servicereports->getOrderBy()); //var_dump($orderBy);
+        foreach ($columns as $ix => $columnName) {
+            if ($columnName != $orderBy[0]) {
+                continue;
+            }
+            $orderBy = "$ix {$orderBy[1]}";
+        }*/
+        $this->view->request['orderBy'] = $orderBy;
+        //$this->_servicereports->setLazyLoading(false);$this->view->filepath = '/../data/temp/';
+        $types = $this->_dictionaries->getTypeList('service');
+        $statuses = $this->_dictionaries->getStatusList('reports');
+        //$this->view->paginator = $model->getPaginator();
+        $status = $this->_dictionaries->getStatusList('users')->find('active', 'acronym');
+        $params['statusid'] = $status->id;
+        $params['role'] = 'technician';
+        $this->_users->setOrderBy(array('lastname','firstname'));
+        $technicians = $this->_users->getAll($params);
+        $this->view->technicians = $technicians;
+        $dictionary = $this->_dictionaries->getDictionaryList('service');
+        $this->view->codes = $dictionary->find("{$type}code", 'acronym')->getChildren();
+        $this->view->types = $types;
+        $params = array_filter(array_intersect_key($request->getParams(), array_flip(array('technicianid', 'codeacronym', 'planneddatefrom', 'planneddatetill'))));
+        if (empty($params)) {
+            $planneddatefrom = date('Y-m-01');
+            $planneddatetill = date('Y-m-d');
+            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("planneddatefrom >= ?", $planneddatefrom));
+            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("planneddatetill <= ?", $planneddatetill));
+            $request->setParam('planneddatefrom', $planneddatefrom);
+            $request->setParam('planneddatetill', $planneddatetill);
+        }
+        $this->view->request = $request->getParams();
+        $this->view->filepath = '/../data/temp/';
+        $this->view->filename = 'Raport_kodow_instalacyjnych-' . date('YmdHis') . '.xls';
+        $this->view->rowNo = 1;
+        
+        if (!$this->getRequest()->isPost()) {
+            return;
+        }
+        
+        $model = new Application_Model_Services_Statistics_Servicecodes_Table();
+        $model->setItemCountPerPage(null);
+        $model->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : 'technicianid');
+
+        $reports = array();
+        foreach ($model->getAll($request->getParams()) as $stats) {
+            $reports[$stats['technicianid']][$stats['codeacronym']] = $stats['quantity'];
+        }
+        $this->view->reports = $reports;
     }
 
 }

@@ -16,9 +16,9 @@ class ErrorController extends Application_Controller_Abstract
         /* Initialize action controller here */
         parent::init();
         
-        $ajaxContext = $this->_helper->getHelper('AjaxContext');
-        $ajaxContext->addActionContext('error', 'html')
-            ->addActionContext('noauth', 'html')
+        $ajaxContext = $this->_helper->getHelper('xlsContext');
+        $ajaxContext->addActionContext('error', array('html','xls'))
+            ->addActionContext('noauth', array('html','xls'))
             ->setSuffix('html', '')
             ->initContext();
     }

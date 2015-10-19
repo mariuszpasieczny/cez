@@ -1,30 +1,41 @@
-alter table products drop index serial;
-insert into dictionaries (parentid,acronym,name) (select parentid,'new','Nowe' from dictionaries where acronym = 'instock');
-ALTER TABLE products ADD pairedcard varchar(64);
 CREATE 
-VIEW `productsview` AS
+    OR REPLACE
+VIEW `servicecodesview` AS
     SELECT 
-        `p`.`id` AS `id`,
-        `p`.`warehouseid` AS `warehouseid`,
-        `p`.`acronym` AS `acronym`,
-        `p`.`name` AS `name`,
-        `p`.`pairedcard` AS `pairedcard`,
-        `p`.`description` AS `description`,
-        `p`.`unitid` AS `unitid`,
-        `p`.`quantity` AS `quantity`,
-        `p`.`qtyreserved` AS `qtyreserved`,
-        `p`.`qtyreleased` AS `qtyreleased`,
-        `p`.`qtyreturned` AS `qtyreturned`,
-        `p`.`qtyavailable` AS `qtyavailable`,
-        `p`.`serial` AS `serial`,
-        `p`.`dateadd` AS `dateadd`,
-        `p`.`statusid` AS `statusid`,
-        `w`.`name` AS `warehouse`,
-        `d`.`name` AS `unit`,
-        `ds`.`name` AS `status`,
-        `ds`.`acronym` AS `statusacronym`
+        `sc`.`id` AS `id`,
+        `sc`.`serviceid` AS `serviceid`,
+        `s`.`technicianid` AS `technicianid`,
+        `s`.`technician` AS `technician`,
+        `s`.`statusacronym` AS `statusacronym`,
+        `s`.`status` AS `status`,
+        `s`.`datefinished` AS `datefinished`,
+        `s`.`planneddate` AS `planneddate`,
+        `sc`.`attributeid` AS `attributeid`,
+        `sc`.`codeid` AS `codeid`,
+        `a`.`acronym` AS `attributeacronym`,
+        `a`.`name` AS `attributename`,
+        `d`.`acronym` AS `codeacronym`,
+        `d`.`name` AS `codename`,
+        `d`.`errorcodeacronym` AS `errorcodeacronym`,
+        `d`.`errorcodename` AS `errorcodename`
     FROM
-        (((`products` `p`
-        LEFT JOIN `warehouses` `w` ON ((`p`.`warehouseid` = `w`.`id`)))
-        LEFT JOIN `dictionaries` `d` ON ((`p`.`unitid` = `d`.`id`)))
-        LEFT JOIN `dictionaries` `ds` ON ((`p`.`statusid` = `ds`.`id`)))
+        (((`servicecodes` `sc`
+        JOIN `servicesview` `s` ON ((`s`.`id` = `sc`.`serviceid`)))
+        LEFT JOIN `dictionariesview` `d` ON ((`sc`.`codeid` = `d`.`id`)))
+        LEFT JOIN `dictionaries` `a` ON ((`sc`.`attributeid` = `a`.`id`)));
+CREATE 
+    OR REPLACE
+VIEW `servicecodesstatistics` AS
+    SELECT 
+        `servicecodesview`.`technicianid` AS `technicianid`,
+        IF(ISNULL(`servicecodesview`.`technicianid`),
+            'nieprzypisane',
+            `servicecodesview`.`technician`) AS `technician`,
+        `servicecodesview`.`datefinished` AS `datefinished`,
+        `servicecodesview`.`planneddate` AS `planneddate`,
+        `servicecodesview`.`attributeacronym` AS `attributeacronym`,
+        `servicecodesview`.`codeacronym` AS `codeacronym`,
+        COUNT(`servicecodesview`.`id`) AS `quantity`
+    FROM
+        `servicecodesview`
+    GROUP BY `servicecodesview`.`technicianid` , `servicecodesview`.`technician` , `servicecodesview`.`attributeacronym` , `servicecodesview`.`codeacronym`;

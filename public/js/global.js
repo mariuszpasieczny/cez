@@ -144,9 +144,11 @@ $(function() {
             enctype: 'multipart/form-data',
             data: $(this).parents('form').serialize(true),
             success: function(data, status, xhr) {
-                var header = xhr.getResponseHeader('Content-Disposition');
-                var file = header.substr(header.indexOf('filename=') + 'filename='.length, header.length);
-                document.location = '/files/download/file/' + Base64.encode(file);
+                var header = xhr.getResponseHeader('Content-Disposition');console.log(header);
+                if (header) {
+                    var file = header.substr(header.indexOf('filename=') + 'filename='.length, header.length);
+                    document.location = '/files/download/file/' + Base64.encode(file);
+                }
                 //relHistory.pop();
                 //if (relHistory.length >= 1) {
                 //    var url = relHistory[relHistory.length - 1];

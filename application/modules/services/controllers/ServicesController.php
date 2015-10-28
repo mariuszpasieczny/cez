@@ -512,8 +512,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $service = $this->_services->createRow($values);
                     $service->id = null;
                 }
-                $productsReturned = array_unique((array)$request->getParam('productreturnedid'));
-                $demaged = array_unique((array)$request->getParam('demaged'));
+                $productsReturned = ((array)$request->getParam('productreturnedid'));
+                $demaged = ((array)$request->getParam('demaged'));
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -664,7 +664,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 $form->getElement('productid')->setErrors(array('productid' => 'Wymagane kody produktów wydanych'));
                                                 return;
                                             }
-                                            if (!array_unique($productsReturned) && !array_unique($values['productreturnedid']) && !array_unique((array)$request->getParam('productreturnedid'))) {
+                                            if (!($productsReturned) && !($values['productreturnedid']) && !((array)$request->getParam('productreturnedid'))) {
                                                 $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
@@ -1375,8 +1375,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
-                $productsReturned = array_unique((array)$request->getParam('productreturnedid'));
-                $demaged = array_unique((array)$request->getParam('demaged'));
+                $productsReturned = ((array)$request->getParam('productreturnedid'));
+                $demaged = ((array)$request->getParam('demaged'));
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -1531,7 +1531,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 $form->getElement('productid')->setErrors(array('productid' => 'Wymagane kody produktów wydanych'));
                                                 return;
                                             }
-                                            if (!array_unique($productsReturned) && !array_unique($values['productreturnedid']) && !array_unique((array)$request->getParam('productreturnedid'))) {
+                                            if (!($productsReturned) && !($values['productreturnedid']) && !((array)$request->getParam('productreturnedid'))) {
                                                 $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }
@@ -1817,8 +1817,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } else {
                     $service->performed = $values['performed'];
                 }
-                $productsReturned = array_unique((array)$request->getParam('productreturnedid'));
-                $demaged = array_unique((array)$request->getParam('demaged'));
+                $productsReturned = ((array)$request->getParam('productreturnedid'));
+                $demaged = ((array)$request->getParam('demaged'));
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -1973,7 +1973,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                                 $form->getElement('productid')->setErrors(array('productid' => 'Wymagane kody produktów wydanych'));
                                                 return;
                                             }
-                                            if (!array_unique($productsReturned) && !array_unique($values['productreturnedid']) && !array_unique((array)$request->getParam('productreturnedid'))) {
+                                            if (!($productsReturned) && !($values['productreturnedid']) && !((array)$request->getParam('productreturnedid'))) {
                                                 $form->getElement('demaged-0')->setErrors(array('demaged-0' => 'Wymagane kody produktów odebranych'));
                                                 return;
                                             }

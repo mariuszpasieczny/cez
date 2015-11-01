@@ -10,21 +10,25 @@ $objPHPExcel->setActiveSheetIndex(0);
 
 $rowNo = 1;
 $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, 'Magazyn');
-$objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, 'Technik');
-$objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, 'Nazwa');
-$objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, 'Numer seryjny');
-$objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, 'Ilość wydana');
-$objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, 'Data wydania');
-$objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, 'Klient');
+$objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, 'Data wydania');
+$objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, 'Technik');
+$objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, 'Nazwa');
+$objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, 'Numer seryjny');
+$objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, 'Ilość');
+$objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, 'ID Klienta');
+$objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, 'Klient');
+$objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowNo, 'Status');
 $rowNo = 2;
 foreach ($vars['products'] as $product) {//var_dump($product);exit;
     $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, $product->warehouse);
-    $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, $product->technician);
-    $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, $product->product);
-    $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, $product->serial);
-    $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, $product->quantity);
-    $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, $product->releasedate);
-    $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, $product->client);
+    $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, $product->releasedate);
+    $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, $product->technician);
+    $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, $product->product);
+    $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, $product->serial);
+    $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, $product->quantity);
+    $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, $product->clientnumber);
+    $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, $product->client);
+    $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowNo, $product->status);
     $rowNo++;
 }
 

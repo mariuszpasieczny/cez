@@ -96,13 +96,13 @@
                         endif;
                         ?></td>
                 <td><?php echo $this->escape($return->dateadd); ?></td>
-                <td><?php echo $this->escape($return->service); ?></td>
-                <td><?php echo $this->escape($return->clientnumber); ?></td>
-                <td><?php echo $this->escape($return->client); ?></td>
+                <td><?php echo $return->service ? $this->escape($return->service) : "&nbsp;"; ?></td>
+                <td><?php echo $return->clientnumber ? $this->escape($return->clientnumber) : "&nbsp;"; ?></td>
+                <td><?php echo $return->client ? $this->escape($return->client) : "&nbsp;"; ?></td>
                 <?php if ($this->auth->role != 'technician'): ?>
                     <td>
-                        <?php echo $this->escape($return->getService()->getTechnician()); ?>
-                        <?php if ($technician = $return->getService()->getTechnician()): ?>
+                        <?php echo $this->escape($return->technician); ?>
+                        <?php if ($technician = $return->getTechnician()): ?>
                             <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
                         <?php
                         else: echo "&nbsp;";
@@ -110,7 +110,7 @@
                         ?>
                     </td>
                 <?php endif; ?>
-                <td><?php echo $this->escape($return->waybill); ?></td>
+                <td><?php echo $return->waybill ? $this->escape($return->waybill) : "&nbsp;"; ?></td>
                 <td><?php echo $this->escape($return->status); ?></td>
                 <td>
                     <?php if ($this->auth && $return->isNew() && $this->HasAccess($this->auth->role, 'returns', 'accept')): ?>

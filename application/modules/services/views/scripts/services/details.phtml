@@ -47,9 +47,27 @@
                     <p>
                         <?php $products = $this->service->getProducts(); ?>
                         <?php if ($products->count()): ?>
-                            <?php foreach ($products as $ix => $product): ?>
+                            <?php
+                            foreach ($products as $ix => $product):
+                                if ($info = $product->getProduct()) {
+                                    $desc = $info->name . ' (';
+                                    if ($serial = $info->serial) {
+                                        $desc .= $info->serial . ', ';
+                                    }
+                                    $desc .= $info->quantity . ' ' . $info->getUnit()->acronym . ')';
+                                } else {
+                                    $desc = $product->name . ' (';
+                                    if ($serial = $product->serial) {
+                                        $desc .= $product->serial . ', ';
+                                    }
+                                    if ($product->quantity) {
+                                        $desc .= $product->quantity;
+                                    }
+                                    $desc .= ')';
+                                }
+                                ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
-                                <?php echo $product->name . ' (' . $product->serial . ')'; ?>
+                                <?php echo $desc; ?>
                             <?php endforeach; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>
@@ -69,6 +87,7 @@
                                 <?php echo $ix ? '<br /> ' : ''; ?>
                                 <?php echo $product->name . ($product->demaged ? (' (uszkodzony)') : '') . ($product->demagecodeid ? (' (' . $product->demagecodeacronym . ' - ' . $product->demagecodename . ')') : ''); ?>
                             <?php endforeach; ?>
+                        <?php elseif ($products = $this->service->productsreturned): echo $products; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>
                     </p>
@@ -275,9 +294,27 @@
                     <p>
                         <?php $products = $this->service->getProducts(); ?>
                         <?php if ($products->count()): ?>
-                            <?php foreach ($products as $ix => $product): ?>
+                            <?php
+                            foreach ($products as $ix => $product):
+                                if ($info = $product->getProduct()) {
+                                    $desc = $info->name . ' (';
+                                    if ($serial = $info->serial) {
+                                        $desc .= $info->serial . ', ';
+                                    }
+                                    $desc .= $info->quantity . ' ' . $info->getUnit()->acronym . ')';
+                                } else {
+                                    $desc = $product->name . ' (';
+                                    if ($serial = $product->serial) {
+                                        $desc .= $product->serial . ', ';
+                                    }
+                                    if ($product->quantity) {
+                                        $desc .= $product->quantity;
+                                    }
+                                    $desc .= ')';
+                                }
+                                ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
-                                <?php echo $product->name . ' (' . $product->serial . ')'; ?>
+                                <?php echo $desc; ?>
                             <?php endforeach; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>
@@ -292,11 +329,12 @@
                 <div class="col-xs-7 content no-top-border">
                     <p>
                         <?php $products = $this->service->getReturns(); ?>
-                        <?php if ($products): ?>
+                        <?php if ($products->count()): ?>
                             <?php foreach ($products as $ix => $product): ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
                                 <?php echo $product->name . ($product->demaged ? (' (uszkodzony)') : '') . ($product->demagecodeid ? (' (' . $product->demagecodeacronym . ' - ' . $product->demagecodename . ')') : ''); ?>
                             <?php endforeach; ?>
+                        <?php elseif ($products = $this->service->productsreturned): echo $products; ?>
                         <?php else: echo 'brak'; ?>
                         <?php endif; ?>
                     </p>

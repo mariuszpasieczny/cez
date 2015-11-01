@@ -18,7 +18,7 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
         $this->_orders->setItemCountPerPage(Application_Db_Table::ITEMS_PER_PAGE);
         $this->_orderlines = new Application_Model_Orders_Lines_Table();
         $this->_orderlines->setItemCountPerPage($this->_hasParam('count') ? $this->_getParam('count') : Application_Db_Table::ITEMS_PER_PAGE);
-        $this->_orderlines->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : 'releasedate DESC');
+        $this->_orderlines->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : array('dateadd DESC','releasedate DESC'));
         $this->_users = new Application_Model_Users_Table();
         parent::init();
 
@@ -93,19 +93,27 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
         if ($pageNumber) {
             $this->_orderlines->setPageNumber($pageNumber);
         }
-        $columns = array('warehouse', 'dateadd', 'technician', 'product', 'serial', 'quantity', 'releasedate', 'clientnumber', 'client');
+        $columns = array('warehouse', 'dateadd', 'technician', 'product', 'serial', 'quantity', 'clientnumber', 'client', 'status');
         $orderBy = $request->getParam('orderBy');
         if ($orderBy) {
-            $orderBy = explode(" ", $orderBy);
-            $this->_orderlines->setOrderBy("{$columns[$orderBy[0] - 1]} {$orderBy[1]}");
+            list($orderBy, $orderDirection) = explode(" ", $orderBy);
+            $this->_orderlines->setOrderBy("{$columns[$orderBy - 1]} $orderDirection");
         }
-        $orderBy = explode(" ", $this->_orderlines->getOrderBy());
-        foreach ($columns as $ix => $columnName) {
-            if ($columnName != $orderBy[0]) {
-                continue;
+        if (is_object($this->_orderlines->getOrderBy())) {
+            $orderBy = 'dateadd';
+            $orderDirection = strpos((string)$this->_orderlines->getOrderBy(), 'desc') !== false ? 'desc' : 'asc';
+        } else {
+            list($orderBy, $orderDirection) = @explode(" ", $this->_orderlines->getOrderBy());//var_dump($this->_orderlines->getOrderBy());exit;
+        }
+        if ($orderBy) {
+            foreach ($columns as $ix => $columnName) {
+                if ($columnName != $orderBy) {
+                    continue;
+                }
+                $ix++;
+                $orderBy = "$ix {$orderDirection}";
             }
-            $ix++;
-            $orderBy = "$ix {$orderBy[1]}";
+            $request->setParam('orderBy', $orderBy);
         }
         $request->setParam('orderBy', $orderBy);
         $request->setParam('count', $this->_orderlines->getItemCountPerPage());
@@ -113,13 +121,14 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
         if ($request->getParam('released') || 1) {
             $statusInvoiced = $this->_dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
             $statusReleased = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
-            $this->_orderlines->setWhere($this->_orderlines->getAdapter()->quoteInto('statusid IN (?)', array($statusInvoiced->id, $statusReleased->id)));
+            $statusReturned = $this->_dictionaries->getStatusList('orders')->find('returned', 'acronym');
+            $this->_orderlines->setWhere($this->_orderlines->getAdapter()->quoteInto('statusid IN (?)', array($statusInvoiced->id, $statusReleased->id, $statusReturned->id)));
         }
         if ($this->_auth->getIdentity()->role == 'technician') {
             $this->_orderlines->setWhere($this->_orderlines->getAdapter()->quoteInto("technicianid = {$this->_auth->getIdentity()->id}", null));
         }
         $this->view->filepath = '/../data/temp/';
-        $this->view->filename = 'Zestawienie_wydan.xlsx';
+        $this->view->filename = 'Zestawienie_wydan-' . date('YmdHis') . '.xlsx';
         $this->view->products = $this->_orderlines->getAll($request->getParams());
         $this->view->paginator = $this->_orderlines->getPaginator();
         $this->view->warehouses = $this->_warehouses->getAll();
@@ -130,6 +139,7 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
         $technicians = $this->_users->getAll($params);
         $this->view->technicians = $technicians;
         $this->view->request = $request->getParams();
+        $this->view->statuses = $this->_dictionaries->getStatusList('orders');
     }
 
     public function productAddReleaseAction() {
@@ -177,6 +187,7 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                     $line->setFromArray(array('orderid' => $order->id,
                         'productid' => $item->id,
                         'quantity' => $values['quantity-' . $i],
+                        'qtyavailable' => $values['quantity-' . $i],
                         'statusid' => $status->id,
                         'dateadd' => date('Y-m-d H:i:s')));
                     $line->releasedate = date('Y-m-d H:i:s');
@@ -193,8 +204,8 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                     }
                     if ($item->qtyavailable == 0) {
                         $status = $this->_dictionaries->getStatusList('products')->find('reserved', 'acronym');
+                        $item->statusid = $status->id;
                     }
-                    $item->statusid = $status->id;
                     $item->save();
                     $status = $this->_dictionaries->getStatusList('orders')->find('released', 'acronym');
                     $line->statusid = $status->id;
@@ -204,7 +215,7 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                     if ($item->qtyavailable == 0) {
                         $status = $this->_dictionaries->getStatusList('products')->find('released', 'acronym');
                         $item->statusid = $status->id;
-                    }
+                    }//var_dump($line->toArray(),$item->toArray());exit;
                     $item->save();
                     $counter++;
                 }
@@ -267,14 +278,14 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                         $form->getElement('quantity-' . $i)->setErrors(array('quantity-' . $i => 'Zbyt duża wartość w polu ilość'));
                         return;
                     }
-                    if ($item->qtyavailable == 0) {
-                        $status = $this->_dictionaries->getStatusList('products')->find('reserved', 'acronym');
-                        $item->statusid = $status->id;
-                    }
                     $item->qtyreserved += $values['quantity-' . $i];
                     if ($item->qtyreserved > $item->quantity) {
                         $form->getElement('quantity-' . $i)->setErrors(array('quantity-' . $i => 'Zbyt duża wartość w polu ilość'));
                         return;
+                    }
+                    if ($item->qtyavailable == 0) {
+                        $status = $this->_dictionaries->getStatusList('products')->find('reserved', 'acronym');
+                        $item->statusid = $status->id;
                     }
                     $item->save();
                     $counter++;
@@ -330,6 +341,7 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                     $line->statusid = $status->id;
                     $line->technicianid = $values['technicianid'];
                     $line->releasedate = date('Y-m-d H:i:s');
+                    $line->qtyavailable += $line->quantity;
                     $line->save();
                     $product = $line->getProduct();
                     $product->qtyreserved -= $line->quantity;
@@ -337,13 +349,14 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                         throw new Exception('Nieprawidłowa ilość do wydania');
                     }
                     $product->qtyreleased += $line->quantity;
-                    if ($product->qtyreleased > $product->quantity) {
-                        throw new Exception('Nieprawidłowa ilość do wydania');
+                    if ($product->qtyreleased > $product->quantity || $product->qtyreturned > $product->quantity) {
+                        $form->setDescription('Nieprawidłowa ilość do wydania');
+                        return;
                     }
                     if ($product->qtyavailable == 0) {
                         $status = $this->_dictionaries->getStatusList('products')->find('released', 'acronym');
                         $product->statusid = $status->id;
-                    }
+                    }//var_dump($line->toArray(),$product->toArray());exit;
                     $product->save();
                     $counter++;
                 }
@@ -364,8 +377,33 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
         }
         $form = new Application_Form_Orders_ProductReturn(array('productsCount' => $lines->count()));
         $form->setProducts($lines);
+        $codeTypes = array('modeminterchange', 'decoderinterchange');
+        $dictionary = $this->_dictionaries->getDictionaryList('service');
+        $statusDeleted = $this->_dictionaries->getStatusList('dictionaries')->find('deleted', 'acronym');
+        foreach ($codeTypes as $type) {
+            if ($code = $dictionary->find($type . 'code', 'acronym')) {
+                $codes = array();
+                foreach ($code->getChildren()->toArray() as $row) {
+                    if ($row['statusid'] == $statusDeleted->id) {
+                        continue;
+                    }
+                    if ($row['datefrom'] && strtotime($row['datefrom']) < time()) {
+                        continue;
+                    }
+                    if ($row['datetill'] && strtotime($row['datetill']) < time()) {
+                        continue;
+                    }
+                    $codes[] = $row;
+                }
+                $options[$type . 'codes'] = $codes;
+            }
+        }
+        $options['demagecodes'] = array_merge($options['modeminterchangecodes'], $options['decoderinterchangecodes']);
+        $form->setDemagecodes($options['demagecodes']);
         $this->view->form = $form;
         $this->view->product = $lines;
+        
+        $units = $this->_dictionaries->getDictionaryList('warehouse', 'unit');
 
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($request->getPost())) {
@@ -373,6 +411,15 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                     $form->setDescription('Nie zaznaczono produktów do wydania');
                     return;
                 }
+                $data = $request->getPost();
+                if (!empty($data['demaged']))
+                    foreach ($data['demaged'] as $key => $value) {
+                        $data[$key] = $value;
+                    }
+                if (!empty($data['demagecodeid']))
+                    foreach ($data['demagecodeid'] as $key => $value) {
+                        $data[$key] = $value;
+                    }
                 $values = $form->getValues();
                 Zend_Db_Table::getDefaultAdapter()->beginTransaction();
                 $this->_orderlines->setLazyLoading(true);
@@ -381,27 +428,69 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                         $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Produkt został wykorzystany w zleceniu'));
                         return;
                     }
-                    $line = $this->_orderlines->get($line->id);
-                    $status = $this->_dictionaries->getStatusList('orders')->find('deleted', 'acronym');
-                    $line->statusid = $status->id;
-                    $line->technicianid = null;
-                    $line->save();
                     $product = $line->getProduct();
-                    $product->qtyavailable += $line->quantity;
-                    if ($product->qtyavailable > $product->quantity) {
-                        $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Wystąpił problem ze zwrotem'));
-                        return;
+                    if ($data['demaged']['demaged-' . $i] || $data['demagecodeid']['demagecodeid-' . $i]) {
+                        $table = new Application_Model_Services_Returns_Table();
+                        if (!$data['demagecodeid']['demagecodeid-' . $i]) {
+                            $form->getElement('demagecodeid-' . $i)->setErrors(array('demagecodeid-' . $i => 'Wymagane podanie kodu uszkodzenia'));
+                            return;
+                        }
+                        if (!$data['demaged']['demaged-' . $i]) {
+                            $data['demagecodeid']['demagecodeid-' . $i] = 1;
+                        }
+                        $params = array('name' => $product->name, 
+                            'quantity' => $line->qtyavailable, 
+                            'productid' => $line->id,
+                            'unitid' => $units->find('szt', 'acronym') -> id,
+                            'demaged' => (int)$data['demaged']['demaged-' . $i],
+                            'demagecodeid' => (int)$data['demagecodeid']['demagecodeid-' . $i],
+                            'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')->id
+                            );
+                        $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());exit;
+                        try {
+                            $serviceProduct->save();
+                        } catch (Exception $e) {
+                            $form->getElement('demaged-' . $i)->setErrors(array('demaged-' . $i => $e->getMessage()));
+                            return;
+                        }
+                    } else {
+                        $product->qtyreleased -= $line->qtyavailable;
+                        if ($product->qtyreleased < 0) {
+                            $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Wystąpił problem ze zwrotem'));
+                            return;
+                        }
+                        $product->qtyavailable += $line->qtyavailable;
+                        if ($product->qtyavailable > $product->quantity) {
+                            $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Wystąpił problem ze zwrotem'));
+                            return;
+                        }
+                        if ($product->qtyavailable > 0) {
+                            $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
+                            $product->statusid = $status->id;
+                        }
                     }
-                    $product->qtyreleased -= $line->quantity;
-                    if ($product->qtyreleased < 0) {
-                        $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Wystąpił problem ze zwrotem'));
-                        return;
-                    }
-                    if ($product->qtyavailable == $product->quantity) {
-                        $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
-                        $product->statusid = $status->id;
-                    }//var_dump($status->toArray(),$product->toArray());exit;
                     $product->save();
+                    $line = $this->_orderlines->get($line->id);
+                    $line->qtyreturned += $line->qtyavailable;
+                    if ($line->qtyreturned > $line->quantity) {
+                        $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Wystąpił problem ze zwrotem'));
+                        return;
+                    }
+                    $line->qtyavailable -= $line->qtyavailable;
+                    if ($line->qtyavailable < 0) {
+                        $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Wystąpił problem ze zwrotem'));
+                        return;
+                    }
+                    if ($line->qtyavailable == 0 && $line->qtyreturned == 0) {
+                        $status = $this->_dictionaries->getStatusList('orders')->find('deleted', 'acronym');
+                        $line->statusid = $status->id;
+                    }
+                    if ($line->qtyreturned == $line->quantity) {
+                        $status = $this->_dictionaries->getStatusList('orders')->find('returned', 'acronym');
+                        $line->statusid = $status->id;
+                    }
+                    //var_dump($line->toArray(),$product->toArray(),$serviceProduct->toArray());exit;
+                    $line->save();
                 }
                 Zend_Db_Table::getDefaultAdapter()->commit();
                 $this->view->success = 'Produkty zostały zwrócone';

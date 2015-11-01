@@ -468,14 +468,18 @@ table.dataTable thead .sorting:after {
     z-index: 0;
 }
 .zend_form.overflow, #basket {
-    height: 550px;
-    overflow: auto;
+    //max-height: 750px;
+    //overflow: auto;
+    //min-height: 350px;
 }
 .form-group.inline {
     display: inline;
 }
+.form-group {
+    margin-bottom: 1px;
+}
 .chosen-choices li.search-choice {
-    max-width: 95%
+    max-width: 95%;
 }
 .chosen-choices .search-field {
     width: 1px;

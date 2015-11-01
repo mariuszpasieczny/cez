@@ -10,12 +10,17 @@ class Application_Model_Services_Products_Table extends Application_Db_Table
 {
     protected $_name = 'serviceproducts';// table name
     protected $_primary = 'id'; // primary column name
-    protected $_rowClass = 'Application_Db_Table_Row';
+    protected $_rowClass = 'Application_Model_Services_Products_Row';
     
     protected $_referenceMap = array(
         'Service' => array(
             'columns' => 'serviceid',
             'refTableClass' => 'Application_Model_Services_Table',
+            'refColumns' => 'id'
+        ),
+        'Product' => array(
+            'columns' => 'productid',
+            'refTableClass' => 'Application_Model_Orders_Lines_Table',
             'refColumns' => 'id'
         )
     );

@@ -1,0 +1,96 @@
+<h2 class="sub-header">
+    Raport magazynowy
+</h2>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-inline form-load" action="<?php
+        echo $this->url(
+                array('module' => 'warehouse', 'controller' => 'reports', 'action' => 'order-lines'), 'default', true)
+        ?>">
+            <div class="form-group">
+                <select class="form-control chosen-select" name="warehouseid[]" multiple data-placeholder="Wybierz magazyn">
+                    <option value="">Wybierz magazyn</option>
+                    <?php foreach ($this->warehouses as $warehouse): ?>
+                        <option value="<?php echo $warehouse->id; ?>" <?php if (!empty($this->request['warehouseid']) && in_array($warehouse->id, (array)$this->request['warehouseid'])): ?>selected<?php endif; ?>><?php echo $warehouse->name; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control chosen-select" name="technicianid[]" multiple data-placeholder="Wybierz technika">
+                    <option value="">Wybierz technika</option>
+                    <?php foreach ($this->technicians as $technician): ?>
+                        <option value="<?php echo $technician->id; ?>" <?php if (!empty($this->request['technicianid']) && in_array($technician->id, (array) $this->request['technicianid'])): ?>selected<?php endif; ?>><?php echo $technician->lastname . ' ' . $technician->firstname; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="name" placeholder="Nazwa" value="<?php if (!empty($this->request['name'])) echo $this->request['name']; ?>">
+            </div>
+            <div class="form-group">
+                <!--<input type="text" class="form-control" name="serial" placeholder="SN" value="<?php if (!empty($this->request['serial'])) echo $this->request['serial']; ?>">-->
+                <textarea class="form-control" name="serial" placeholder="SN"><?php if (!empty($this->request['serial'])): $serials = preg_split("/[\s,]+/", $this->request['serial']); echo join(",\r\n", $serials); endif; ?></textarea>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="releasedatefrom" id="releasedatefrom" placeholder="Data od" value="<?php if (!empty($this->request['releasedatefrom'])) echo $this->request['releasedatefrom']; ?>">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="releasedatetill" id="releasedatetill" placeholder="Data do" value="<?php if (!empty($this->request['releasedatetill'])) echo $this->request['releasedatetill']; ?>">
+            </div>
+            <button type="button" class="btn btn-default search">Szukaj</button>
+            <button type="button" class="btn btn-link xls">Zapisz XLS</button>
+        </form>
+    </div>
+</div>
+
+<?php if (isset($this->reports)): ?>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+        <thead>
+            <tr class="alternateRow">
+                <th colspan="1">Nazwa</th>
+                <th colspan="1">Jednostka</th>
+                <th colspan="1">Il. wyd. na tech.</th>
+                <!--<th colspan="1">Il. zwr. przez tech.</th>-->
+                <th colspan="1">Il. wyd. na kl.</th>
+                <?php foreach ($this->technicians as $technician):?>
+                <?php if (!empty($this->request['technicianid']) && !in_array($technician->id, (array) $this->request['technicianid'])): continue; endif; ?>
+                <?php echo "<th>{$technician}</th>"; ?>
+                <?php endforeach; ?>
+            </tr>
+        </thead>
+        <?php foreach ($this->products as $product) : ?>
+        <?php if (!empty($this->request['product']) && !in_array($product['name'], (array) $this->request['product'])): continue; endif; ?>
+            <tr>
+                <th style="white-space:nowrap"><?php echo $this->escape($product['name']); ?></th>
+                <td><?php echo $product['unitacronym']; ?></td>
+                <td><?php echo isset($this->reports[$product['name']]) && isset($this->reports[$product['name']]['released']) ? $this->reports[$product['name']]['released'] : 0; ?></td>
+                <!--<td><?php echo isset($this->reports[$product['name']]) && isset($this->reports[$product['name']]['returned']) ? $this->reports[$product['name']]['returned'] : 0; ?></td>-->
+                <td><?php echo isset($this->reports[$product['name']]) && isset($this->reports[$product['name']]['invoiced']) ? $this->reports[$product['name']]['invoiced'] : 0; ?></td>
+                <?php foreach ($this->technicians as $technician):?>
+                <?php if (!empty($this->request['technicianid']) && !in_array($technician->id, (array) $this->request['technicianid'])): continue; endif; ?>
+                <td>
+                    <?php if (empty($this->reports[$technician->id])): echo '0'; continue; endif; ?>
+                    <?php if (empty($this->reports[$technician->id][$product['name']])): echo '0'; continue; endif; ?>
+                    <?php echo $this->reports[$technician->id][$product['name']]; ?>
+                </td>
+                <?php endforeach; ?>
+            </tr>
+        <?php endforeach; ?> 
+    </table> 
+</div>
+<?php endif; ?>
+
+<script>
+    params = <?php echo Zend_Json::encode($this->request); ?>;
+    $("#releasedatefrom").datepicker({
+        dateFormat: "yy-mm-dd",
+    });
+    $("#releasedatetill").datepicker({
+        dateFormat: "yy-mm-dd",
+    });
+    $('.chosen-select').chosen({allow_single_deselect: true});
+</script>
+<!--<script src="/js/dataTables.js" />-->
+
+<iframe id="file-download" name="file-download" style="display: none"></iframe>

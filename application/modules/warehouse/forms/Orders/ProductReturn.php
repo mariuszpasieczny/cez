@@ -20,9 +20,28 @@ class Application_Form_Orders_ProductReturn extends Application_Form
             $element = $this->getElement('id-' . $i);
             $element->setValue($product->id);
             //$element->setCheckedValue($product->id);
-            $element->setLabel($product->getProduct()->name . ' (' . $product->getProduct()->serial . ')');
+            //$element->setLabel($product->getProduct()->name . ' (' . $product->getProduct()->serial . ')');
+            $desc = $product->getProduct()->name . ' (';
+            if ($serial = $product->getProduct()->serial) {
+                $desc .= $product->getProduct()->serial . ', ';
+            }
+            $desc .= max(0,$product->qtyavailable) . ' ' . $product->getProduct()->getUnit()->acronym . ')';
+            $element->setLabel($desc);
             //$element->setChecked(true);
             //$element->setAttrib('disabled', 'disabled');
+        }
+    }
+
+    public function setDemagecodes($config) {
+        for ($i = 0; $i <= $this->_productsCount; $i++) {
+            $element = $this->getElement('demagecodeid-' . $i);
+            if (!$element) {
+                return;
+            }
+            $element->addMultiOption(null, 'Wybierz opcję...');
+            foreach ($config as $parent) {
+                $element->addMultiOption($parent['id'], $parent['acronym'] . ' - ' . $parent['name']);
+            }
         }
     }
     
@@ -35,14 +54,26 @@ class Application_Form_Orders_ProductReturn extends Application_Form
         
         for ($i = 0; $i < $this->_productsCount; $i++) {
             
-            $this->addElement('hidden', 'id-' . $i, array(
-                //'belongsTo' => 'id', 
-                //'id' => 'id[' . $i . ']',
-                //'isArray' => true
-            ));
-
-            $this->addDisplayGroup(array('id-' . $i), 'product-' . $i);
+            $this->addElement('hidden', 'id-' . $i, array());
+            $element = $this->createElement('checkbox', 'demaged-' . $i, array(
+                'label' => 'Uszkodzony:',
+                'belongsTo' => 'demaged',
+                'class' => 'form-group input-small',
+            ))->setAttribs(array('style' => 'width: ;'));
+            $element->addDecorator('HtmlTag', array('tag' => 'span', 'class' => 'form-group inline'));
+            $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
+            $this->addElement($element);
+            $element = $this->createElement('select', 'demagecodeid-' . $i, array(
+                        'label' => 'Kod uszkodzenia:',
+                        'belongsTo' => 'demagecodeid',
+                        'class' => 'form-control chosen-select',
+                    ))->setAttribs(array('placeholder' => 'Kod uszkodzenia', 'style' => 'max-width: 65%;'))->setRegisterInArrayValidator(false);
+            $element->addDecorator('HtmlTag', array('tag' => 'span', 'class' => 'form-group inline'));
+            //$element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
+            $this->addElement($element);
+            $this->addDisplayGroup(array('id-' . $i, 'demaged-' . $i, 'demagecodeid-' . $i), 'return-' . $i)->setAttribs(array('id' => 'product-' . $i));
         }
+        $this->setOptions(array('class' => 'form-load'));
     }
     
 }

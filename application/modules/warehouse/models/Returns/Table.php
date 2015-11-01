@@ -35,6 +35,11 @@ class Application_Model_Returns_Table extends Application_Db_Table
             'columns' => 'serviceid',
             'refTableClass' => 'Application_Model_Services_Table',
             'refColumns' => 'id'
+        ),
+        'Technician' => array(
+            'columns' => 'technicianid',
+            'refTableClass' => 'Application_Model_Users_Table',
+            'refColumns' => 'id'
         )
     );
     

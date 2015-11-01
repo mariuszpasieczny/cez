@@ -19,6 +19,7 @@
 
 <script>
     $(document).ready(function() {
+        $('.chosen-select').chosen({allow_single_deselect: true});
 <?php if (!empty($this->request['print'])): ?>
             var url = '<?php echo $this->baseUrl; ?>/warehouse/orders/products-list/released/1/format/xls';
             var ids = new Array();

@@ -22,9 +22,11 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
         $context = $this->_helper->getHelper('xlsContext');
         $context->addActionContext('list', array('html', 'json', 'xls'))
                 ->addActionContext('index', array('html', 'json', 'xls'))
+                ->addActionContext('details', array('html'))
                 ->addActionContext('migration', array('html', 'json', 'xls'))
                 ->addActionContext('edit', 'html')
                 ->addActionContext('delete', 'html')
+                ->addActionContext('accept', 'html')
                 ->addActionContext('import', 'html')
                 ->setSuffix('html', '')
                 ->initContext();
@@ -48,7 +50,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
             $this->_products->setPageNumber($pageNumber);
         }
         $orderBy = $request->getParam('orderBy');
-        $columns = array('warehouse', 'name', 'quantity', 'qtyavailable', 'unit', 'serial', 'status');
+        $columns = array('warehouse', 'name', 'quantity', 'qtyavailable', 'unit', 'serial', 'pairedcard', 'status');
         if ($orderBy) {
             $orderBy = explode(" ", $orderBy);
             $this->_products->setOrderBy("{$columns[$orderBy[0] - 1]} {$orderBy[1]}");
@@ -72,7 +74,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
             $this->_products->setWhere($this->_products->getAdapter()->quoteInto("statusid != {$status->id}", null));
         }
         $this->view->filepath = '/../data/temp/';
-        $this->view->filename = 'Zestawienie_produktow.xlsx';
+        $this->view->filename = 'Zestawienie_produktow-' . date('YmdHis') . '.xlsx';
         $this->_products->setLazyLoading(false);
         $this->view->products = $this->_products->getAll($request->getParams());
         $this->view->paginator = $this->_products->getPaginator();
@@ -124,7 +126,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
         $form = new Application_Form_Products_Import();
         $parents = $this->_warehouses->getAll();
         $units = $this->_dictionaries->getDictionaryList('warehouse', 'unit');
-        $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
+        $status = $this->_dictionaries->getStatusList('products')->find('new', 'acronym');
         $form->setOptions(array('warehouses' => $parents, 'units' => $units));
 
         $this->view->form = $form;
@@ -160,7 +162,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                         try {
                             foreach ($cellIterator as $key => $cell) {
                                 $fields = preg_split("/;/", $cell);
-                                if (sizeof(preg_split("/;/", $cell)) > 1) {
+                                if (sizeof(preg_split("/,/", $cell)) > 1) {
                                     throw new Exception('Nieprawidłowy format pliku, dozwolony format pliku to pola oddzielane przecinkiem');
                                 }
                                 switch ($key) {
@@ -173,6 +175,9 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                                     case 'C': 
                                         $params['quantity'] = $cell->getValue();
                                         $params['qtyavailable'] = $cell->getValue();
+                                        break;
+                                    case 'D': 
+                                        $params['pairedcard'] = $cell->getValue();
                                         break;
                                 }
                             }
@@ -368,13 +373,55 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                         $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Nie można usunąć towaru wydanego technikowi'));
                         return;
                     }
-                    $item->statusid = $status->id;
-                    $item->save();
+                    //$item->statusid = $status->id;
+                    $item->delete();
                 }
                 Zend_Db_Table::getDefaultAdapter()->commit();
                 $this->view->success = 'Produkt usunięty';
             }
         }
+    }
+
+    public function acceptAction() {
+        $request = $this->getRequest();
+        $id = (array) $request->getParam('id');
+        $typeid = $request->getParam('typeid');
+        //$id = array_unique((array)$id);
+        $product = $this->_products->get($id);
+        if (!$product) {
+            throw new Exception('Nie znaleziono produktu');
+        }
+        $form = new  Application_Form_Products_Accept(array('productsCount' => $product->count()));
+        $form->setProducts($product);
+        $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
+        $this->view->form = $form;
+        $this->view->product = $product;
+
+        if ($this->getRequest()->isPost()) {
+            if ($form->isValid($request->getPost())) {
+                $values = $form->getValues();
+                if (!$product) {
+                    $form->setDescription('Nie zaznaczono produktów do usunięcia');
+                    return;
+                }
+                Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                foreach ($product as $i => $item) {
+                    if (!$item->isNew()) {
+                        $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Nie można zaakceptować towaru'));
+                        return;
+                    }
+                    $item->statusid = $status->id;
+                    $item->save();
+                }
+                Zend_Db_Table::getDefaultAdapter()->commit();
+                $this->view->success = 'Produkt zaakceptowany';
+            }
+        }
+    }
+    
+    public function detailsAction() {
+        $request = $this->getRequest();
+        $this->view->product = $this->_products->find($request->getParam('id'))->current();
     }
 
 }

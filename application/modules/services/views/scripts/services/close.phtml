@@ -26,11 +26,17 @@
 
 <script>
     $(function() {
-        $('.chosen-select').not('[name^=installationcodeid]').not('[multiple=multiple][name^=productreturnedid]').chosen({
+        $('.chosen-select').not('[name^=installationcodeid]').not('[multiple=multiple][name^=productreturnedid]').not('[multiple=multiple][name^=productid]').chosen({
             search_contains: true,
             allow_single_deselect: true,
             placeholder_text_multiple: 'dodaj'
         });
+        setTimeout(function() {
+            $('[name^=demagecodeid]').each(function(index, element) {
+                $(element).val($(element).find('option[selected=selected]').attr('value'));
+                $(element).trigger("chosen:updated");
+            });
+        }, 100);
         $('.chosen-select[name^=installationcodeid]').chosen({
             search_contains: true,
             allow_single_deselect: true,
@@ -128,6 +134,51 @@
         $('select[disabled=disabled]').each(function (i, e) {
             $($(e).parents('dd')).append($('<input type="hidden" name="' + e.name + '" value="' + e.value + '">'));
         });
+        $('.chosen-select[multiple=multiple][name^=productid]').chosen({
+            search_contains: true,
+            allow_single_deselect: true,
+            multiple: false,
+            placeholder_text_multiple: 'dodaj',
+            max_selected_options: 1
+        }).change(function(e) {
+            
+        });
+        onProductChange();
+        function onProductChange() {
+            //$(".chosen-select[name^=productid]").off();
+            $(".chosen-select[name^=productid]").on("change", function(e) {
+                if (!e.currentTarget.value) {
+                    if ($(".chosen-select[name^=productid]").size() == 1) {
+                        return false;
+                    }
+                    $(e.currentTarget).parents('div.form-group').remove();
+                } else {
+                    div = $(e.currentTarget).parents('div.form-group').clone();
+                    if (div.size()) {
+                        tmp = $('.chosen-select[name^="productid"]').last().attr('name').match(/\d+/);
+                        length = parseInt(tmp[0]) + 1;
+                        div.find('.chosen-container').remove();
+                        div.find('select').show();
+                        div.find('select').val([]);
+                        div.find('select[name^=productid]').attr('name', 'productid[productid-' + length + '][]');
+                        div.find('select[name^=productid]').attr('id', 'productid-productid-' + length + '');
+                        div.find('input').attr('name', 'quantity[quantity-' + length + ']');
+                        div.find('input').attr('id', 'quantity-quantity-' + length + '');
+                        div.attr('id', 'demaged-' + length + '-label');
+                        div.find('label').attr('for', 'quantity-quantity-' + length + '');
+                        $(div).insertAfter($(e.currentTarget).parents('div.form-group'));
+                        $('.chosen-select[name^="productid[productid-' + length + ']"]').chosen({
+                            search_contains: true,
+                            allow_single_deselect: true,
+                            multiple: false,
+                            placeholder_text_multiple: 'dodaj',
+                            max_selected_options: 1
+                        });
+                        onProductChange();
+                    }
+                }
+            });
+        };
     <?php if ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
             $("#datefinished").timepicker({
                 timeFormat: 'HH:mm',
@@ -288,7 +339,7 @@
         function setPerformed() {
             var performed = $('[name=performed]').val();
 
-            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'demagecodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid', 'demaged', 'datefinished'], function(key, value) {
+            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'demagecodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid', 'demaged', 'datefinished', 'quantity', 'productreturnedid'], function(key, value) {
                 switch (value) {
                     case 'cancellationcodeid':
                     case 'installationcancelcodeid':
@@ -304,18 +355,27 @@
                     case 'solutioncodeid':
                     case 'modeminterchangecodeid':
                     case 'decoderinterchangecodeid':
-                    case 'productid':
-                    case 'productreturnedid':
-                        if (performed == 1) {
+                        if (performed === '1') {
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
-                            $(".chosen-select[name^=productreturnedid]").parents('div.form-group').show();
-                            $('#return-label').show();
                         } else {
                             $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
                             $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
-                            $(".chosen-select[name^=productreturnedid]").parents('div.form-group').hide();
+                        }
+                        break;
+                    case 'productid':
+                    case 'quantity':
+                    case 'productreturnedid':
+                        if (performed == 1) {
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('div.form-group').show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('div.form-group').prev().show();
+                            $('#return-label').show();
+                            $('#product-label').show();
+                        } else {
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('div.form-group').hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('div.form-group').prev().hide();
                             $('#return-label').hide();
+                            $('#product-label').hide();
                         }
                         break;
                     case 'demaged':

@@ -15,6 +15,12 @@ class Application_Form_Services_Service extends Application_Form {
         $this->_productsReturnedCount = $productsReturnedCount;
     }
 
+    protected $_productsCount = 1;
+
+    public function setProductsCount($productsCount) {
+        $this->_productsCount = $productsCount;
+    }
+
     public function __construct($options = null) {
         $this->addPrefixPath('Application_Form', 'Application/Form');
         parent::__construct($options);
@@ -80,13 +86,29 @@ class Application_Form_Services_Service extends Application_Form {
     }
 
     public function setProducts($config) {
-        if (!$element = $this->getElement('productid')) {
-            return;
-        }
-        $element->addMultiOption(null, 'Wybierz opcję...');
-        $selected = array();
-        foreach ($config as $parent) {
-            $element->addMultiOption($parent['id'], $parent->getProduct() ? ($parent->getProduct()->name . ' (' . $parent->getProduct()->serial . ')') : '');
+        for ($i = 0; $i <= $this->_productsCount; $i++) {
+            $element = $this->getElement('productid-' . $i);
+            if (!$element) {
+                return;
+            }
+            //$element->addMultiOption(null, 'Wybierz opcję...');
+            foreach ($config as $parent) {
+                $desc = '';
+                if ($product = $parent->getProduct()) {
+                    if ($serial = $product->serial) {
+                        $desc = $product->serial . ', ';
+                    }
+                    $desc .= max(0, $parent->qtyavailable) . ' ' . $product->getUnit()->acronym;
+                    if ($desc) {
+                        $desc = $product->name . ' (' . $desc . ')';
+                    } else {
+                        $desc = $product->name;
+                    }
+                } else {
+                    $desc .= 'brak danych';
+                }
+                $element->addMultiOption($parent['id'], $desc);
+            }
         }
     }
 
@@ -285,22 +307,44 @@ class Application_Form_Services_Service extends Application_Form {
         $name = (string) $name;
         if (strpos($name, 'productreturnedid') !== false) {
             $selectedIds = array();
+            if (!$value['name']) {
+                $value['name'] = current($value);
+            }
             $selectedIds[] = $value['name'];
             $attribs = $this->getElement($name)->getAttribs();
             $options = $attribs['options'];
-            if (!isset($options[$value->name])) {
-                $this->getElement($name)->addMultiOption($value->name, $value->name);
-                $selectedIds[] = $value->name;
+            if (!isset($options[$value['name']])) {
+                $this->getElement($name)->addMultiOption($value['name'], $value['name']);
+                $selectedIds[] = $value['name'];
             }
             preg_match("/\d+/", $name, $found);
-            $this->getElement('demaged-' . $found[0])->setValue($value->demaged);
-            $this->getElement('demagecodeid-' . $found[0])->setValue($value->demagecodeid);
-            if (!$value->isNew()) {
+            $this->getElement('demaged-' . $found[0])->setValue($value['demaged']);
+            $this->getElement('demagecodeid-' . $found[0])->setValue($value['demagecodeid']);
+            if ($value['statusacronym'] && $value['statusacronym'] != 'new') {
                 $this->getElement('demaged-' . $found[0])->setAttrib('disabled', 'disabled');
                 $this->getElement('productreturnedid-' . $found[0])->setAttrib('disabled', 'disabled');
                 $this->getElement('demagecodeid-' . $found[0])->setAttrib('disabled', 'disabled');
             }
-            $value = $selectedIds;
+            $value = array_unique($selectedIds);
+        }
+	if (strpos($name, 'productid') !== false) {
+            $selectedIds = array();
+            if (!$value['productid']) {
+                $value['productid'] = current($value);
+            }
+            if (!$value['name']) {
+                $value['name'] = current($value);
+            }
+            $selectedIds[] = $value['productid'];
+            $attribs = $this->getElement($name)->getAttribs();
+            $options = $attribs['options'];
+            if (!isset($options[$value['productid']])) {
+                $this->getElement($name)->addMultiOption($value['productid'] < 0 ? $value['name'] : $value['productid'], $value['name'] . ' (' . $value['serial'] . ')');
+                $selectedIds[] = $value['productid'] < 0 ? $value['name'] : $value['productid'];
+            }
+            preg_match("/\d+/", $name, $found);
+            $this->getElement('quantity-' . $found[0])->setValue($value['quantity']);
+            $value = array_unique($selectedIds);
         }
         switch ($name) {
             case 'productid':
@@ -310,8 +354,8 @@ class Application_Form_Services_Service extends Application_Form {
                     $attribs = $this->getElement($name)->getAttribs();
                     $options = $attribs['options'];
                     if (!isset($options[$row['productid']])) {
-                        $this->getElement($name)->addMultiOption($row['name'], $row['name']);
-                        $selectedIds[] = $row['name'];
+                        $this->getElement($name)->addMultiOption($row['productid'] < 0 ? $row['name'] : $row['productid'], $row['name'] . ' (' . $row['serial'] . ')');
+                        $selectedIds[] = $row['productid'] < 0 ? $row['name'] : $row['productid'];
                     }
                 }
                 $value = $selectedIds;
@@ -608,16 +652,16 @@ class Application_Form_Services_Service extends Application_Form {
 
         $element = $this->createElement('datePicker', 'datefinished', array(
             'label' => 'Godzina zakończenia:',
-            //'required'   => true,
+            'required'   => true,
             'filters' => array('StringTrim'),
             'validators' => array(
-            //'NotEmpty',
+            'NotEmpty',
             ),
             'class' => 'form-control',
         ));
         $this->addElement($element);
         
-        $element = new Application_Form_Element_SelectAttribs('solutioncodeid', array(
+        $element = $this->createElement('select', 'solutioncodeid', array(
             'label' => 'Kod rozwiązania:',
             'class' => 'form-control chosen-select',
         ));
@@ -646,16 +690,56 @@ class Application_Form_Services_Service extends Application_Form {
                 ))->setAttribs(array('placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
         $this->addElement($element);
 
-        $element = $this->createElement('select', 'productid', array(
-                    'label' => 'Sprzęt wydany:',
+        $element = $this->createElement('hidden','product',array('label' => 'Sprzęt wydany:'));
+        $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
+        $this->addElement($element);
+        $element = $this->createElement('select', 'productid-0', array(
+                    //'label' => 'Sprzęt wydany:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
                     //'validators' => array(
                     //    array('lessThan', true, array('score')),
                     //),
+                    'belongsTo' => 'productid',
                     'class' => 'form-control chosen-select',
-                ))->setAttribs(array('multiple' => 'multiple', 'placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
+                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 45%;'))->setRegisterInArrayValidator(false);
+        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+        $element->removeDecorator('Label');
         $this->addElement($element);
+        $element = $this->createElement('text', 'quantity-0', array(
+            'belongsTo' => 'quantity',
+            'class' => 'form-group input-sm',
+            'label' => 'Ilość:',
+        ))->setAttribs(array('style' => 'width: 50px;'));
+        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+        $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
+        $this->addElement($element);
+        $this->addDisplayGroup(array('productid-0', 'quantity-0'), 'product-0')->setAttribs(array('id' => 'product-0'));
+        
+        for ($i = 1; $i <= $this->_productsCount; $i++) {
+            $element = $this->createElement('select', 'productid-' . $i, array(
+                    //'label' => 'Produkty:',
+                    //'required'   => true,
+                    //'filters'    => array('StringTrim'),
+                    //'validators' => array(
+                    //    array('lessThan', true, array('score')),
+                    //),
+                    'belongsTo' => 'productid',
+                    'class' => 'form-control chosen-select',
+                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 45%;'))->setRegisterInArrayValidator(false);
+            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+            $element->addDecorator('Label', array('tag' => ''));
+            $this->addElement($element);
+            $element = $this->createElement('text', 'quantity-' . $i, array(
+                'belongsTo' => 'quantity',
+                'class' => 'form-group input-sm',
+                'label' => 'Ilość:'
+            ))->setAttribs(array('style' => 'width: 50px;'));
+            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+            $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
+            $this->addElement($element);
+            $this->addDisplayGroup(array('productid-' . $i, 'quantity-' . $i), 'product-' . $i)->setAttribs(array('id' => 'product-' . $i));
+        }
 
         /*$element = $this->createElement('select', 'productreturnedid', array(
                     'label' => 'Produkty odebrane:',

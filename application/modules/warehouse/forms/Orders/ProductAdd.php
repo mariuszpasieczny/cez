@@ -15,14 +15,6 @@ class Application_Form_Orders_ProductAdd extends Application_Form {
     }
 
     public function setUnits($config) {
-        /* $element = $this->getElement('unitid[]');var_dump($element);
-          if (!$element) {
-          return;
-          }
-          $element->addMultiOption(null, 'Wybierz opcję...');
-          foreach ($config as $parent) {
-          $element->addMultiOption($parent['id'], $parent['name']);
-          } */
         foreach ($this->getElements() as $element) {
             if (strpos($element->getName(), 'unitid') !== false) {
                 foreach ($config as $parent) {

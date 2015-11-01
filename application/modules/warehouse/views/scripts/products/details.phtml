@@ -1,0 +1,24 @@
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Data wydania</th>
+                <th>Ilość</th>
+                <th>Technik</th>
+                <th>Nr klienta</th>
+                <th>Klient</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <?php foreach ($this->product->getReleaseList() as $line): ?>
+        <tr>
+            <td><?php echo $this->escape($line->releasedate); ?></td>
+            <td><?php echo $this->escape($line->quantity); ?></td>
+            <td><?php echo $this->escape($line->technician); ?></td>
+            <td><?php echo $this->escape($line->clientnumber); ?></td>
+            <td><?php echo $this->escape($line->client); ?></td>
+            <td><?php echo $this->escape($line->getStatus()); ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+</div>

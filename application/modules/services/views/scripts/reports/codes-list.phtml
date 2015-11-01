@@ -11,7 +11,17 @@
                 array('module' => 'services', 'controller' => 'reports', 'action' => 'codes-list'), 'default', true)
         ?>">
             <input type="hidden" name="typeid" value="<?php echo $this->request['typeid']; ?>" />
-            <input type="hidden" name="type" value="<?php echo $this->request['type']; ?>" />
+            <!--<input type="hidden" name="type" value="<?php echo !empty($this->request['type']) ? $this->request['type'] : null; ?>" />-->
+            <div class="form-group">
+                <select class="form-control chosen-select" name="type[]" multiple data-placeholder="Wybierz typ">
+                    <option value="">Wybierz typ</option>
+                    <?php
+                    foreach ($this->codeTypes as $key => $type): 
+                        ?>
+                        <option value="<?php echo $type; ?>" <?php if (!empty($this->request['type']) && in_array($type, (array) $this->request['type'])): ?>selected<?php endif; ?>><?php echo $key; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
             <div class="form-group">
                 <select class="form-control chosen-select" name="statusid[]" multiple data-placeholder="Wybierz status">
                     <option value="">Wybierz status</option>
@@ -69,7 +79,7 @@
         <?php if (!empty($this->request['codeacronym']) && !in_array($code->acronym, (array) $this->request['codeacronym'])): continue; endif; ?>
             <tr>
                 <!--<th><?php echo $this->escape($code->name); ?></th>-->
-                <th><?php echo $this->escape($code->acronym); ?></th>
+                <th style="white-space:nowrap"><?php echo $this->escape($code->acronym); ?></th>
                 <?php foreach ($this->technicians as $technician):?>
                 <?php if (!empty($this->request['technicianid']) && !in_array($technician->id, (array) $this->request['technicianid'])): continue; endif; ?>
                 <td>

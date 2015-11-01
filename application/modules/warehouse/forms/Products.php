@@ -33,7 +33,7 @@ class Application_Form_Products extends Application_Form
         $this->addElement('hidden', 'id');
         
         $element = $this->createElement('select', 'warehouseid', array(
-            'label'      => 'Warehouse:',
+            'label'      => 'Magazyn:',
             //'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(
@@ -45,7 +45,7 @@ class Application_Form_Products extends Application_Form
  
         // Add an email element
         $this->addElement('text', 'name', array(
-            'label'      => 'Type name:',
+            'label'      => 'Nazwa:',
             'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(
@@ -67,7 +67,7 @@ class Application_Form_Products extends Application_Form
  
         // Add an email element
         $this->addElement('text', 'description', array(
-            'label'      => 'Type description:',
+            'label'      => 'Opis:',
             //'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(
@@ -78,7 +78,7 @@ class Application_Form_Products extends Application_Form
  
         // Add an email element
         $this->addElement('text', 'serial', array(
-            'label'      => 'Type serial:',
+            'label'      => 'SN:',
             //'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(
@@ -88,8 +88,19 @@ class Application_Form_Products extends Application_Form
         ));
  
         // Add an email element
+        $this->addElement('text', 'pairedcard', array(
+            'label'      => 'Sprzęt sparowany:',
+            //'required'   => true,
+            'filters'    => array('StringTrim'),
+            'validators' => array(
+                //'NotEmpty',
+            ),
+            'class' => 'form-control',
+        ));
+ 
+        // Add an email element
         $this->addElement('text', 'quantity', array(
-            'label'      => 'Type quantity:',
+            'label'      => 'Ilość:',
             'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(
@@ -100,7 +111,7 @@ class Application_Form_Products extends Application_Form
  
         // Add an email element
         $this->addElement('select', 'unitid', array(
-            'label'      => 'Type unit:',
+            'label'      => 'Jednostka:',
             'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(

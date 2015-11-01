@@ -142,8 +142,8 @@
                     <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
                 </a>
             <?php endif; ?>
-            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close') && 0): ?>
-                <a href="<?php echo $this->baseUrl; ?>/services/services/close/typeid/<?php echo $this->request['typeid']; ?>" data-target=".modal-body" class="popup-load multi" title="Zamknij">
+            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+                <a href="<?php echo $this->baseUrl; ?>/services/services/close-multi/typeid/<?php echo $this->request['typeid']; ?>" data-target=".modal-body" class="popup-load multi" title="Zamknij">
                     <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                 </a>
             <?php endif; ?>

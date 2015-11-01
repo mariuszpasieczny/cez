@@ -47,6 +47,21 @@ class Application_Model_Orders_Lines_Table extends Application_Db_Table
             $this->setWhere($this->getAdapter()->quoteInto("product LIKE ?", "%{$params['product']}%"));
             unset($params['product']);
         }
+        if (!empty($params['status'])) {
+            $dictionary = new Application_Model_Dictionaries_Table();
+            switch ($params['status']) {
+                case $dictionary->getStatusList('orders')->find('invoiced', 'acronym')->id:
+                    $this->setWhere("client IS NOT NULL");
+                    break;
+                case $dictionary->getStatusList('orders')->find('released', 'acronym')->id:
+                    $this->setWhere("qtyreturned = 0 AND client IS NULL");
+                    break;
+                case $dictionary->getStatusList('orders')->find('returned', 'acronym')->id:
+                    //$this->setWhere("NOT(qtyreturned = 0 AND client IS NULL)");
+                    break;
+            }
+            unset($params['statusid']);
+        }
         if (!empty($params['serial'])) {
             if (strpos($params['serial'], ',') !== false) {
                 $serials = explode(',', $params['serial']);

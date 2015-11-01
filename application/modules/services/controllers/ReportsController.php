@@ -219,11 +219,28 @@ class Services_ReportsController extends Application_Controller_Abstract {
             throw new Exception("Brak typu zleceń");
         }
         $this->view->typeid = $typeid;
+        $types = $this->_dictionaries->getTypeList('service');
+        switch ($typeid) {
+            // zlecenie instalacyjne
+            case $types->find('installation', 'acronym')->id:
+                $codeTypes = array('Kodów instalacji' => 'installation', 'Kodów odwołania' => 'installationcancel');
+                break;
+            // zlecenie serwisowe
+            case $types->find('service', 'acronym')->id:
+                $codeTypes = array('Kodów błędu' => 'error', 
+                    'Kodów rozwiązania' => 'solution', 
+                    'Kodów odwołania' => 'cancellation', 
+                    //'Kodów wymiany modemu' => 'modeminterchange', 
+                    //'Kodów wymiany dekodera' => 'decoderinterchange'
+                    );
+                break;
+            default:
+                throw new Exception('Nieprawidłowy typ zlecenia');
+        }
         if (!$type = $request->getParam('type')) {
-            throw new Exception("Brak typu raportu");
+        //    throw new Exception("Brak typu raportu");
         }
         $this->view->type = $type;
-        $request->setParam('attributeacronym', "{$type}code");
         if ($warehouseid) {
             $warehouse = $this->_warehouses->get($warehouseid);
             $this->view->warehouse = $warehouse;
@@ -261,21 +278,27 @@ class Services_ReportsController extends Application_Controller_Abstract {
         $this->view->technicians = $technicians;
         $dictionary = $this->_dictionaries->getDictionaryList('service');
         $statusDeleted = $this->_dictionaries->getStatusList('dictionaries', 'deleted')->current();
-        $codes = array(); 
-        foreach ($dictionary->find("{$type}code", 'acronym')->getChildren() as $row) {
-            if ($row['statusid'] == $statusDeleted->id) {
+        $codes = array();
+        foreach ($codeTypes as $codeType) {
+            if ($type && !in_array($codeType, (array) $type)) {
                 continue;
             }
-            if ($row['datefrom'] && strtotime($row['datefrom']) < time()) {
-                //continue;
+            foreach ($dictionary->find("{$codeType}code", 'acronym')->getChildren() as $row) {
+                if ($row['statusid'] == $statusDeleted->id) {
+                    continue;
+                }
+                if ($row['datefrom'] && strtotime($row['datefrom']) < time()) {
+                    //continue;
+                }
+                if ($row['datetill'] && strtotime($row['datetill']) < time()) {
+                    //continue;
+                }
+                $codes[] = $row;
             }
-            if ($row['datetill'] && strtotime($row['datetill']) < time()) {
-                //continue;
-            }
-            $codes[] = $row;
         }
         $this->view->codes = $codes;
         $this->view->types = $types;
+        $this->view->codeTypes = $codeTypes;
         $this->view->statuses = $this->_dictionaries->getStatusList('service');
         $params = array_filter(array_intersect_key($request->getParams(), array_flip(array('technicianid', 'codeacronym', 'planneddatefrom', 'planneddatetill'))));
         if (empty($params)) {

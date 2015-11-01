@@ -13,11 +13,26 @@ class Application_Model_Orders_Lines_Row extends Application_Db_Table_Row {
     }
 
     public function getStatus() {
+        if ($this->client) {
+            $dictionary = new Application_Model_Dictionaries_Table();
+            return $dictionary->getStatusList('orders')->find('invoiced', 'acronym');
+        }
+        if ($this->qtyreturned) {
+            $dictionary = new Application_Model_Dictionaries_Table();
+            return $dictionary->getStatusList('orders')->find('returned', 'acronym');
+        }
         return parent::findParentRow('Application_Model_Dictionaries_Table', 'Status');
     }
 
     public function getProduct() {
         return parent::findParentRow('Application_Model_Products_Table', 'Product');
+    }
+
+    public function isDeleted() {
+        $dictionary = new Application_Model_Dictionaries_Table();
+        $status = $dictionary->getStatusList('orders')->find('deleted', 'acronym');
+
+        return $this->statusid == $status->id ? true : false;
     }
 
     public function isNew() {
@@ -42,6 +57,24 @@ class Application_Model_Orders_Lines_Row extends Application_Db_Table_Row {
         $status = $dictionary->getStatusList('orders')->find('released', 'acronym');
 
         return $this->technicianid && $this->statusid == $status->id ? true : false;
+    }
+
+    public function isInvoiced() {
+        try {
+            return $this->technicianid && $this->statusacronym == 'invoiced' ? true : false;
+        } catch (Exception $e) {
+            
+        }
+        $dictionary = new Application_Model_Dictionaries_Table();
+        $status = $dictionary->getStatusList('orders')->find('invoiced', 'acronym');
+
+        return $this->technicianid && $this->statusid == $status->id ? true : false;
+    }
+
+    public function getReleaseList() {
+        $products = new Application_Model_Services_Products_Table();
+        $products->setLazyLoading(false);
+        return $products->getAll(array('productid' => $this->id));
     }
 
 }

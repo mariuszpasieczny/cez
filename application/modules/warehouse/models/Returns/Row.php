@@ -15,6 +15,14 @@ class Application_Model_Returns_Row extends Application_Db_Table_Row {
     public function getService() {
         return parent::findParentRow('Application_Model_Services_Table', 'Service');
     }
+    
+    public function getTechnician() {
+        try {
+            return $this->getService()->getTechcnician();
+        } catch (Exception $e) {
+            return parent::findParentRow('Application_Model_Users_Table', 'Technician');
+        }
+    }
 
     public function isNew() {
         try {

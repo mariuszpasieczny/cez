@@ -31,11 +31,17 @@
 <script>
     $(function() {
         //$('#installationcodeid').hide();
-        $('.chosen-select').not('[name^=installationcodeid]').not('[multiple=multiple][name^=productreturnedid]').chosen({
+        $('.chosen-select').not('[name^=installationcodeid]').not('[multiple=multiple][name^=productreturnedid]').not('[multiple=multiple][name^=productid]').chosen({
             search_contains: true,
             allow_single_deselect: true,
             placeholder_text_multiple: 'dodaj'
         });
+        setTimeout(function() {
+            $('[name^=demagecodeid]').each(function(index, element) {
+                $(element).val($(element).find('option[selected=selected]').attr('value'));
+                $(element).trigger("chosen:updated");
+            });
+        }, 100);
         $('.chosen-select[name^=installationcodeid]').chosen({
             search_contains: true,
             allow_single_deselect: true,
@@ -93,31 +99,36 @@
                     if ($(".chosen-select[name^=productreturnedid]").size() == 1) {
                         return false;
                     }
-                    $($(e.currentTarget).parents('.form-group.inline').last().nextUntil('dd')).remove();
-                    $(e.currentTarget).next('.chosen-container').remove();
+                    $(e.currentTarget).parents('div.form-group').remove();
                 } else {
-                    div = $(e.currentTarget).parents('.form-group.inline').last().clone();
-                    div2 = $(e.currentTarget).parents('.form-group.inline').last().next().clone();
-                    div3 = $(e.currentTarget).parents('.form-group.inline').last().next().next().clone();
+                    div = $(e.currentTarget).parents('div.form-group').clone();
                     if (div.size()) {
-                        length = $('.chosen-select[name^="productreturnedid"]').length;
+                        tmp = $('.chosen-select[name^="productreturnedid"]').last().attr('name').match(/\d+/);
+                        length = parseInt(tmp[0]) + 1;
                         div.find('.chosen-container').remove();
                         div.find('select').show();
                         div.find('select').val([]);
-                        div.find('select').attr('name', 'productreturnedid[productreturnedid-' + length + '][]');
-                        div.find('select').attr('id', 'productreturnedid-productreturnedid-' + length + '');
-                        $(div).insertAfter($($(e.currentTarget).parents('.form-group.inline').last().next().next()));
-                        div2.find('input').attr('name', 'demaged[demaged-' + length + ']');
-                        div2.find('input').attr('id', 'demaged-demaged-' + length + '');
-                        $(div2).insertAfter($(div));
-                        div3.attr('id', 'demaged-' + length + '-label');
-                        div3.find('label').attr('for', 'demaged-demaged-' + length + '');
-                        $(div3).insertAfter($(div2));
+                        div.find('select[name^=productreturnedid]').attr('name', 'productreturnedid[productreturnedid-' + length + '][]');
+                        div.find('select[name^=productreturnedid]').attr('id', 'productreturnedid-productreturnedid-' + length + '');
+                        div.find('select[name^=demagecodeid]').attr('name', 'demagecodeid[demagecodeid-' + length + '][]');
+                        div.find('select[name^=demagecodeid]').attr('id', 'demagecodeid-demagecodeid-' + length + '');
+                        div.find('input').attr('name', 'demaged[demaged-' + length + ']');
+                        div.find('input').attr('id', 'demaged-demaged-' + length + '');
+                        div.attr('id', 'demaged-' + length + '-label');
+                        div.find('label').attr('for', 'demaged-demaged-' + length + '');
+                        $(div).insertAfter($(e.currentTarget).parents('div.form-group'));
                         $('.chosen-select[name^="productreturnedid[productreturnedid-' + length + ']"]').chosen({
                             search_contains: true,
                             allow_single_deselect: true,
                             multiple: false,
                             placeholder_text_multiple: 'dodaj',
+                            max_selected_options: 1
+                        });
+                        $('.chosen-select[name^="demagecodeid[demagecodeid-' + length + ']"]').chosen({
+                            search_contains: true,
+                            allow_single_deselect: true,
+                            multiple: false,
+                            placeholder_text_multiple: 'wybierz',
                             max_selected_options: 1
                         });
                         onProductReturnedChange();
@@ -128,6 +139,51 @@
         $('select[disabled=disabled]').each(function (i, e) {
             $($(e).parents('dd')).append($('<input type="hidden" name="' + e.name + '" value="' + e.value + '">'));
         });
+	$('.chosen-select[multiple=multiple][name^=productid]').chosen({
+            search_contains: true,
+            allow_single_deselect: true,
+            multiple: false,
+            placeholder_text_multiple: 'dodaj',
+            max_selected_options: 1
+        }).change(function(e) {
+            
+        });
+        onProductChange();
+        function onProductChange() {
+            //$(".chosen-select[name^=productid]").off();
+            $(".chosen-select[name^=productid]").on("change", function(e) {
+                if (!e.currentTarget.value) {
+                    if ($(".chosen-select[name^=productid]").size() == 1) {
+                        return false;
+                    }
+                    $(e.currentTarget).parents('div.form-group').remove();
+                } else {
+                    div = $(e.currentTarget).parents('div.form-group').clone();
+                    if (div.size()) {
+                        tmp = $('.chosen-select[name^="productid"]').last().attr('name').match(/\d+/);
+                        length = parseInt(tmp[0]) + 1;
+                        div.find('.chosen-container').remove();
+                        div.find('select').show();
+                        div.find('select').val([]);
+                        div.find('select[name^=productid]').attr('name', 'productid[productid-' + length + '][]');
+                        div.find('select[name^=productid]').attr('id', 'productid-productid-' + length + '');
+                        div.find('input').attr('name', 'quantity[quantity-' + length + ']');
+                        div.find('input').attr('id', 'quantity-quantity-' + length + '');
+                        div.attr('id', 'demaged-' + length + '-label');
+                        div.find('label').attr('for', 'quantity-quantity-' + length + '');
+                        $(div).insertAfter($(e.currentTarget).parents('div.form-group'));
+                        $('.chosen-select[name^="productid[productid-' + length + ']"]').chosen({
+                            search_contains: true,
+                            allow_single_deselect: true,
+                            multiple: false,
+                            placeholder_text_multiple: 'dodaj',
+                            max_selected_options: 1
+                        });
+                        onProductChange();
+                    }
+                }
+            });
+        };
         $("#planneddate").datepicker({
             dateFormat: "yy-mm-dd"
         });
@@ -165,6 +221,8 @@
                 $('#decoderinterchangecodeid-label').hide();
                 $('#modeminterchangecodeid-element').hide();
                 $('#modeminterchangecodeid-label').hide();
+                $('[name^=demagecodeid]').first().parents('span.form-group').show();
+                $('[name^=demagecodeid]').first().parents('span.form-group').prev().show();
                 e.preventDefault();
                 var errorCodes = [];
                 $.each($(this).find('option:selected'), function(key, value) {
@@ -184,6 +242,8 @@
                                     $('#modeminterchangecodeid-label').hide();
                                     $('#decoderinterchangecodeid-element').show();
                                     $('#decoderinterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -194,6 +254,8 @@
                                     $('#modeminterchangecodeid-label').hide();
                                     $('#decoderinterchangecodeid-element').show();
                                     $('#decoderinterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -206,6 +268,8 @@
                                     $('#decoderinterchangecodeid-label').hide();
                                     $('#modeminterchangecodeid-element').show();
                                     $('#modeminterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -216,6 +280,8 @@
                                     $('#decoderinterchangecodeid-label').hide();
                                     $('#modeminterchangecodeid-element').show();
                                     $('#modeminterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -226,6 +292,8 @@
                                     $('#decoderinterchangecodeid-label').hide();
                                     $('#modeminterchangecodeid-element').show();
                                     $('#modeminterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -245,6 +313,8 @@
                                     $('#decoderinterchangecodeid-label').show();
                                     $('#modeminterchangecodeid-element').show();
                                     $('#modeminterchangecodeid-label').show();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').hide();
+                                    $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -252,6 +322,30 @@
                 }
                 return false;
             });
+            function onModemCodeChange() {
+                if ($("#modeminterchangecodeid-element").is(':visible')) {
+                    if ($("#modeminterchangecodeid").val()) {
+                        $('[name^=demagecodeid]').first().val($("#modeminterchangecodeid").val()).trigger("chosen:updated");
+                    } else {
+                        $('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
+                    }
+                }
+            };
+            function onDecoderCodeChange() {
+                if ($("#decoderinterchangecodeid-element").is(':visible')) {
+                    if ($("#decoderinterchangecodeid").val()) {
+                        $('[name^=demagecodeid]').first().val($("#decoderinterchangecodeid").val()).trigger("chosen:updated");
+                    } else {
+                        $('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
+                    }
+                }
+            };
+            $("#solutioncodeid,#performed,#decoderinterchangecodeid,#modeminterchangecodeid").on("change", function(e) {
+                onModemCodeChange();
+                onDecoderCodeChange();
+            });
+            onModemCodeChange();
+            onDecoderCodeChange();
 
 <?php elseif ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
             /*$("#datefinished").datetimepicker({
@@ -269,7 +363,7 @@
         function setPerformed() {
             var performed = $('#performed').val();
 
-            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid', 'demaged', 'datefinished'], function(key, value) {
+            $.each(['installationcodeid', 'installationcancelcodeid', 'cancellationcodeid', 'solutioncodeid', 'demagecodeid', 'modeminterchangecodeid', 'decoderinterchangecodeid', 'productid', 'productreturnedid', 'demaged', 'datefinished', 'quantity'], function(key, value) {
                 switch (value) {
                     case 'cancellationcodeid':
                     case 'installationcancelcodeid':
@@ -285,19 +379,31 @@
                     case 'solutioncodeid':
                     case 'modeminterchangecodeid':
                     case 'decoderinterchangecodeid':
-                    case 'productid':
-                    case 'productreturnedid':
-                        if (performed == 1) {
+                        if (performed === '1') {
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
-                            $($(".chosen-select[name^=productreturnedid]").parents('.form-group.inline').last().nextAll().filter('span')).show();
                         } else {
                             $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
                             $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
-                            $($(".chosen-select[name^=productreturnedid]").parents('.form-group.inline').last().nextAll().filter('span')).hide();
+                        }
+                        break;
+                    case 'productid':
+                    case 'quantity':
+                    case 'productreturnedid':
+                        if (performed == 1) {
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('div.form-group').show();
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('div.form-group').prev().show();
+                            $('#return-label').show();
+                            $('#product-label').show();
+                        } else {
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('div.form-group').hide();
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('div.form-group').prev().hide();
+                            $('#return-label').hide();
+                            $('#product-label').hide();
                         }
                         break;
                     case 'demaged':
+                    case 'demagecodeid':
                         if (performed == 1) {
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();

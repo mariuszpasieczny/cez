@@ -6,13 +6,13 @@
  * and open the template in the editor.
  */
 
-class Application_Model_Services_Statistics_Servicecodes_Table extends Application_Db_Table
+class Application_Model_Products_Statistics_Orderlines_Table extends Application_Db_Table
 {
-    protected $_name = 'servicecodesstatistics';// table name
+    protected $_name = 'productsstatistics';// table name
     protected $_primary = 'technicianid'; // primary column name
-    protected $_rowClass = 'Application_Model_Services_Statistics_Servicecodes_Row';
+    protected $_rowClass = 'Application_Model_Products_Statistics_Orderlines_Row';
     
-    protected $_dependentTables = array('Application_Model_Services_Table');
+    protected $_dependentTables = array('Application_Model_Products_Table');
     
     protected $_referenceMap = array(
         'Warehouse' => array(
@@ -45,24 +45,22 @@ class Application_Model_Services_Statistics_Servicecodes_Table extends Applicati
         }
         $select = parent::select()
             ->setIntegrityCheck(false)
-            ->from('servicecodesview', array('technicianid', new Zend_Db_Expr("IF( ISNULL(  `servicecodesview`.`technicianid` ) ,  'nieprzypisane',  `servicecodesview`.`technician` )"),
-                'attributeacronym',
-                'codeacronym',
-                'quantity' => new Zend_Db_Expr("COUNT(  `servicecodesview`.`id` )")))
-                ->group(array('technicianid', 'technician', 'attributeacronym', 'codeacronym'));
+            ->from('orderlinesview', array('technicianid', new Zend_Db_Expr("IF( ISNULL(  `orderlinesview`.`technicianid` ) ,  'nieprzypisane',  `orderlinesview`.`technician` )"),
+                'product',
+                'serial',
+                'statusacronym',
+                'status',
+                'quantity' => new Zend_Db_Expr("COUNT(  `orderlinesview`.`id` )")))
+                ->group(array('technicianid', 'technician', 'product', 'serial', 'statusacronym', 'status'));
         return $select;
     }
     
     public function getAll($params = array(), $rows = null, $root = null) {
-        if (!empty($params['planneddatefrom'])) {
-            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') >= ?", $params['planneddatefrom']));
+        if (!empty($params['releasedatefrom'])) {
+            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(dateadd, '%Y-%m-%d') >= ?", $params['releasedatefrom']));
         }
-        if (!empty($params['planneddatetill'])) {
-            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') <= ?", $params['planneddatetill']));
-        }
-        if (!empty($params['type'])) {
-            $this->setWhere("attributeacronym IN ('" . join("','", array_map(function ($n) {return($n . 'code');}, $params['type'])) . "')");
-            unset($params['type']);
+        if (!empty($params['releasedatetill'])) {
+            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(dateadd, '%Y-%m-%d') <= ?", $params['releasedatetill']));
         }
         return parent::getAll($params, $rows, $root);
     }

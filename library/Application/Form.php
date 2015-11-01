@@ -16,6 +16,13 @@ class Application_Form extends Zend_Form
         // Set the method for the display form to POST
         $this->setMethod('post');
         $this->setOptions(array('class' => 'form-load'));
+        $this->setDecorators(
+            array(
+                'FormElements',
+                'Form',
+                array('HtmlTag', array('tag' => 'dl', 'class' => 'overflow zend_form')),
+            )
+        );
         /**/
  
         // Add a captcha

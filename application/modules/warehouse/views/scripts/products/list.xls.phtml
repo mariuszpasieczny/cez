@@ -15,7 +15,8 @@ $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, 'Ilość');
 $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, 'Ilość dostępna');
 $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, 'Jednostka');
 $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, 'Numer seryjny');
-$objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, 'Status');
+$objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, 'Sprzęt sparowany');
+$objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, 'Status');
 $rowNo = 2;
 foreach ($vars['products'] as $product) {//var_dump($product);exit;
     $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, $product->warehouse);
@@ -24,7 +25,8 @@ foreach ($vars['products'] as $product) {//var_dump($product);exit;
     $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, $product->qtyavailable);
     $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, $product->unit);
     $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, $product->serial);
-    $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, $product->status);
+    $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, $product->pairedcard);
+    $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, $product->status);
     $rowNo++;
 }
 

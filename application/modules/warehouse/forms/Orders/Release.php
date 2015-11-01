@@ -28,7 +28,13 @@ class Application_Form_Orders_Release extends Application_Form {
             $element = $this->getElement('id-' . $i);
             $element->setValue($product->id);
             $element->setCheckedValue($product->id);
-            $element->setLabel($product->product . ' (' . $product->serial . ')');
+            //$element->setLabel($product->product . ' (' . $product->serial . ')');
+            $desc = $product->product . ' (';
+            if ($serial = $product->serial) {
+                $desc .= $product->serial . ', ';
+            }
+            $desc .= max(0,$product->quantity) . ' ' . $product->getProduct()->getUnit()->acronym . ')';
+            $element->setLabel($desc);
             $element->setChecked(true);
         }
     }

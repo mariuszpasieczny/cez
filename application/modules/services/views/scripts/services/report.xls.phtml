@@ -60,7 +60,7 @@ foreach ($vars['services'] as $service) {
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
         $returns = array();
-        if ($returns = $service->getReturns()) {
+        if ($returns = $service->getReturns()->count() || $returns = $service->getReturns()) {
             $demageCodes = array();
             $value = array();
             foreach ($returns as $return) {
@@ -73,6 +73,11 @@ foreach ($vars['services'] as $service) {
             $column = 'COLUMN_TECHNICALCOMMENTS';
             $key = constant("Application_Model_Services_XLS_Installation::$column");
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $service->technicalcomments . "\n" . join(',', $demageCodes));
+        } else if ($returns = $service->productsreturned) {
+            $value = $returns;
+            $column = 'COLUMN_PRODUCTSRETURNED';
+            $key = constant("Application_Model_Services_XLS_Installation::$column");
+            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
     }
     if ($vars['typeid'] == $vars['types']->find('service', 'acronym')->id) {
@@ -118,7 +123,7 @@ foreach ($vars['services'] as $service) {
             $objPHPExcel->getActiveSheet()->getStyle("A$rowNo:AC$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('92d050');
         }
         //$objPHPExcel->getActiveSheet()->getStyle("AO$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('A1A1A1');
-        if ($returns = $service->getReturns()->count()) {
+        if ($returns = $service->getReturns()->count() || $returns = $service->getReturns()) {
             $demageCodes = array();
             $value = array();
             foreach ($returns as $return) {
@@ -134,7 +139,7 @@ foreach ($vars['services'] as $service) {
         } else if ($returns = $service->productsreturned) {
             $value = $returns;
             $column = 'COLUMN_PRODUCTSRETURNED';
-            $key = constant("Application_Model_Services_XLS_Installation::$column");
+            $key = constant("Application_Model_Services_XLS_Service::$column");
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
         if ($solution = $service->solutioncode) {

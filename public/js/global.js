@@ -144,7 +144,7 @@ $(function() {
             enctype: 'multipart/form-data',
             data: $(this).parents('form').serialize(true),
             success: function(data, status, xhr) {
-                var header = xhr.getResponseHeader('Content-Disposition');console.log(header);
+                var header = xhr.getResponseHeader('Content-Disposition');
                 if (header) {
                     var file = header.substr(header.indexOf('filename=') + 'filename='.length, header.length);
                     document.location = '/files/download/file/' + Base64.encode(file);

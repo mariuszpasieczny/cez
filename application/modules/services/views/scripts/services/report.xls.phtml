@@ -60,7 +60,8 @@ foreach ($vars['services'] as $service) {
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
         $returns = array();
-        if ($returns = $service->getReturns()->count() || $returns = $service->getReturns()) {
+        if ($service->getReturns()->count()) {
+            $returns = $service->getReturns();
             $demageCodes = array();
             $value = array();
             foreach ($returns as $return) {
@@ -123,7 +124,8 @@ foreach ($vars['services'] as $service) {
             $objPHPExcel->getActiveSheet()->getStyle("A$rowNo:AC$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('92d050');
         }
         //$objPHPExcel->getActiveSheet()->getStyle("AO$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('A1A1A1');
-        if ($returns = $service->getReturns()->count() || $returns = $service->getReturns()) {
+        if ($service->getReturns()->count()) {
+            $returns = $service->getReturns();
             $demageCodes = array();
             $value = array();
             foreach ($returns as $return) {

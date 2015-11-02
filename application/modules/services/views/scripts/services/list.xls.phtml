@@ -71,7 +71,8 @@ foreach ($vars['services'] as $service) {
         $value = isset($value) ? ($value ? 'tak' : 'nie') : '';
         $key = Application_Model_Services_XLS_Installation::COLUMN_CLOSEDUPC;
         $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
-        if ($returns = $service->getReturns()->count() || $returns = $service->getReturns()) {
+        if ($service->getReturns()->count()) {
+            $returns = $service->getReturns();
             $value = array();
             foreach ($returns as $return) {
                 $value[] = $return->name;
@@ -125,7 +126,8 @@ foreach ($vars['services'] as $service) {
             $objPHPExcel->getActiveSheet()->getStyle("A$rowNo:AC$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('92d050');
         }
         //$objPHPExcel->getActiveSheet()->getStyle("AO$rowNo")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('A1A1A1');
-        if ($returns = $service->getReturns()->count() || $returns = $service->getReturns()) {
+        if ($service->getReturns()->count()) {
+            $returns = $service->getReturns();
             $value = array();
             foreach ($returns as $return) {
                 $value[] = $return->name;

@@ -36,12 +36,6 @@
             allow_single_deselect: true,
             placeholder_text_multiple: 'dodaj'
         });
-        setTimeout(function() {
-            $('[name^=demagecodeid]').each(function(index, element) {
-                $(element).val($(element).find('option[selected=selected]').attr('value'));
-                $(element).trigger("chosen:updated");
-            });
-        }, 100);
         $('.chosen-select[name^=installationcodeid]').chosen({
             search_contains: true,
             allow_single_deselect: true,
@@ -325,7 +319,7 @@
                 return false;
             });
             function onModemCodeChange() {
-                if ($("#modeminterchangecodeid-element").is(':visible')) {
+                if ($("#modeminterchangecodeid-element").is(':visible') && $("#modeminterchangecodeid").val()) {
                     if ($("#modeminterchangecodeid").val()) {
                         $('[name^=demagecodeid]').first().val($("#modeminterchangecodeid").val()).trigger("chosen:updated");
                     } else {
@@ -334,7 +328,7 @@
                 }
             };
             function onDecoderCodeChange() {
-                if ($("#decoderinterchangecodeid-element").is(':visible')) {
+                if ($("#decoderinterchangecodeid-element").is(':visible') && $("#decoderinterchangecodeid").val()) {
                     if ($("#decoderinterchangecodeid").val()) {
                         $('[name^=demagecodeid]').first().val($("#decoderinterchangecodeid").val()).trigger("chosen:updated");
                     } else {
@@ -343,11 +337,19 @@
                 }
             };
             $("#solutioncodeid,#performed,#decoderinterchangecodeid,#modeminterchangecodeid").on("change", function(e) {
+                $('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
                 onModemCodeChange();
                 onDecoderCodeChange();
             });
-            onModemCodeChange();
-            onDecoderCodeChange();
+            /*setTimeout(function() {
+                $('[name^=demagecodeid]').each(function(index, element) {
+                    $(element).val($(element).find('option[selected=selected]').attr('value'));
+                    $(element).trigger("chosen:updated");
+                });
+            }, 100);*/
+            //$('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
+            //onModemCodeChange();
+            //onDecoderCodeChange();
 
 <?php elseif ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
             /*$("#datefinished").datetimepicker({

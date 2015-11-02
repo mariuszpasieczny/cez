@@ -75,6 +75,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         //return $this->findDependentRowset('Application_Model_Services_Products_Table', 'Service');
         $products = new Application_Model_Services_Products_Table();
         $products->setLazyLoading(false);
+        $products->setOrderBy(array('id ASC'));
         return $products->getAll(array('serviceid' => $this->id));
     }
 
@@ -82,6 +83,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         //return $this->findDependentRowset('Application_Model_Services_Products_Table', 'Service');
         $products = new Application_Model_Services_Returns_Table();
         $products->setLazyLoading(false);
+        $products->setOrderBy(array('id ASC'));
         return $products->getAll(array('serviceid' => $this->id));
     }
 
@@ -89,6 +91,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         //return $this->findDependentRowset('Application_Model_Services_Codes_Table', 'Service');
         $codes = new Application_Model_Services_Codes_Table();
         $codes->setLazyLoading(false);
+        $products->setOrderBy(array('id ASC'));
         return $codes->getAll(array('serviceid' => $this->id));
     }
         

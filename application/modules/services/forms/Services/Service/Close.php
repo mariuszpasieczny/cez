@@ -279,7 +279,7 @@ class Application_Form_Services_Service_Close extends Application_Form {
           //),
           'class' => 'form-control chosen-select',
           )) */
-        $element = $this->createElement('select', 'solutioncodeid', array(
+        $element = new Application_Form_Element_SelectAttribs('solutioncodeid', array(
             'label' => 'Kod rozwiązania:',
             'class' => 'form-control chosen-select',
         ));

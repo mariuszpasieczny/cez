@@ -642,8 +642,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             return;
                         }
                         $params = array('serviceid' => $service->id, 'quantity' => $quantity);
-                        if (preg_match("/\d+/", $orderLineId)) {
-                            $orderLine = $this->_orderlines->find($orderLineId)->current();
+                        if ($orderLine = $this->_orderlines->find($orderLineId)->current()) {
                             $params['productid'] = $orderLine->id;
                             $params['productname'] = $orderLine->getProduct()->name;
                             $orderLine->qtyavailable -= (int) $quantity;
@@ -1569,8 +1568,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             return;
                         }
                         $params = array('serviceid' => $service->id, 'quantity' => $quantity);
-                        if (preg_match("/\d+/", $orderLineId)) {
-                            $orderLine = $this->_orderlines->find($orderLineId)->current();
+                        if ($orderLine = $this->_orderlines->find($orderLineId)->current()) {
                             $params['productid'] = $orderLine->id;
                             $params['productname'] = $orderLine->getProduct()->name;
                             $orderLine->qtyavailable -= (int) $quantity;
@@ -2075,8 +2073,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             return;
                         }
                         $params = array('serviceid' => $service->id, 'quantity' => $quantity);
-                        if (preg_match("/\d+/", $orderLineId)) {
-                            $orderLine = $this->_orderlines->find($orderLineId)->current();
+                        if ($orderLine = $this->_orderlines->find($orderLineId)->current()) {
                             $params['productid'] = $orderLine->id;
                             $params['productname'] = $orderLine->getProduct()->name;
                             $orderLine->qtyavailable -= (int) $quantity;
@@ -2350,15 +2347,16 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         $product->delete();
                     }
                     foreach ($service->getProducts() as $product) {
-                        $orderLine = $this->_orderlines->find($product->productid)->current();
-                        $orderLine->statusid = $statusReleased->id;
-                        //$orderLine->serviceid = null;
-                        $orderLine->qtyavailable += $orderLine->quantity;
-                        if ($orderLine->quantity > $orderLine->qtyavailable) {
-                            $form->getElement('id-' . $i)->setErrors(array('productid' => 'Wystąpił problem z dodaniem produktu'));
-                            return;
+                        if ($orderLine = $this->_orderlines->find($product->productid)->current()) {
+                            $orderLine->statusid = $statusReleased->id;
+                            //$orderLine->serviceid = null;
+                            $orderLine->qtyavailable += $orderLine->quantity;
+                            if ($orderLine->quantity > $orderLine->qtyavailable) {
+                                $form->getElement('id-' . $i)->setErrors(array('productid' => 'Wystąpił problem z dodaniem produktu'));
+                                return;
+                            }
+                            $orderLine->save();
                         }
-                        $orderLine->save();
                         $product->delete();
                     }
                     foreach ($service->getCodes() as $attribute) {

@@ -111,6 +111,8 @@
                         div.find('input').attr('id', 'demaged-demaged-' + length + '');
                         div.attr('id', 'demaged-' + length + '-label');
                         div.find('label').attr('for', 'demaged-demaged-' + length + '');
+                        div.find('select[name^=demagecodeid]').parents('span').show();
+                        div.find('select[name^=demagecodeid]').parents('span').prev('span').show();
                         $(div).insertAfter($(e.currentTarget).parents('div.form-group'));
                         $('.chosen-select[name^="productreturnedid[productreturnedid-' + length + ']"]').chosen({
                             search_contains: true,

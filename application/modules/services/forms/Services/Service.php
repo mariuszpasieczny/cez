@@ -661,7 +661,7 @@ class Application_Form_Services_Service extends Application_Form {
         ));
         $this->addElement($element);
         
-        $element = $this->createElement('select', 'solutioncodeid', array(
+        $element = new Application_Form_Element_SelectAttribs('solutioncodeid', array(
             'label' => 'Kod rozwiązania:',
             'class' => 'form-control chosen-select',
         ));

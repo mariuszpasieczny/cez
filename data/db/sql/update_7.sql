@@ -60,6 +60,65 @@ VIEW `orderlinesview` AS
                 JOIN `dictionaries` `d` ON ((`d`.`parentid` = `p`.`id`)))
             WHERE
                 ((`p`.`acronym` = 'orders')
+                    AND (`d`.`acronym` = 'new'))) AS `statusid`,
+        CONCAT(`u`.`lastname`, ' ', `u`.`firstname`) AS `technician`,
+        (SELECT 
+                `d`.`name`
+            FROM
+                (`dictionaries` `p`
+                JOIN `dictionaries` `d` ON ((`d`.`parentid` = `p`.`id`)))
+            WHERE
+                ((`p`.`acronym` = 'orders')
+                    AND (`d`.`acronym` = 'new'))) AS `status`,
+        (SELECT 
+                `d`.`acronym`
+            FROM
+                (`dictionaries` `p`
+                JOIN `dictionaries` `d` ON ((`d`.`parentid` = `p`.`id`)))
+            WHERE
+                ((`p`.`acronym` = 'orders')
+                    AND (`d`.`acronym` = 'new'))) AS `statusacronym`,
+        `p`.`name` AS `product`,
+        `p`.`serial` AS `serial`,
+        NULL AS `client`,
+        NULL AS `clientid`,
+        NULL AS `clientnumber`,
+        `o`.`userid` AS `userid`
+    FROM
+        (((((((`orderlines` `ol`
+        LEFT JOIN `users` `u` ON ((`ol`.`technicianid` = `u`.`id`)))
+        LEFT JOIN `dictionaries` `ds` ON ((`ol`.`statusid` = `ds`.`id`)))
+        LEFT JOIN `productsview` `p` ON ((`ol`.`productid` = `p`.`id`)))
+        LEFT JOIN `serviceproducts` `sp` ON ((`sp`.`productid` = `ol`.`id`)))
+        LEFT JOIN `services` `s` ON ((`sp`.`serviceid` = `s`.`id`)))
+        LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
+        LEFT JOIN `clients` `c` ON ((`c`.`id` = `s`.`clientid`)))
+    WHERE
+        ((`ol`.`qtyavailable` = 0)
+            AND (`ol`.`qtyreturned` = 0)) 
+    UNION SELECT 
+        `p`.`warehouseid` AS `warehouseid`,
+        `p`.`warehouse` AS `warehouse`,
+        `ol`.`id` AS `id`,
+        `ol`.`orderid` AS `orderid`,
+        `ol`.`productid` AS `productid`,
+        `ol`.`technicianid` AS `technicianid`,
+        `ol`.`quantity` AS `quantity`,
+        `ol`.`qtyreturned` AS `qtyreturned`,
+        `ol`.`qtyavailable` AS `qtyavailable`,
+        `ol`.`qtyavailable` AS `qtyreleased`,
+        `p`.`unitacronym` AS `unitacronym`,
+        `p`.`unitid` AS `unitid`,
+        `ol`.`dateadd` AS `dateadd`,
+        `ol`.`releasedate` AS `releasedate`,
+        `sp`.`serviceid` AS `serviceid`,
+        (SELECT 
+                `d`.`id`
+            FROM
+                (`dictionaries` `p`
+                JOIN `dictionaries` `d` ON ((`d`.`parentid` = `p`.`id`)))
+            WHERE
+                ((`p`.`acronym` = 'orders')
                     AND (`d`.`acronym` = 'released'))) AS `statusid`,
         CONCAT(`u`.`lastname`, ' ', `u`.`firstname`) AS `technician`,
         (SELECT 

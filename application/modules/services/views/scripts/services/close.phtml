@@ -372,12 +372,12 @@
                     case 'productreturnedid':
                         if (performed == 1) {
                             $('[name^=' + value + ']').removeAttr('disabled').parents('div.form-group').show();
-                            $('[name^=' + value + ']').removeAttr('disabled').parents('div.form-group').prev().show();
+                            //$('[name^=' + value + ']').removeAttr('disabled').parents('div.form-group').prev().show();
                             $('#return-label').show();
                             $('#product-label').show();
                         } else {
                             $('[name^=' + value + ']').attr('disabled','disabled').parents('div.form-group').hide();
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('div.form-group').prev().hide();
+                            //$('[name^=' + value + ']').attr('disabled','disabled').parents('div.form-group').prev().hide();
                             $('#return-label').hide();
                             $('#product-label').hide();
                         }

@@ -34,7 +34,7 @@ class Application_Form_Products_Import extends Application_Form
         $this->setOptions(array('class' => 'file-upload'));
         
         $element = $this->createElement('select', 'warehouseid', array(
-            'label'      => 'Warehouse:',
+            'label'      => 'Magazyn:',
             'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(
@@ -45,7 +45,7 @@ class Application_Form_Products_Import extends Application_Form
         $this->addElement($element);
         
         $element = $this->createElement('select', 'unitid', array(
-            'label'      => 'Unit:',
+            'label'      => 'Jednostka:',
             'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(
@@ -56,7 +56,7 @@ class Application_Form_Products_Import extends Application_Form
         $this->addElement($element);
         
         $element = $this->createElement('file', 'import', array(
-            'label'      => 'File:',
+            'label'      => 'Plik:',
             'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(
@@ -66,8 +66,22 @@ class Application_Form_Products_Import extends Application_Form
         ))->setDestination(APPLICATION_PATH . "/../data/temp")
             ->addValidator('Count', false, 1)
             ->addValidator('Size', false, 1024*1024*1024)
-            ->addValidator('Extension', false, 'csv')
+            ->addValidator('Extension', false, 'xls')
             ->setValueDisabled(true);
+        $this->addElement($element);
+        
+        $element = $this->createElement('radio', 'format', array(
+            'label'      => 'Format:',
+            'required'   => true,
+            'filters'    => array('StringTrim'),
+            'validators' => array(
+            //    array('lessThan', true, array('score')),
+            ),
+            'multiOptions' => array('default' => 'Domyślny (plik XLS, od wiersza 2-go, A: SN, B: nazwa, C: ilość, D: nr karty)', 
+                'arvato' => 'Arvato  (plik XLS, od wiersza 2-go, B: nazwa, C: SN, D: nr karty, E: ilość)'),
+            'value' => 'default',
+            'class' => 'form-group input-small inline',
+        ));
         $this->addElement($element);
     }
     

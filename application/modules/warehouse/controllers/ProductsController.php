@@ -50,7 +50,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
             $this->_products->setPageNumber($pageNumber);
         }
         $orderBy = $request->getParam('orderBy');
-        $columns = array('warehouse', 'name', 'quantity', 'qtyavailable', 'unit', 'serial', 'pairedcard', 'status');
+        $columns = array('dateadd', 'warehouse', 'name', 'quantity', 'qtyavailable', 'unit', 'serial', 'pairedcard', 'status');
         if ($orderBy) {
             $orderBy = explode(" ", $orderBy);
             $this->_products->setOrderBy("{$columns[$orderBy[0] - 1]} {$orderBy[1]}");
@@ -146,9 +146,10 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
 
                     //$reader = new Utils_File_Reader_CSV();
                     //$data = $reader->read($upload->getFileName('import', true), 1);
-                    $reader = new Utils_File_Reader_PHPExcel(array('readerType' => 'CSV', 'readOnly' => true, 'charset' => 'CP1250'));
+                    //$reader = new Utils_File_Reader_PHPExcel(array('readerType' => 'CSV', 'readOnly' => true, 'charset' => 'CP1250'));
+                    $reader = new Utils_File_Reader_PHPExcel(array('readerType' => 'Excel5', 'readOnly' => true));
                     $sheet = $reader->read($upload->getFileName('import', true), 1);
-                    $rows = $sheet->getRowIterator(1);
+                    $rows = $sheet->getRowIterator(2);
 
                     foreach ($rows as $i => $row) {
                         $line = array();
@@ -161,24 +162,44 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                         
                         try {
                             foreach ($cellIterator as $key => $cell) {
-                                $fields = preg_split("/;/", $cell);
-                                if (sizeof(preg_split("/,/", $cell)) > 1) {
-                                    throw new Exception('Nieprawidłowy format pliku, dozwolony format pliku to pola oddzielane przecinkiem');
-                                }
-                                switch ($key) {
-                                    case 'A':
-                                        $params['serial'] = $cell->getValue();
+                                //$fields = preg_split("/;/", $cell);
+                                //if (sizeof(preg_split("/,/", $cell)) > 1) {
+                                //    throw new Exception('Nieprawidłowy format pliku, dozwolony format pliku to pola oddzielane przecinkiem');
+                                //}
+                                switch ($values['format']) {
+                                    case 'arvato':
+                                        switch ($key) {
+                                            case 'B':
+                                                $params['name'] = $cell->getValue();
+                                                break;
+                                            case 'C':
+                                                $params['serial'] = $cell->getValue();
+                                                break;
+                                            case 'D': 
+                                                $params['pairedcard'] = $cell->getValue();
+                                                break;
+                                            case 'E': 
+                                                $params['quantity'] = $cell->getValue();
+                                                $params['qtyavailable'] = $cell->getValue();
+                                                break;
+                                        }
                                         break;
-                                    case 'B':
-                                        $params['name'] = $cell->getValue();
-                                        break;
-                                    case 'C': 
-                                        $params['quantity'] = $cell->getValue();
-                                        $params['qtyavailable'] = $cell->getValue();
-                                        break;
-                                    case 'D': 
-                                        $params['pairedcard'] = $cell->getValue();
-                                        break;
+                                    default:
+                                        switch ($key) {
+                                            case 'A':
+                                                $params['serial'] = $cell->getValue();
+                                                break;
+                                            case 'B':
+                                                $params['name'] = $cell->getValue();
+                                                break;
+                                            case 'C': 
+                                                $params['quantity'] = $cell->getValue();
+                                                $params['qtyavailable'] = $cell->getValue();
+                                                break;
+                                            case 'D': 
+                                                $params['pairedcard'] = $cell->getValue();
+                                                break;
+                                        }
                                 }
                             }
 

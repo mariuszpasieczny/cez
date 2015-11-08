@@ -159,7 +159,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             //$this->_services->setWhere($this->_services->getAdapter()->quoteInto("statusid IN (?)", $statuses));
             //$request->setParam('statusid', $statuses);
             $planneddatefrom = date('Y-m-d');
-            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("planneddate >= ?", $planneddatefrom));
+            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') >= ?", $planneddatefrom));
             $request->setParam('planneddatefrom', $planneddatefrom);
         }
         $this->view->request = $request->getParams();

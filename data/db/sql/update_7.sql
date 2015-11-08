@@ -2,7 +2,6 @@ alter table products drop index serial;
 ALTER TABLE products ADD pairedcard varchar(64);
 ALTER TABLE orderlines ADD qtyavailable int(11) default 0;
 update orderlines set qtyavailable = quantity where not exists (select 1 from serviceproducts where productid = id);
-ALTER TABLE orderlines DROP serviceid;
 ALTER TABLE serviceproducts ADD quantity int(11) NOT NULL;
 ALTER TABLE orderlines ADD qtyreturned int(11) NOT NULL;
 ALTER TABLE serviceproducts ADD dateadd TIMESTAMP NOT NULL default NOW();
@@ -95,7 +94,15 @@ VIEW `orderlinesview` AS
         LEFT JOIN `clients` `c` ON ((`c`.`id` = `s`.`clientid`)))
     WHERE
         ((`ol`.`qtyavailable` = 0)
-            AND (`ol`.`qtyreturned` = 0)) 
+            AND (`ol`.`qtyreturned` = 0)
+            AND (`ol`.`statusid` <> (SELECT 
+                `d`.`id`
+            FROM
+                (`dictionaries` `p`
+                JOIN `dictionaries` `d` ON ((`d`.`parentid` = `p`.`id`)))
+            WHERE
+                ((`p`.`acronym` = 'orders')
+                    AND (`d`.`acronym` = 'deleted'))))) 
     UNION SELECT 
         `p`.`warehouseid` AS `warehouseid`,
         `p`.`warehouse` AS `warehouse`,
@@ -153,7 +160,8 @@ VIEW `orderlinesview` AS
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
         LEFT JOIN `clients` `c` ON ((`c`.`id` = `s`.`clientid`)))
     WHERE
-        (`ol`.`qtyavailable` > 0) 
+        ((`ol`.`qtyavailable` > 0)
+            AND (`ol`.`technicianid` > 0)) 
     UNION SELECT 
         `p`.`warehouseid` AS `warehouseid`,
         `p`.`warehouse` AS `warehouse`,

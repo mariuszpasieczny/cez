@@ -1,4 +1,8 @@
 $(function() {
+    
+    $(document).on('focus', 'input,textarea', function(event) {
+        $(this).select();
+    });
 
     relHistory = new Array(document.location.pathname);
 

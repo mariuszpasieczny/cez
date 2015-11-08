@@ -304,8 +304,8 @@ class Services_ReportsController extends Application_Controller_Abstract {
         if (empty($params)) {
             $planneddatefrom = date('Y-m-01');
             $planneddatetill = date('Y-m-d');
-            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("planneddatefrom >= ?", $planneddatefrom));
-            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("planneddatetill <= ?", $planneddatetill));
+            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("DATE_FORMAT(planneddatefrom, '%Y-%m-%d') >= ?", $planneddatefrom));
+            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("DATE_FORMAT(planneddatetill, '%Y-%m-%d') <= ?", $planneddatetill));
             $request->setParam('planneddatefrom', $planneddatefrom);
             $request->setParam('planneddatetill', $planneddatetill);
         }

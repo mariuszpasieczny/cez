@@ -41,6 +41,12 @@ class Application_Model_Products_Table extends Application_Db_Table
     }
     
     public function getAll($params = array(), $rows = null, $root = null) {
+        if (!empty($params['datefrom'])) {
+            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(dateadd, '%Y-%m-%d') >= ?", $params['datefrom']));
+        }
+        if (!empty($params['datetill'])) {
+            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(dateadd, '%Y-%m-%d') <= ?", $params['datetill']));
+        }
         if (!empty($params['qtyavailable'])) {
             $this->setWhere($this->getAdapter()->quoteInto("qtyavailable >= ?", $params['qtyavailable']));
             unset($params['qtyavailable']);

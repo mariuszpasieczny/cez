@@ -1,5 +1,6 @@
 alter table products drop index serial;
 ALTER TABLE products ADD pairedcard varchar(64);
+ALTER TABLE products ADD price FLOAT(7,2);
 ALTER TABLE orderlines ADD qtyavailable int(11) default 0;
 update orderlines set qtyavailable = quantity where not exists (select 1 from serviceproducts where productid = id);
 ALTER TABLE serviceproducts ADD quantity int(11) NOT NULL;
@@ -18,6 +19,7 @@ VIEW `productsview` AS
         `p`.`unitid` AS `unitid`,
         `d`.`acronym` AS `unitacronym`,
         `p`.`quantity` AS `quantity`,
+        `p`.`price` AS `price`,
         `p`.`qtyreserved` AS `qtyreserved`,
         `p`.`qtyreleased` AS `qtyreleased`,
         `p`.`qtyreturned` AS `qtyreturned`,

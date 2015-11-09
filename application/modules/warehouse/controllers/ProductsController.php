@@ -104,6 +104,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($request->getPost())) {
                 $values = $form->getValues();
+                $values['price'] = str_replace(',', '.', $values['price']);
                 if ($id) {
                     $product->setFromArray($values);
                 } else {
@@ -182,6 +183,9 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                                                 $params['quantity'] = $cell->getValue();
                                                 $params['qtyavailable'] = $cell->getValue();
                                                 break;
+                                            case 'F': 
+                                                $params['price'] = $cell->getValue();
+                                                break;
                                         }
                                         break;
                                     default:
@@ -198,6 +202,9 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                                                 break;
                                             case 'D': 
                                                 $params['pairedcard'] = $cell->getValue();
+                                                break;
+                                            case 'E': 
+                                                $params['price'] = $cell->getValue();
                                                 break;
                                         }
                                 }

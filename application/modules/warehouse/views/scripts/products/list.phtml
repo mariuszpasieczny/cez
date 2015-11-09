@@ -64,6 +64,7 @@
                 <th>Ilość wydana</th>
                 <th>Ilość zwrócona</th>-->
                 <th style="max-width: 75px !important;">Jednostka</th>
+                <th style="max-width: 55px !important;">Cena jednostkowa</th>
                 <th style="max-width: 125px !important;">SN</th>
                 <th style="max-width: 75px !important;">Sprzęt sparowany</th>
                 <th style="max-width: 75px !important;">Status</th>
@@ -109,6 +110,7 @@
                 <td><?php echo $this->escape($product->qtyreleased); ?></td>
                 <td><?php echo $this->escape($product->qtyreturned); ?></td>-->
                 <td><?php echo $this->escape($product->unit); ?></td>
+                <td><?php echo $product->price ? $this->escape($product->price) : '&nbsp;'; ?></td>
                 <td><?php echo $product->serial ? $this->escape($product->serial) : '&nbsp;'; ?></td>
                 <td><?php echo $product->pairedcard ? $this->escape($product->pairedcard) : '&nbsp;'; ?></td>
                 <td><?php echo $this->escape($product->status); ?></td>
@@ -169,7 +171,7 @@
             },
             {
                 'bSortable': false,
-                'aTargets': [10]
+                'aTargets': [11]
             }];
     });
 </script>

@@ -77,8 +77,8 @@ class Application_Form_Products_Import extends Application_Form
             'validators' => array(
             //    array('lessThan', true, array('score')),
             ),
-            'multiOptions' => array('default' => 'Domyślny (plik XLS, od wiersza 2-go, A: SN, B: nazwa, C: ilość, D: nr karty)', 
-                'arvato' => 'Arvato  (plik XLS, od wiersza 2-go, B: nazwa, C: SN, D: nr karty, E: ilość)'),
+            'multiOptions' => array('default' => 'Domyślny (plik XLS, od wiersza 2-go, A: SN, B: nazwa, C: ilość, D: nr karty, E: cena jednostkowa)', 
+                'arvato' => 'Arvato  (plik XLS, od wiersza 2-go, B: nazwa, C: SN, D: nr karty, E: ilość, F: cena jednostkowa)'),
             'value' => 'default',
             'class' => 'form-group input-small inline',
         ));

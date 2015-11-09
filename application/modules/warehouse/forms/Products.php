@@ -119,6 +119,17 @@ class Application_Form_Products extends Application_Form
             ),
             'class' => 'form-control chosen-select',
         ));
+ 
+        // Add an email element
+        $this->addElement('text', 'price', array(
+            'label'      => 'Cena jednostkowa:',
+            'required'   => true,
+            'filters'    => array('StringTrim'),
+            'validators' => array(
+                'NotEmpty',
+            ),
+            'class' => 'form-control',
+        ));
     }
     
 }

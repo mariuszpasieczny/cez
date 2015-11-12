@@ -70,7 +70,7 @@ class Application_Model_Services_XLS_Installation extends Application_Model_Serv
         foreach ($data as $key => $cell) {
             switch ($key) {
                 case self::COLUMN_NUMBER:
-                    $this->number = $cell->getValue();
+                    $this->number = trim($cell->getValue());
                     break;
                 case self::COLUMN_PLANNEDDATE:
                     //$planneddate = new Zend_Date($cell->getValue(), 'YYYYMMDD');
@@ -114,7 +114,7 @@ class Application_Model_Services_XLS_Installation extends Application_Model_Serv
                         'lastname' => $lastName, 
                         //'email' => $technician
                     );*/
-                    $technician = $cell->getCalculatedValue();
+                    $technician = trim($cell->getCalculatedValue());
                     if (!empty($technician)) {
                         //@list($firstName, $lastName) = @explode('.', $technician);
                         //if (!$firstName) {
@@ -135,10 +135,10 @@ class Application_Model_Services_XLS_Installation extends Application_Model_Serv
                     $this->_client['number'] = $cell->getValue();
                     break;
                 case self::COLUMN_CALENDAR:
-                    $this->_calendar = $cell->getValue();
+                    $this->_calendar = trim($cell->getValue());
                     break;
                 case self::COLUMN_SERVICETYPE:
-                    $this->_servicetype = $cell->getValue();
+                    $this->_servicetype = trim($cell->getValue());
                     break;
                 case self::COLUMN_CLIENT_CITY:
                     $this->_client['city'] = $cell->getValue();

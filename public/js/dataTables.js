@@ -24,6 +24,7 @@ $(function() {
         "order": orderBy && orderBy[0] != 6 ? [[orderBy[0], orderBy[1].toLowerCase()]] : [],
         //"order": [[0, "asc"]],
         "scrollY": "500px",
+        "scrollX": true,
         "scrollCollapse": true,
         //"deferRender": true,
         //"processing": true,

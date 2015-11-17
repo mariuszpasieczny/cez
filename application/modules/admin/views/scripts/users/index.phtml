@@ -11,7 +11,7 @@
                 <th>Telefon</th>
                 <th>Rola</th>
                 <th>Status</th>
-                <th>&nbsp;</th>
+                <th style="white-space: nowrap;">&nbsp;</th>
             </tr>
         </thead>
         <?php foreach ($this->users as $user) : ?>
@@ -42,4 +42,10 @@
 <?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
 <script>
     params = <?php echo Zend_Json::encode($this->request); ?>;
+    columnsDef = [{
+                    'bSortable': false,
+                    'aTargets': [0]
+                }];
+    sorting =  false;
 </script>
+<script src="/js/dataTables.js" />

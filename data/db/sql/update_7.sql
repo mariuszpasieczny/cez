@@ -97,14 +97,14 @@ VIEW `orderlinesview` AS
     WHERE
         ((`ol`.`qtyavailable` = 0)
             AND (`ol`.`qtyreturned` = 0)
-            AND (`ol`.`statusid` <> (SELECT 
+            AND (`ol`.`statusid` = (SELECT 
                 `d`.`id`
             FROM
                 (`dictionaries` `p`
                 JOIN `dictionaries` `d` ON ((`d`.`parentid` = `p`.`id`)))
             WHERE
                 ((`p`.`acronym` = 'orders')
-                    AND (`d`.`acronym` = 'deleted'))))) 
+                    AND (`d`.`acronym` = 'new'))))) 
     UNION SELECT 
         `p`.`warehouseid` AS `warehouseid`,
         `p`.`warehouse` AS `warehouse`,
@@ -282,22 +282,6 @@ VIEW `orderlinesview` AS
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
     WHERE
         (`ol`.`qtyreturned` > 0);
-CREATE OR REPLACE
-VIEW `serviceproductsview` AS
-    SELECT 
-        `sp`.`id` AS `id`,
-        `sp`.`serviceid` AS `serviceid`,
-        `sp`.`productid` AS `productid`,
-        `sp`.`quantity` AS `quantity`,
-        IF(ISNULL(`p`.`name`),
-            `sp`.`productname`,
-            `p`.`name`) AS `name`,
-        `p`.`serial` AS `serial`,
-        `p`.`unitid` AS `unitid`
-    FROM
-        ((`serviceproducts` `sp`
-        LEFT JOIN `orderlines` `ol` ON ((`sp`.`productid` = `ol`.`id`)))
-        LEFT JOIN `products` `p` ON ((`p`.`id` = `ol`.`productid`)));
 
 update serviceproducts sp set quantity = (select quantity - qtyavailable from orderlines ol where ol.id = sp.productid);
 insert into dictionaries (parentid,acronym,name) (select parentid,'new','Nowe' from dictionaries where acronym = 'instock');

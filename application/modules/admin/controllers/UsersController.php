@@ -45,8 +45,8 @@ class Admin_UsersController extends Application_Controller_Abstract
             $this->_users->setPageNumber($pageNumber);
         }
         $orderBy = $request->getParam('orderBy');
-        $columns = array('firstname','lastname','email','role');
-        /*if ($orderBy) {
+        $columns = array('firstname', 'lastname', 'symbol', 'email', 'phoneno', 'role', 'status');
+        if ($orderBy) {
             $orderBy = explode(" ", $orderBy);
             $this->_users->setOrderBy("{$columns[$orderBy[0]]} {$orderBy[1]}");
         }
@@ -56,7 +56,7 @@ class Admin_UsersController extends Application_Controller_Abstract
                 continue;
             }
             $orderBy = "$ix {$orderBy[1]}";
-        }*/
+        }
         $request->setParam('orderBy', $orderBy);
         $request->setParam('count', $this->_users->getItemCountPerPage());
         $this->_users->setLazyLoading(false);

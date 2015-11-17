@@ -26,6 +26,7 @@ $(function() {
         "scrollY": "500px",
         "scrollX": true,
         "scrollCollapse": true,
+        "bSort" : typeof sorting != 'undefined' ? sorting : true,
         //"deferRender": true,
         //"processing": true,
         //"search": {

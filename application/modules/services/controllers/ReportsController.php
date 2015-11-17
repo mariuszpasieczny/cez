@@ -324,7 +324,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
             $request->setParam('technicianid', $this->_auth->getIdentity()->id);
         }
         
-        if (!$this->getRequest()->isPost()) {
+        if (!$this->getRequest()->isPost()&&0) {
             return;
         }
         

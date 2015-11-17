@@ -130,7 +130,7 @@
             <th style="max-width: 125px !important;">Status</th>
             <th style="max-width: 15px !important;"><acronym title="Wykonane">Wyk.</acronym></th>
         <?php endif; ?>
-        <th style="max-width: 95px !important;">
+        <th style="max-width: 95px !important; white-space: nowrap;">
             &nbsp;
             <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'assign') && (in_array($this->auth->role, array('coordinator', 'admin')) || $this->request['typeid'] == $this->types->find('service', 'acronym')->id)): ?>
                 <a href="<?php echo $this->baseUrl; ?>/services/services/assign/typeid/<?php echo $this->request['typeid']; ?>" data-target=".modal-body" class="popup-load multi" title="Przypisz">

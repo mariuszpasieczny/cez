@@ -42,18 +42,24 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
             $this->_dictionaries->setPageNumber($pageNumber);
         }
         $orderBy = $request->getParam('orderBy');
-        /* $columns = array('acronym', 'name', 'errorcodeacronym', 'errorcodename');
-          if ($orderBy) {
-          $orderBy = explode(" ", $orderBy);
-          $this->_dictionaries->setOrderBy("{$columns[$orderBy[0]]} {$orderBy[1]}");
-          }
-          $orderBy = explode(" ", $this->_dictionaries->getOrderBy());
-          foreach ($columns as $ix => $columnName) {
-          if ($columnName != $orderBy[0]) {
-          continue;
-          }
-          $orderBy = "$ix {$orderBy[1]}";
-          } */
+        if (@in_array($this->parent->id, array($this->errorCode,$this->cancellationCode,$this->decoderinterchangeCode,$this->installationcancelCode,$this->installationCode,$this->modeminterchangeCode))):
+            $columns = array('acronym', 'name', 'price', 'datefrom', 'dateto');
+        elseif (@in_array($this->parent->id, array($this->solutionCode))):;
+            $columns = array('acronym', 'name', 'errorcodename');
+        else:
+            $columns = array('acronym', 'name');
+        endif;
+        if ($orderBy) {
+            $orderBy = explode(" ", $orderBy);
+            $this->_dictionaries->setOrderBy("{$columns[$orderBy[0]]} {$orderBy[1]}");
+        }
+        $orderBy = explode(" ", $this->_dictionaries->getOrderBy());
+        foreach ($columns as $ix => $columnName) {
+            if ($columnName != $orderBy[0]) {
+                continue;
+            }
+            $orderBy = "$ix {$orderBy[1]}";
+        }
         $request->setParam('orderBy', $orderBy);
         $request->setParam('count', $this->_dictionaries->getItemCountPerPage());
         $status = $this->_dictionaries->getStatusList('dictionaries')->find('deleted', 'acronym');
@@ -96,7 +102,7 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
         $this->view->request = $request->getParams();
         $this->view->parents = $parents;
     }
-    
+
     public function deleteAction() {
         $request = $this->getRequest();
         $id = $request->getParam('id');
@@ -109,7 +115,7 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
         $form->setDefaults($dictionary->toArray());
         $this->view->form = $form;
         $this->view->dictionary = $dictionary;
-        
+
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($request->getPost())) {
                 $values = $form->getValues();
@@ -145,7 +151,7 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
                 $parentid = 1;
             }
         }
-        
+
         $parent = $this->_dictionaries->get($parentid);
         if ($id) {
             $dictionary = $this->_dictionaries->get($id);
@@ -157,7 +163,7 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
             }
             $solutionCodes = $dictionary->getSolutioncodes();
             if ($solutionCodes) {
-                $form->setDefault('solutioncodeid', $solutionCodes->toArray());//var_dump($solutionCodes->toArray());
+                $form->setDefault('solutioncodeid', $solutionCodes->toArray()); //var_dump($solutionCodes->toArray());
             }
             $price = $dictionary->getPrice();
             if ($price->value) {
@@ -254,7 +260,6 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
                         $attribute->entryid = $solutionCodeId;
                         $attribute->value = $dictionary->id;
                         $attribute->save();
-                        
                     }
                 }
                 unset($attribute);

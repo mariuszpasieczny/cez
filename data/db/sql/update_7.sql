@@ -285,3 +285,19 @@ VIEW `orderlinesview` AS
 
 update serviceproducts sp set quantity = (select quantity - qtyavailable from orderlines ol where ol.id = sp.productid);
 insert into dictionaries (parentid,acronym,name) (select parentid,'new','Nowe' from dictionaries where acronym = 'instock');
+CREATE  OR REPLACE
+VIEW `serviceproductsview` AS
+    SELECT 
+        `sp`.`id` AS `id`,
+        `sp`.`serviceid` AS `serviceid`,
+        `sp`.`productid` AS `productid`,
+        `sp`.`quantity` AS `quantity`,
+        IF(ISNULL(`p`.`name`),
+            `sp`.`productname`,
+            `p`.`name`) AS `name`,
+        `p`.`serial` AS `serial`,
+        `p`.`unitid` AS `unitid`
+    FROM
+        ((`serviceproducts` `sp`
+        LEFT JOIN `orderlines` `ol` ON ((`sp`.`productid` = `ol`.`id`)))
+        LEFT JOIN `products` `p` ON ((`p`.`id` = `ol`.`productid`)));

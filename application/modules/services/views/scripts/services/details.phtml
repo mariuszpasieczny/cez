@@ -99,7 +99,7 @@
                     Komentarz technika
                 </div>
                 <div class="col-xs-7 content no-top-border">
-                    <p><?php echo $this->service->technicalcomments ? $this->service->technicalcomments : 'brak'; ?></p>
+                    <p><?php echo $this->service->technicalcomments ? nl2br($this->service->technicalcomments) : 'brak'; ?></p>
                 </div>
             </div>
             <div class="row">
@@ -108,7 +108,7 @@
                     Komentarz koordynatora
                 </div>
                 <div class="col-xs-7 content no-top-border">
-                    <p><?php echo $this->service->coordinatorcomments ? $this->service->coordinatorcomments : 'brak'; ?></p>
+                    <p><?php echo $this->service->coordinatorcomments ? nl2br($this->service->coordinatorcomments) : 'brak'; ?></p>
                 </div>
             </div>
         <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>

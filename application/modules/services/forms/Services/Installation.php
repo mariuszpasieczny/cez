@@ -320,6 +320,7 @@ class Application_Form_Services_Installation extends Application_Form {
             'label' => 'Wykonane:',
             'multiOptions'=>array('' => 'nie ustalone', '0' => 'nie', '1' => 'tak'),
             'value' => '',
+            'required' => true,
             'class' => 'form-control chosen-select'
         ));
         $this->addElement($element);

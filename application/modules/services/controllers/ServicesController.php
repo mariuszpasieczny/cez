@@ -468,8 +468,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $data[$key] = $value;
                 }
             $form->setDefaults($data);
+            $values = $form->getValues();
+            if (($values['performed'] === '1' || $values['performed'] === '0') && !$values['datefinished']) {
+                $form->getElement('datefinished')->setRequired(true);
+            }
             if ($form->isValid($data)) {
-                $values = $form->getValues();
+                
                 /* if ($service && $service->isAssigned() && !$values['technicianid'] && $values['statusid'] != $statuses->find('new', 'acronym')->id) {
                   $form->getElement('statusid')->setErrors(array('statusid' => 'Nie można usunąć przypisanego technika dla przypisanego zlecenia'));
                   return;

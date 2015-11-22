@@ -320,7 +320,7 @@ class Application_Form_Services_Installation extends Application_Form {
             'label' => 'Wykonane:',
             'multiOptions'=>array('' => 'nie ustalone', '0' => 'nie', '1' => 'tak'),
             'value' => '',
-            'required' => true,
+            //'required' => true,
             'class' => 'form-control chosen-select'
         ));
         $this->addElement($element);
@@ -454,10 +454,10 @@ class Application_Form_Services_Installation extends Application_Form {
 
         $element = $this->createElement('datePicker', 'datefinished', array(
             'label' => 'Data zakończenia:',
-            'required'   => true,
+            //'required'   => true,
             'filters' => array('StringTrim'),
             'validators' => array(
-            'NotEmpty',
+            //'NotEmpty',
             ),
             'class' => 'form-control',
         ));

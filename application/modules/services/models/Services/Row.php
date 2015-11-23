@@ -14,6 +14,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
     protected $_calendar;
     protected $_productsreleased;
     protected $_productsreturned;
+    protected $_servicecodes;
 
     public function __get($columnName) {
         try {
@@ -88,11 +89,14 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
     }
 
     public function getCodes() {
-        //return $this->findDependentRowset('Application_Model_Services_Codes_Table', 'Service');
-        $codes = new Application_Model_Services_Codes_Table();
-        $codes->setLazyLoading(false);
-        $codes->setOrderBy(array('id ASC'));
-        return $codes->getAll(array('serviceid' => $this->id));
+        if (!$this->_servicecodes) {
+            //return $this->findDependentRowset('Application_Model_Services_Codes_Table', 'Service');
+            $codes = new Application_Model_Services_Codes_Table();
+            $codes->setLazyLoading(false);
+            $codes->setOrderBy(array('id ASC'));
+            $this->_servicecodes = $codes->getAll(array('serviceid' => $this->id));
+        }
+        return $this->_servicecodes;
     }
         
     public function getWarehouse() {

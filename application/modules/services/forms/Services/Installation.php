@@ -87,22 +87,20 @@ class Application_Form_Services_Installation extends Application_Form {
                 return;
             }
             //$element->addMultiOption(null, 'Wybierz opcję...');
-            foreach ($config as $parent) {
+            foreach ($config as $product) {
                 $desc = '';
-                if ($product = $parent->getProduct()) {
-                    if ($serial = $product->serial) {
-                        $desc = $product->serial . ', ';
-                    }
-                    $desc .= max(0, $parent->qtyavailable) . ' ' . $product->getUnit()->acronym;
-                    if ($desc) {
-                        $desc = $product->name . ' (' . $desc . ')';
-                    } else {
-                        $desc = $product->name;
-                    }
-                } else {
-                    $desc .= 'brak danych';
+                if (!empty($product->serial)) {
+                    $desc = $product->serial . ', ';
                 }
-                $element->addMultiOption($parent['id'], $desc);
+                $desc .= max(0, $product->qtyavailable) . ' ' . $product->unitacronym;
+                if ($desc) {
+                    $desc = $product->product . ' (' . $desc . ')';
+                } else {
+                    $desc = $product->product;
+                }
+                $element->addMultiOption($product->id, 
+                        $desc, 
+                        array('data-serial' => $product->serial));
             }
         }
         $element->addMultiOption(null, 'Wybierz opcję...');
@@ -511,7 +509,7 @@ class Application_Form_Services_Installation extends Application_Form {
                 ))->setAttribs(array('placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
         $this->addElement($element);
         
-        $element = $this->createElement('select', 'productid-0', array(
+        $element = new Application_Form_Element_SelectAttribs('productid-0', array(
                     'label' => 'Sprzęt wydany:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
@@ -520,7 +518,8 @@ class Application_Form_Services_Installation extends Application_Form {
                     //),
                     'belongsTo' => 'productid',
                     'class' => 'form-control chosen-select',
-                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
+                ));
+        $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
         $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
         $this->addElement($element);
         $element = $this->createElement('text', 'quantity-0', array(
@@ -533,7 +532,7 @@ class Application_Form_Services_Installation extends Application_Form {
         $this->addDisplayGroup(array('productid-0', 'quantity-0'), 'product-0')->setAttribs(array('id' => 'product-0'));
         
         for ($i = 1; $i <= $this->_productsCount; $i++) {
-            $element = $this->createElement('select', 'productid-' . $i, array(
+            $element = new Application_Form_Element_SelectAttribs('productid-' . $i, array(
                     //'label' => 'Produkty:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
@@ -542,7 +541,8 @@ class Application_Form_Services_Installation extends Application_Form {
                     //),
                     'belongsTo' => 'productid',
                     'class' => 'form-control chosen-select',
-                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
+                ));
+            $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
             $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
             $element->addDecorator('Label', array('tag' => ''));
             $this->addElement($element);

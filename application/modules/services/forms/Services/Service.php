@@ -92,22 +92,20 @@ class Application_Form_Services_Service extends Application_Form {
                 return;
             }
             //$element->addMultiOption(null, 'Wybierz opcję...');
-            foreach ($config as $parent) {
+            foreach ($config as $product) {
                 $desc = '';
-                if ($product = $parent->getProduct()) {
-                    if ($serial = $product->serial) {
-                        $desc = $product->serial . ', ';
-                    }
-                    $desc .= max(0, $parent->qtyavailable) . ' ' . $product->getUnit()->acronym;
-                    if ($desc) {
-                        $desc = $product->name . ' (' . $desc . ')';
-                    } else {
-                        $desc = $product->name;
-                    }
-                } else {
-                    $desc .= 'brak danych';
+                if (!empty($product->serial)) {
+                    $desc = $product->serial . ', ';
                 }
-                $element->addMultiOption($parent['id'], $desc);
+                $desc .= max(0, $product->qtyavailable) . ' ' . $product->unitacronym;
+                if ($desc) {
+                    $desc = $product->product . ' (' . $desc . ')';
+                } else {
+                    $desc = $product->product;
+                }
+                $element->addMultiOption($product->id, 
+                        $desc, 
+                        array('data-serial' => $product->serial));
             }
         }
     }
@@ -253,9 +251,10 @@ class Application_Form_Services_Service extends Application_Form {
             if (empty($parent['errorcodeacronym'])) {
                 continue;
             }
-            $element->addMultiOption($parent['id'], $parent['acronym'] . ' - ' . $parent['errorcodename'] . ' / ' . $parent['name']
-                ,array('data-errorcodeid' => $parent['errorcodeid'], 'data-errorcode' => $parent['errorcodeacronym'], 
-                    'data-solutioncodeid' => $parent['id'], 'data-solutioncode' => $parent['acronym'])
+            $element->addMultiOption($parent['id'], 
+                    $parent['acronym'] . ' - ' . $parent['errorcodename'] . ' / ' . $parent['name'],
+                    array('data-errorcodeid' => $parent['errorcodeid'], 'data-errorcode' => $parent['errorcodeacronym'], 
+                        'data-solutioncodeid' => $parent['id'], 'data-solutioncode' => $parent['acronym'])
             );
         }
     }
@@ -694,7 +693,7 @@ class Application_Form_Services_Service extends Application_Form {
         $element = $this->createElement('hidden','product',array('label' => 'Sprzęt wydany:'));
         $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
         $this->addElement($element);
-        $element = $this->createElement('select', 'productid-0', array(
+        $element = new Application_Form_Element_SelectAttribs('productid-0', array(
                     //'label' => 'Sprzęt wydany:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
@@ -703,7 +702,8 @@ class Application_Form_Services_Service extends Application_Form {
                     //),
                     'belongsTo' => 'productid',
                     'class' => 'form-control chosen-select',
-                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 45%;'))->setRegisterInArrayValidator(false);
+                ));
+        $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 45%;'))->setRegisterInArrayValidator(false);
         $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
         $element->removeDecorator('Label');
         $this->addElement($element);
@@ -718,7 +718,7 @@ class Application_Form_Services_Service extends Application_Form {
         $this->addDisplayGroup(array('productid-0', 'quantity-0'), 'product-0')->setAttribs(array('id' => 'product-0'));
         
         for ($i = 1; $i <= $this->_productsCount; $i++) {
-            $element = $this->createElement('select', 'productid-' . $i, array(
+            $element = new Application_Form_Element_SelectAttribs('productid-' . $i, array(
                     //'label' => 'Produkty:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
@@ -727,7 +727,8 @@ class Application_Form_Services_Service extends Application_Form {
                     //),
                     'belongsTo' => 'productid',
                     'class' => 'form-control chosen-select',
-                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 45%;'))->setRegisterInArrayValidator(false);
+                ));
+            $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 45%;'))->setRegisterInArrayValidator(false);
             $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
             $element->addDecorator('Label', array('tag' => ''));
             $this->addElement($element);

@@ -11,6 +11,7 @@ class Application_Model_Users_Table extends Application_Db_Table
     protected $_name = 'users';// table name
     protected $_primary = 'id'; // primary column name
     protected $_rowClass = 'Application_Model_Users_Row';
+    protected $_cacheInClass = true;
     
     protected $_referenceMap = array(
         'Role' => array(
@@ -19,6 +20,11 @@ class Application_Model_Users_Table extends Application_Db_Table
             'refColumns' => 'id'
         )
     );
+    
+    public function init($config = array()) {
+        $this->setCacheInClass(true);
+        $this->_setCache(Application_Db_Table::getDefaultCache());
+    }
     
     public function select() {
         if ($this->_lazyLoading === true) {

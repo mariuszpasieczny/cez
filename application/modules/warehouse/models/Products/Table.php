@@ -11,7 +11,6 @@ class Application_Model_Products_Table extends Application_Db_Table
     protected $_name = 'products';// table name
     protected $_primary = 'id'; // primary column name
     protected $_rowClass = 'Application_Model_Products_Row';
-    protected $_cacheInClass = true;
     
     protected $_referenceMap = array(
         'Warehouse' => array(
@@ -30,11 +29,6 @@ class Application_Model_Products_Table extends Application_Db_Table
             'refColumns' => 'id'
         )
     );
-    
-    public function init($config = array()) {
-        $this->setCacheInClass(false);
-        $this->_setCache(Application_Db_Table::getDefaultCache());
-    }
     
     public function select() {
         if ($this->_lazyLoading === true) {

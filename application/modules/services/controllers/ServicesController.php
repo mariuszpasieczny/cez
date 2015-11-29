@@ -2614,10 +2614,20 @@ class Services_ServicesController extends Application_Controller_Abstract {
             $order->setFromArray(array('userid' => $this->_auth->getIdentity()->id));
             $order->save();
         }
-
+        
         $this->view->form = $form;
 
         if ($this->getRequest()->isPost()) {
+            switch ($typeid) {
+                case $types->find('installation', 'acronym')->id:
+                    $codeTypes = array('installation', 'installationcancel', 'modeminterchange', 'decoderinterchange');
+                    break;
+                case $types->find('service', 'acronym')->id:
+                    $codeTypes = array('error', 'solution', 'cancellation', 'modeminterchange', 'decoderinterchange');
+                    break;
+                default:
+                    throw new Exception('Nieprawidłowy typ zlecenia');
+            }
             if ($form->isValid($request->getPost())) {
                 $values = $form->getValues();
 
@@ -2680,8 +2690,66 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             continue;
                         }
 
-                        try {
+                        try {   
                             Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                            $this->_services->setOrderBy(array('id'));
+                            if ($existing = $this->_services->getAll(array('number' => $service->number, 'planneddate' => $service->planneddate))->current()) {
+                                
+                                foreach ($codeTypes as $type) {
+                                    if ($code = $dictionary->find($type . 'code', 'acronym')) {
+                                        $attributeId = $code->id;
+                                        $codesOld = $existing->getCodes()->filter(array('attributeid' => $attributeId));
+                                        switch ($type) {
+                                            case 'installation':
+                                                //var_dump($codesOld->toArray(),$service->getInstallationcode());exit;
+                                                if ($codesOld->count() && $service->getInstallationcode()) {
+                                                    break 2;
+                                                }
+                                                if ($codesOld->count() && !$service->getInstallationcode()) {
+                                                    throw new Application_Model_ServicesRowExist();
+                                                }
+                                                if (!$codesOld->count() && $service->getInstallationcode()) {
+                                                    $service->id = $existing->id;
+                                                }
+                                                if (!$codesOld->count() && !$service->getInstallationcode()) {
+                                                    $service->id = $existing->id;
+                                                }
+                                                break;
+                                            case 'solution':
+                                                //var_dump($codesOld->toArray(),$service->getSolutioncode());exit;
+                                                if ($codesOld->count() && $service->getSolutioncode()) {
+                                                    break 2;
+                                                }
+                                                if ($codesOld->count() && !$service->getSolutioncode()) {
+                                                    throw new Application_Model_ServicesRowExist();
+                                                }
+                                                if (!$codesOld->count() && $service->getSolutioncode()) {
+                                                    $service->id = $existing->id;
+                                                    //var_dump($service->number,$service->id,$existing->number,$existing->id,$service->getSolutioncode(),$service->getCancellationcode());
+                                                }
+                                                if (!$codesOld->count() && !$service->getSolutioncode()) {
+                                                    $service->id = $existing->id;
+                                                }
+                                                break;
+                                            case 'cancelation':
+                                                //var_dump($codesOld->toArray(),$service->getCancellationcode());exit;
+                                                if ($codesOld->count() && $service->getCancellationcode()) {
+                                                    break 2;
+                                                }
+                                                if ($codesOld->count() && !$service->getCancellationcode()) {
+                                                    throw new Application_Model_ServicesRowExist();
+                                                }
+                                                if (!$codesOld->count() && $service->getCancellationcode()) {
+                                                    $service->id = $existing->id;
+                                                }
+                                                if (!$codesOld->count() && !$service->getCancellationcode()) {
+                                                    $service->id = $existing->id;
+                                                }
+                                                break;
+                                        }
+                                    }
+                                }
+                            }
                             $data = $service->getServicetype();
                             $servicetype = $dictionary->find('type', 'acronym')->getChildren()->find(strtoupper($data), 'acronym');
                             if (!$servicetype) {
@@ -2764,7 +2832,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             }
                             $service->performed = 0;
                             //var_dump($service->toArray());exit;
-                            $service->save();
+                            if ($service->id) 
+                                $service->update();
+                            else 
+                                $service->save();
                             if ($data = $service->getProductsreleased()) {
                                     /*foreach ($data as $product) {
                                         if (!$product) continue;
@@ -2927,18 +2998,25 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             
                             if ($service->isModified()) {
                                 //var_dump($service);exit;
-                                $service->save();
+                                if ($service->id) 
+                                    $service->update();
+                                else 
+                                    $service->save();
                             }
 
                             //array_unshift($line, 'OK');
                             $line[] = 'OK';
                             Zend_Db_Table::getDefaultAdapter()->commit();
+                        } catch (Application_Model_ServicesRowExist $e) {
+                            $line[] = 'OK';
+                            //var_dump($e->getMessage(),$e->getTraceAsString());exit;
+                            Zend_Db_Table::getDefaultAdapter()->commit();
                         } catch (Exception $e) {
-                            Zend_Db_Table::getDefaultAdapter()->rollBack();
-                            //var_dump($e->getMessage(), $e->getTraceAsString());exit;
+                            //var_dump($e->getMessage(),$e->getTraceAsString());exit;
                             //exit;
                             //array_unshift($line, $e->getMessage());
                             $line[] = $e->getMessage();
+                            Zend_Db_Table::getDefaultAdapter()->rollBack();
                         }
                         if (!empty($values['report'])) {
                             $value = current($line);

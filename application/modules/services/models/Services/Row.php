@@ -295,5 +295,13 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         }
         return false;
     }
+    
+    public function update() {
+        $row = $this->getTable()->find($this->id)->current();
+        $row->setFromArray($this->toArray());
+        $row->save();
+    }
 
 }
+
+class Application_Model_ServicesRowExist extends Exception {}

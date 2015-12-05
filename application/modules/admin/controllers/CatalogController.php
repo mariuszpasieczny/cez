@@ -83,6 +83,12 @@ class Admin_CatalogController extends Application_Controller_Abstract {
                 $values = $form->getValues();
                 $status = $this->_dictionaries->getStatusList('catalog')->find('deleted', 'acronym');
                 Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                $returns = new Application_Model_Services_Returns_Table();
+                $returns->setWhere("catalogid = {$this->id}");
+                if ($returns) {
+                    $form->setDescription('Nie można usunąć pozycji przypisanej do zwrotu');
+                    return;
+                }
                 $catalog->statusid = $status->id;
                 $catalog->save();
                 Zend_Db_Table::getDefaultAdapter()->commit();

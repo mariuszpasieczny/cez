@@ -45,7 +45,7 @@ class Warehouse_ReturnsController extends Application_Controller_Abstract {
             $this->_returns->setPageNumber($pageNumber);
         }
         $orderBy = $request->getParam('orderBy');
-        $columns = array('name', 'demaged', 'demagecodeacronym', 'dateadd', 'service', 'clientnumber', 'client', 'technician', 'waybill', 'status');
+        $columns = array('name', 'catalogname', 'demaged', 'demagecodeacronym', 'dateadd', 'service', 'clientnumber', 'client', 'technician', 'waybill', 'status');
         if ($orderBy) {
             $orderBy = explode(" ", $orderBy);
             $this->_returns->setOrderBy("{$columns[$orderBy[0] - 1]} {$orderBy[1]}");

@@ -50,6 +50,7 @@
         </div>
         </th>
         <th>Nazwa</th>
+        <th>Katalog</th>
         <th style="max-width: 55px !important;">Uszkodzony</th>
         <th style="max-width: 55px !important;">Kod uszkodzenia</th>
         <th style="max-width: 125px !important;">Data</th>
@@ -85,6 +86,7 @@
                     </div>
                 </td>
                 <td><?php echo $return->name ? $this->escape($return->name) : '&nbsp;'; ?></td>
+                <td><?php echo $return->name ? $this->escape($return->catalogname) : '&nbsp;'; ?></td>
                 <td><?php
                         if ($return->demaged != null): echo $return->demaged ? 'tak' : 'nie';
                         else: echo "nie";
@@ -149,7 +151,7 @@
             },
             {
                 'bSortable': false,
-                'aTargets': [11]
+                'aTargets': [12]
             }];
     });
 </script>

@@ -4,7 +4,7 @@
     <div class="panel-body">
         <form class="form-inline form-load" action="<?php
         echo $this->url(
-                array('module' => 'default', 'controller' => 'catalog', 'action' => 'list'), 'default', true)
+                array('module' => 'admin', 'controller' => 'catalog', 'action' => 'list'), 'default', true)
         ?>">
                 <button type="button" class="btn btn-default search">Szukaj</button>
             </div>
@@ -25,12 +25,12 @@
                 <td><?php echo $this->escape($catalog->name); ?></td>
                 <td>
                     <?php if ($this->auth && $this->HasAccess($this->auth->role, 'catalog', 'edit')): ?>
-                        <a href="<?php echo $this->baseUrl; ?>/default/catalog/edit/id/<?php echo $catalog->id; ?>" class="content-load" title="Edytuj">
+                        <a href="<?php echo $this->baseUrl; ?>/admin/catalog/edit/id/<?php echo $catalog->id; ?>" class="content-load" title="Edytuj">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         </a>
                     <?php endif; ?>
                     <?php if ($this->auth && $this->HasAccess($this->auth->role, 'catalog', 'delete')): ?>
-                        <a href="<?php echo $this->baseUrl; ?>/default/catalog/delete/id/<?php echo $catalog->id; ?>" data-target=".modal-body" class="popup-load" title="Usuń">
+                        <a href="<?php echo $this->baseUrl; ?>/admin/catalog/delete/id/<?php echo $catalog->id; ?>" data-target=".modal-body" class="popup-load" title="Usuń">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </a>
                     <?php endif; ?>

@@ -145,10 +145,12 @@ class Application_Form_Services_Service_Finish extends Application_Form {
             preg_match("/\d+/", $name, $found);
             $this->getElement('demaged-' . $found[0])->setValue($value['demaged']);
             $this->getElement('demagecodeid-' . $found[0])->setValue($value['demagecodeid']);
+            $this->getElement('catalogid-' . $found[0])->setValue($value['catalogid']);
             if ($value['statusacronym'] && $value['statusacronym'] != 'new') {
-                $this->getElement('demaged-' . $found[0])->setAttrib('disabled', 'disabled');
-                $this->getElement('productreturnedid-' . $found[0])->setAttrib('disabled', 'disabled');
-                $this->getElement('demagecodeid-' . $found[0])->setAttrib('disabled', 'disabled');
+                $this->getElement('demaged-' . $found[0])->setAttrib('disabled', 'disabled')->setAttrib('readonly', 'readonly');
+                $this->getElement('productreturnedid-' . $found[0])->setAttrib('disabled', 'disabled')->setAttrib('readonly', 'readonly');
+                $this->getElement('demagecodeid-' . $found[0])->setAttrib('disabled', 'disabled')->setAttrib('readonly', 'readonly');
+                $this->getElement('catalogid-' . $found[0])->setAttrib('disabled', 'disabled')->setAttrib('readonly', 'readonly');
             }
             $value = array_unique($selectedIds);
         }
@@ -391,7 +393,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
         $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
         $this->addElement($element);
         $element = $this->createElement('select', 'demagecodeid-0', array(
-                    'label' => 'Kod uszkodzenia:',
+                    'label' => 'Kod:',
                         //'required'   => true,
                         //'filters'    => array('StringTrim'),
                         //'validators' => array(
@@ -429,7 +431,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
             $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
             $this->addElement($element);
             $element = $this->createElement('select', 'demagecodeid-' . $i, array(
-                        'label' => 'Kod uszkodzenia:',
+                        'label' => 'Kod:',
                         //'required'   => true,
                         //'filters'    => array('StringTrim'),
                         //'validators' => array(

@@ -40,6 +40,11 @@ class Application_Model_Returns_Table extends Application_Db_Table
             'columns' => 'technicianid',
             'refTableClass' => 'Application_Model_Users_Table',
             'refColumns' => 'id'
+        ),
+        'Catalog' => array(
+            'columns' => 'catalogid',
+            'refTableClass' => 'Application_Model_Catalog_Table',
+            'refColumns' => 'id'
         )
     );
     

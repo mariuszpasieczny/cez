@@ -23,6 +23,10 @@ class Application_Model_Returns_Row extends Application_Db_Table_Row {
             return parent::findParentRow('Application_Model_Users_Table', 'Technician');
         }
     }
+    
+    public function getCatalog() {
+        return parent::findParentRow('Application_Model_Catalog_Table', 'Catalog');
+    }
 
     public function isNew() {
         try {

@@ -222,6 +222,19 @@
                                                         array('module' => 'admin', 'controller' => 'dictionaries', 'action' => 'import'), 'default', true)
                                                 ?>" class="content-load">Imortuj</a></li>
                                                <?php endif; ?>
+                                        <li role="separator" class="divider"></li>
+                                        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'catalog', 'list')): ?>
+                                            <li><a href="<?php
+                                                echo $this->url(
+                                                        array('module' => 'admin', 'controller' => 'catalog', 'action' => 'list'), 'default', true)
+                                                ?>" class="content-load">Katalog</a></li>
+                                               <?php endif; ?>
+                                        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'catalog', 'list')): ?>
+                                            <li><a href="<?php
+                                                echo $this->url(
+                                                        array('module' => 'admin', 'controller' => 'catalog', 'action' => 'edit'), 'default', true)
+                                                ?>" class="content-load">Dodaj</a></li>
+                                               <?php endif; ?>
                                     </ul>
                                 </li>
                             <?php endif; ?>

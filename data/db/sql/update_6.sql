@@ -20,9 +20,12 @@ VIEW `servicereturnsview` AS
         `sr`.`waybill` AS `waybill`,
         `sr`.`demagecodeid` AS `demagecodeid`,
         `dc`.`acronym` AS `demagecodeacronym`,
-        `dc`.`name` AS `demagecodename`
+        `dc`.`name` AS `demagecodename`,
+        `sr`.`catalogid` AS `catalogid`,
+        `c`.`name` AS `catalogname`
     FROM
-        (((`servicereturns` `sr`
+        ((((`servicereturns` `sr`
         JOIN `servicesview` `s` ON ((`s`.`id` = `sr`.`serviceid`)))
         LEFT JOIN `dictionaries` `d` ON ((`d`.`id` = `sr`.`statusid`)))
         LEFT JOIN `dictionaries` `dc` ON ((`dc`.`id` = `sr`.`demagecodeid`)))
+        LEFT JOIN `catalog` `c` ON ((`c`.`id` = `sr`.`catalogid`)))

@@ -1,0 +1,52 @@
+<h2 class="sub-header">Katalog</h2>
+
+<!--<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-inline form-load" action="<?php
+        echo $this->url(
+                array('module' => 'default', 'controller' => 'catalog', 'action' => 'list'), 'default', true)
+        ?>">
+                <button type="button" class="btn btn-default search">Szukaj</button>
+            </div>
+        </form>
+    </div>
+</div>-->
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th style="white-space: nowrap;">&nbsp;</th>
+            </tr>
+        </thead>
+        <?php foreach ($this->catalog as $catalog) : ?>
+            <tr>
+                <td><?php echo $this->escape($catalog->name); ?></td>
+                <td>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'catalog', 'edit')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/default/catalog/edit/id/<?php echo $catalog->id; ?>" class="content-load" title="Edytuj">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'catalog', 'delete')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/default/catalog/delete/id/<?php echo $catalog->id; ?>" data-target=".modal-body" class="popup-load" title="Usuń">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?> 
+    </table> 
+</div>
+<?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
+<script>
+    $('.chosen-select').chosen({allow_single_deselect: true});
+    params = <?php echo Zend_Json::encode($this->request); ?>;
+    columnsDef = [{
+                    'bSortable': false,
+                    'aTargets': [1]
+                }];
+    sorting =  false;
+</script>
+<script src="/js/dataTables.js" />

@@ -595,7 +595,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                 throw new Exception("Brak kodu uszkodzenia");
                             }
                             if (!$return->catalogid) {
-                                throw new Exception("Brak nazwy katalogowej");
+                                //throw new Exception("Brak nazwy katalogowej");
                             }
                             $return->save();
                         }  catch (Exception $e) {var_dump($return->toArray());
@@ -636,7 +636,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                 throw new Exception("Brak kodu uszkodzenia");
                             }
                             if (!$serviceProduct->catalogid) {
-                                throw new Exception("Brak nazwy katalogowej");
+                                //throw new Exception("Brak nazwy katalogowej");
                             }
                             $serviceProduct->save();
                         } catch (Exception $e) {

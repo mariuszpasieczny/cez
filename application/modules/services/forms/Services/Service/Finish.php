@@ -128,6 +128,19 @@ class Application_Form_Services_Service_Finish extends Application_Form {
         }
     }
 
+    public function setCatalog($config) {
+        for ($i = 0; $i <= $this->_productsReturnedCount; $i++) {
+            $element = $this->getElement('catalogid-' . $i);
+            if (!$element) {
+                return;
+            }
+            $element->addMultiOption(null, 'Wybierz z katalogu...');
+            foreach ($config as $parent) {
+                $element->addMultiOption($parent['id'], $parent['name']);
+            }
+        }
+    }
+
     public function setDefault($name, $value) {
         $name = (string) $name;
         if (strpos($name, 'productreturnedid') !== false) {
@@ -370,6 +383,13 @@ class Application_Form_Services_Service_Finish extends Application_Form {
         
         $element = $this->createElement('hidden','return',array('label' => 'Sprzęt odebrany:'));
         $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
+        $this->addElement($element);
+        $element = $this->createElement('select', 'catalogid-0', array(
+                    'belongsTo' => 'catalogid',
+                    'class' => 'form-control chosen-select',
+                ))->setAttribs(array('placeholder' => 'Nazwa katalogowa', 'style' => 'max-width: 15%;'))->setRegisterInArrayValidator(false);
+        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+        $element->removeDecorator('Label');
         $this->addElement($element);
         $element = $this->createElement('select', 'productreturnedid-0', array(
                     //'label' => 'Sprzęt odebrany:',

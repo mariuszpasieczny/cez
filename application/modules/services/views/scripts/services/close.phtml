@@ -122,6 +122,13 @@
                             placeholder_text_multiple: 'wybierz',
                             max_selected_options: 1
                         });
+                        $('.chosen-select[name^="catalogid[catalogid-' + length + ']"]').chosen({
+                            search_contains: true,
+                            allow_single_deselect: true,
+                            multiple: false,
+                            placeholder_text_multiple: 'wybierz',
+                            max_selected_options: 1
+                        });
                         onProductReturnedChange();
                     }
                 }

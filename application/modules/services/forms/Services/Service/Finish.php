@@ -426,7 +426,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
         $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
         //$element->removeDecorator('Label');
         $this->addElement($element);
-        $this->addDisplayGroup(array('productreturnedid-0', 'demaged-0', 'demagecodeid-0'), 'return-0')->setAttribs(array('id' => 'return-0'));
+        $this->addDisplayGroup(array('catalogid-0', 'productreturnedid-0', 'demaged-0', 'demagecodeid-0'), 'return-0')->setAttribs(array('id' => 'return-0'));
 
         for ($i = 1; $i <= $this->_productsReturnedCount; $i++) {
             $element = $this->createElement('select', 'catalogid-' . $i, array(
@@ -471,7 +471,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
             $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
             //$element->removeDecorator('Label');
             $this->addElement($element);
-            $this->addDisplayGroup(array('productreturnedid-' . $i, 'demaged-' . $i, 'demagecodeid-' . $i), 'return-' . $i)->setAttribs(array('id' => 'return-' . $i));
+            $this->addDisplayGroup(array('catalogid-' . $i, 'productreturnedid-' . $i, 'demaged-' . $i, 'demagecodeid-' . $i), 'return-' . $i)->setAttribs(array('id' => 'return-' . $i));
         }
 
         $element = $this->createElement('textarea', 'technicalcomments', array(

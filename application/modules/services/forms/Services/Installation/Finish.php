@@ -372,7 +372,7 @@ class Application_Form_Services_Installation_Finish extends Application_Form
                     //),
                     'belongsTo' => 'productreturnedid',
                     'class' => 'form-control chosen-select',
-                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 35%;'))->setRegisterInArrayValidator(false);
+                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 25%;'))->setRegisterInArrayValidator(false);
         $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
         $element->removeDecorator('Label');
         $this->addElement($element);
@@ -417,7 +417,7 @@ class Application_Form_Services_Installation_Finish extends Application_Form
                     //),
                     'belongsTo' => 'productreturnedid',
                     'class' => 'form-control chosen-select',
-                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 35%;'))->setRegisterInArrayValidator(false);
+                ))->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 25%;'))->setRegisterInArrayValidator(false);
             $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
             $element->addDecorator('Label', array('tag' => ''));
             $this->addElement($element);

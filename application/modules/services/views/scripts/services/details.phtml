@@ -82,7 +82,7 @@
                 <div class="col-xs-7 content no-top-border">
                     <p>
                         <?php $products = $this->service->getReturns(); ?>
-                        <?php if ($products): ?>
+                        <?php if ($products->count()): ?>
                             <?php foreach ($products as $ix => $product): ?>
                                 <?php echo $ix ? '<br /> ' : ''; ?>
                                 <?php echo $product->name . ($product->demaged ? (' (uszkodzony)') : '') . ($product->demagecodeid ? (' (' . $product->demagecodeacronym . ' - ' . $product->demagecodename . ')') : ''); ?>

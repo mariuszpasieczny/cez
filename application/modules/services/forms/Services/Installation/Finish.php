@@ -401,6 +401,13 @@ class Application_Form_Services_Installation_Finish extends Application_Form
         $this->addDisplayGroup(array('productreturnedid-0', 'demaged-0', 'demagecodeid-0'), 'return-0')->setAttribs(array('id' => 'return-0'));
 
         for ($i = 1; $i <= $this->_productsReturnedCount; $i++) {
+            $element = $this->createElement('select', 'catalogid-' . $i, array(
+                        'belongsTo' => 'catalogid',
+                        'class' => 'form-control chosen-select',
+                    ))->setAttribs(array('placeholder' => 'Nazwa katalogowa', 'style' => 'max-width: 15%;'))->setRegisterInArrayValidator(false);
+            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+            $element->removeDecorator('Label');
+            $this->addElement($element);
             $element = $this->createElement('select', 'productreturnedid-' . $i, array(
                     //'label' => 'Produkty:',
                     //'required'   => true,

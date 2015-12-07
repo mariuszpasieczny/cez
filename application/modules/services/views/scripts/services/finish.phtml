@@ -222,6 +222,7 @@
                 $('#modeminterchangecodeid-label').hide();
                 $('[name^=demagecodeid]').first().parents('span.form-group').show();
                 $('[name^=demagecodeid]').first().parents('span.form-group').prev().show();
+                $('[name^=catalogid]').first().parents('span.form-group').prev().show();
                 e.preventDefault();
                 var errorCodes = [];
                 $.each($(this).find('option:selected'), function(key, value) {
@@ -243,6 +244,7 @@
                                     $('#decoderinterchangecodeid-label').show();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').hide();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
+                                    $('[name^=catalogid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -255,6 +257,7 @@
                                     $('#decoderinterchangecodeid-label').show();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').hide();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
+                                    $('[name^=catalogid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -269,6 +272,7 @@
                                     $('#modeminterchangecodeid-label').show();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').hide();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
+                                    $('[name^=catalogid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -281,6 +285,7 @@
                                     $('#modeminterchangecodeid-label').show();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').hide();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
+                                    $('[name^=catalogid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -293,6 +298,7 @@
                                     $('#modeminterchangecodeid-label').show();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').hide();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
+                                    $('[name^=catalogid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -314,6 +320,7 @@
                                     $('#modeminterchangecodeid-label').show();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').hide();
                                     $('[name^=demagecodeid]').first().parents('span.form-group').prev().hide();
+                                    $('[name^=catalogid]').first().parents('span.form-group').prev().hide();
                                     break;
                             }
                             break;
@@ -425,6 +432,12 @@
                             $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
                         }
                         break;
+                    case 'catalogid':
+                        if (performed !== '') {
+                            $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
+                        } else {
+                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
+                        }
                 }
             });
             $.each(['datefinished', 'technicalcomments'], function(key, value) {

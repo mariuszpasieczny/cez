@@ -97,6 +97,8 @@
                         div.find('.chosen-container').remove();
                         div.find('select').show();
                         div.find('select').val([]);
+                        div.find('select[name^=catalogid]').attr('name', 'catalogid[catalogid-' + length + ']');
+                        div.find('select[name^=catalogid]').attr('id', 'catalogid-catalogid-' + length + '');
                         div.find('select[name^=productreturnedid]').attr('name', 'productreturnedid[productreturnedid-' + length + '][]');
                         div.find('select[name^=productreturnedid]').attr('id', 'productreturnedid-productreturnedid-' + length + '');
                         div.find('select[name^=demagecodeid]').attr('name', 'demagecodeid[demagecodeid-' + length + ']');

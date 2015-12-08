@@ -18,7 +18,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $this->_warehouses = new Application_Model_Warehouses_Table();
         $this->_catalog = new Application_Model_Catalog_Table();
         $this->_catalog->setItemCountPerPage(null);
-        $this->_catalog->setOrderBy(array('name'));
+        //$this->_catalog->setOrderBy(array('name'));
         $this->_clients = new Application_Model_Clients_Table();
         $this->_services = new Application_Model_Services_Table();
         $this->_services->setItemCountPerPage($this->_hasParam('count') ? $this->_getParam('count') : Application_Db_Table::ITEMS_PER_PAGE);

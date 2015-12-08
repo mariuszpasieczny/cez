@@ -18,7 +18,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $this->_warehouses = new Application_Model_Warehouses_Table();
         $this->_catalog = new Application_Model_Catalog_Table();
         $this->_catalog->setItemCountPerPage(null);
-        //$this->_catalog->setOrderBy(array('name'));
+        $this->_catalog->setOrderBy(array('name'));
         $this->_clients = new Application_Model_Clients_Table();
         $this->_services = new Application_Model_Services_Table();
         $this->_services->setItemCountPerPage($this->_hasParam('count') ? $this->_getParam('count') : Application_Db_Table::ITEMS_PER_PAGE);
@@ -518,7 +518,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $form->getElement('cancellationcodeid')->setErrors(array('cancellationcodeid' => 'Wymagane podanie kodu odwołania'));
                             return;
                         }
-                        if ($values['performed'] === '1' && empty($data['solutioncodeid'])) {
+                        if ($values['performed'] === '1' && !array_filter((array)$request->getParam('solutioncodeid')) /*&& empty($data['solutioncodeid'])*/) {
                             $form->getElement('solutioncodeid')->setErrors(array('solutioncodeid' => 'Wymagane podanie kodu rozwiązania'));
                             return;
                         }
@@ -531,10 +531,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $form->getElement('technicalcomments')->setErrors(array('technicalcomments' => 'Wymagane podanie uzasadnienia'));
                             return;
                         }
-                    if ($values['performed'] === '1' && empty($data['installationcodeid'])) {
-                        $form->getElement('installationcodeid-0')->setErrors(array('installationcodeid-0' => 'Wymagane podanie kodu instalacji'));
-                        return;
-                    }
+                        if ($values['performed'] === '1' && empty($data['installationcodeid'])) {
+                            $form->getElement('installationcodeid-0')->setErrors(array('installationcodeid-0' => 'Wymagane podanie kodu instalacji'));
+                            return;
+                        }
                     }
                     if ($values['performed'] === '0' && !$values['datefinished']) {
                         $form->getElement('datefinished')->setErrors(array('datefinished' => 'Wymagane podanie daty zakończenia'));
@@ -1406,6 +1406,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
         foreach ($defaults['productid'] as $i => $item) {
             $defaults['productid-' . $i] = $item;
         }
+        if (!empty($defaults['catalogid']))
+        foreach ($defaults['catalogid'] as $i => $item) {
+            $defaults['catalogid-' . $i] = $item;
+        }
         if ($types->find('installation', 'acronym')->id == $typeid /* && !in_array($this->_auth->getIdentity(), array('admin', 'coordinator')) */) {
             $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate)); //$service->timetill;
         } else if ($types->find('service', 'acronym')->id == $typeid) {
@@ -1466,6 +1470,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 foreach ($data['demagecodeid'] as $key => $value) {
                     $data[$key] = $value;
                 }
+            if (!empty($data['catalogid']))
+                foreach ($data['catalogid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
             $form->setDefaults($data);
             if ($form->isValid($data)) {
                 if (!$service->isAssigned()) {
@@ -1483,7 +1491,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         $form->getElement('cancellationcodeid')->setErrors(array('cancellationcodeid' => 'Wymagane podanie kodu odwołania'));
                         return;
                     }
-                    if ($values['performed'] === '1' && empty($data['solutioncodeid'])) {
+                    if ($values['performed'] === '1' && !array_filter((array)$request->getParam('solutioncodeid')) /*&& empty($data['solutioncodeid'])*/) {
                         $form->getElement('solutioncodeid')->setErrors(array('solutioncodeid' => 'Wymagane podanie kodu rozwiązania'));
                         return;
                     }
@@ -1524,6 +1532,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $productsReturned = (array)$request->getParam('productreturnedid');
                 $demaged = (array)$request->getParam('demaged');
                 $demagecode = (array)$request->getParam('demagecodeid');
+                $catalog = (array)$request->getParam('catalogid');
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -1546,7 +1555,20 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             return;
                         }
                         $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix],
-                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix]))->save();
+                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix],
+                            'catalogid' => (int)$catalog['catalogid-' . $ix]));
+                        try {
+                            if ($return->demaged && !$return->demagecodeid) {
+                                throw new Exception("Brak kodu uszkodzenia");
+                            }
+                            if (!$return->catalogid) {
+                                //throw new Exception("Brak nazwy katalogowej");
+                            }
+                            $return->save();
+                        }  catch (Exception $e) {var_dump($return->toArray());
+                            $form->getElement('demagecodeid-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            return;
+                        }
                     } else {
                         if (!$product->isNew()) {
                             $form->setDescription('Nie można usunąć potwierdzonego zwrotu');
@@ -1571,6 +1593,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
+                            'catalogid' => (int)$catalog['catalogid-' . $ix],
                             'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix],
                             'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')->id
                             );
@@ -1579,9 +1602,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             if ($serviceProduct->demaged && !$serviceProduct->demagecodeid) {
                                 throw new Exception("Brak kodu uszkodzenia");
                             }
+                            if (!$serviceProduct->catalogid) {
+                                //throw new Exception("Brak nazwy katalogowej");
+                            }
                             $serviceProduct->save();
                         } catch (Exception $e) {
-                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            $form->getElement('demagecodeid-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
                             return;
                         }
                         $returns[] = $productId;
@@ -1911,6 +1937,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $defaults['productid-' . $i] = $item;
             }
         }
+        if (!empty($defaults['catalogid']))
+            foreach ($defaults['catalogid'] as $i => $item) {
+                $defaults['catalogid-' . $i] = $item;
+            }
         if ($types->find('installation', 'acronym')->id == $typeid /* && !in_array($this->_auth->getIdentity(), array('admin', 'coordinator')) */) {
             $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate)); //$service->timetill;
         } else if ($types->find('service', 'acronym')->id == $typeid) {
@@ -1979,6 +2009,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 foreach ($data['demagecodeid'] as $key => $value) {
                     $data[$key] = $value;
                 }
+            if (!empty($data['catalogid']))
+                foreach ($data['catalogid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
             $form->setDefaults($data);
             if ($form->isValid($data)) {
                 $values = $form->getValues();
@@ -1996,7 +2030,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         $form->getElement('cancellationcodeid')->setErrors(array('cancellationcodeid' => 'Wymagane podanie kodu odwołania'));
                         return;
                     }
-                    if ($values['performed'] === '1' && empty($data['solutioncodeid'])) {
+                    if ($values['performed'] === '1' && !array_filter((array)$request->getParam('solutioncodeid')) /*&& empty($data['solutioncodeid'])*/) {
                         $form->getElement('solutioncodeid')->setErrors(array('solutioncodeid' => 'Wymagane podanie kodu rozwiązania'));
                         return;
                     }
@@ -2040,6 +2074,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $productsReturned = (array)$request->getParam('productreturnedid');
                 $demaged = (array)$request->getParam('demaged');
                 $demagecode = (array)$request->getParam('demagecodeid');
+                $catalog = (array)$request->getParam('catalogid');
                 $table = new Application_Model_Services_Returns_Table();
                 foreach ($service->getReturns() as $product) {
                     $return = null;
@@ -2062,7 +2097,20 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             return;
                         }
                         $return->setFromArray(array('demaged' => (int)$demaged['demaged-' . $ix],
-                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix]))->save();
+                            'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix],
+                            'catalogid' => (int)$catalog['catalogid-' . $ix]));
+                        try {
+                            if ($return->demaged && !$return->demagecodeid) {
+                                throw new Exception("Brak kodu uszkodzenia");
+                            }
+                            if (!$return->catalogid) {
+                                //throw new Exception("Brak nazwy katalogowej");
+                            }
+                            $return->save();
+                        }  catch (Exception $e) {var_dump($return->toArray());
+                            $form->getElement('demagecodeid-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            return;
+                        }
                     } else {
                         if (!$product->isNew()) {
                             $form->setDescription('Nie można usunąć potwierdzonego zwrotu');
@@ -2087,17 +2135,21 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             'quantity' => 1, 
                             'unitid' => $units->find('szt', 'acronym') -> id,
                             'demaged' => (int)$demaged['demaged-' . $ix],
+                            'catalogid' => (int)$catalog['catalogid-' . $ix],
                             'demagecodeid' => (int)$demagecode['demagecodeid-' . $ix],
                             'statusid' => $this->_dictionaries->getStatusList('returns')->find('new', 'acronym')->id
-                        );
-                        $serviceProduct = $table->createRow($params);//var_dump($serviceProduct->toArray());
+                            );
+                        $serviceProduct = $table->createRow($params);
                         try {
                             if ($serviceProduct->demaged && !$serviceProduct->demagecodeid) {
                                 throw new Exception("Brak kodu uszkodzenia");
                             }
+                            if (!$serviceProduct->catalogid) {
+                                //throw new Exception("Brak nazwy katalogowej");
+                            }
                             $serviceProduct->save();
                         } catch (Exception $e) {
-                            $form->getElement('demaged-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
+                            $form->getElement('demagecodeid-' . $ix)->setErrors(array('demaged-' . $ix => $e->getMessage()));
                             return;
                         }
                         $returns[] = $productId;

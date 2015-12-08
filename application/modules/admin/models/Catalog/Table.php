@@ -13,7 +13,7 @@ class Application_Model_Catalog_Table extends Application_Db_Table
     protected $_rowClass = 'Application_Model_Catalog_Row';
     protected $_rowsetClass = 'Application_Db_Table_Rowset';
     protected $_lazyLoading = false;
-    protected $_cacheInClass = true;
+    protected $_cacheInClass = false;
     
     protected $_dependentTables = array('Application_Model_Returns_Table');
     

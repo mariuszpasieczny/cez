@@ -12,8 +12,8 @@ class Application_Model_Catalog_Table extends Application_Db_Table
     protected $_primary = 'id'; // primary column name
     protected $_rowClass = 'Application_Model_Catalog_Row';
     protected $_rowsetClass = 'Application_Db_Table_Rowset';
-    protected $_lazyLoading = false;
-    protected $_cacheInClass = false;
+    //protected $_lazyLoading = false;
+    //protected $_cacheInClass = false;
     
     protected $_dependentTables = array('Application_Model_Returns_Table');
     
@@ -26,8 +26,8 @@ class Application_Model_Catalog_Table extends Application_Db_Table
     );
     
     public function init($config = array()) {
-        $this->setCacheInClass(true);
-        $this->_setCache(Application_Db_Table::getDefaultCache());
+        //$this->setCacheInClass(true);
+        //$this->_setCache(Application_Db_Table::getDefaultCache());
     }
     
     public function select() {

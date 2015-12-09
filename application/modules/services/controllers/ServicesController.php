@@ -1391,6 +1391,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             }
         }
         $options['demagecodes'] = array_merge($options['modeminterchangecodes'], $options['decoderinterchangecodes']);
+        $status = $this->_dictionaries->getStatusList('catalog')->find('deleted', 'acronym');
         $this->_catalog->setWhere("statusid != {$status->id}");
         $catalog = $this->_catalog->getAll();
         $options['catalog'] = $catalog->toArray();
@@ -1921,6 +1922,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             }
         }
         $options['demagecodes'] = array_merge($options['modeminterchangecodes'], $options['decoderinterchangecodes']);
+        $status = $this->_dictionaries->getStatusList('catalog')->find('deleted', 'acronym');
         $this->_catalog->setWhere("statusid != {$status->id}");
         $catalog = $this->_catalog->getAll();
         $options['catalog'] = $catalog->toArray();

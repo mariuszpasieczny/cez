@@ -121,7 +121,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
             if (!$element) {
                 return;
             }
-            $element->addMultiOption(null, 'Wybierz opcję...');
+            $element->addMultiOption(null, 'Kod uszkodzenia');
             foreach ($config as $parent) {
                 $element->addMultiOption($parent['id'], $parent['acronym'] . ' - ' . $parent['name']);
             }
@@ -134,7 +134,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
             if (!$element) {
                 return;
             }
-            $element->addMultiOption(null, 'Wybierz z katalogu...');
+            $element->addMultiOption(null, 'Model');
             foreach ($config as $parent) {
                 $element->addMultiOption($parent['id'], $parent['name']);
             }
@@ -387,7 +387,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
         $element = $this->createElement('select', 'catalogid-0', array(
                     'belongsTo' => 'catalogid',
                     'class' => 'form-control chosen-select',
-                ))->setAttribs(array('placeholder' => 'Nazwa katalogowa', 'style' => 'max-width: 15%;'))->setRegisterInArrayValidator(false);
+                ))->setAttribs(array('placeholder' => 'Nazwa katalogowa', 'style' => 'max-width: 25%;'))->setRegisterInArrayValidator(false);
         $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
         $element->removeDecorator('Label');
         $this->addElement($element);
@@ -424,7 +424,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
                 ))->setAttribs(array('placeholder' => 'Kod uszkodzenia', 'style' => 'max-width: 25%;'))->setRegisterInArrayValidator(false);
         $element->addDecorator('HtmlTag', array('tag' => 'span', 'class' => 'form-group inline'));
         $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
-        //$element->removeDecorator('Label');
+        $element->removeDecorator('Label');
         $this->addElement($element);
         $this->addDisplayGroup(array('catalogid-0', 'productreturnedid-0', 'demaged-0', 'demagecodeid-0'), 'return-0')->setAttribs(array('id' => 'return-0'));
 
@@ -432,7 +432,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
             $element = $this->createElement('select', 'catalogid-' . $i, array(
                         'belongsTo' => 'catalogid',
                         'class' => 'form-control chosen-select',
-                    ))->setAttribs(array('placeholder' => 'Nazwa katalogowa', 'style' => 'max-width: 15%;'))->setRegisterInArrayValidator(false);
+                    ))->setAttribs(array('placeholder' => 'Nazwa katalogowa', 'style' => 'max-width: 25%;'))->setRegisterInArrayValidator(false);
             $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
             $element->removeDecorator('Label');
             $this->addElement($element);
@@ -469,7 +469,7 @@ class Application_Form_Services_Service_Finish extends Application_Form {
                     ))->setAttribs(array('placeholder' => 'Kod uszkodzenia', 'style' => 'max-width: 25%;'))->setRegisterInArrayValidator(false);
             $element->addDecorator('HtmlTag', array('tag' => 'span', 'class' => 'form-group inline'));
             $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
-            //$element->removeDecorator('Label');
+            $element->removeDecorator('Label');
             $this->addElement($element);
             $this->addDisplayGroup(array('catalogid-' . $i, 'productreturnedid-' . $i, 'demaged-' . $i, 'demagecodeid-' . $i), 'return-' . $i)->setAttribs(array('id' => 'return-' . $i));
         }

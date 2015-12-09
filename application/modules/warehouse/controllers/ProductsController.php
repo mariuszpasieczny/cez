@@ -306,7 +306,11 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                             $product->save();
                             if ($data = $product->getTechnician()) {
                                 if (!empty($data['firstname']) && !empty($data['lastname'])) {
-                                    $user = $this->_users->getAll(array('lastname' => $data['firstname'], 'firstname' => $data['lastname']))->current();
+                                    //$user = $this->_users->getAll(array('lastname' => $data['firstname'], 'firstname' => $data['lastname']))->current();
+                                    $this->_users->clearWhere();
+                                    $this->_users->setWhere($this->_users->getAdapter()->quoteInto("UPPER(firstname) = UPPER(?)", "{$data['firstname']}"));
+                                    $this->_users->setWhere($this->_users->getAdapter()->quoteInto("UPPER(lastname) = UPPER(?)", "{$data['lastname']}"));
+                                    $user = $this->_users->getAll()->current();
                                     if (!$user) {
                                         throw new Exception('Nie znaleziono technika');
                                     }

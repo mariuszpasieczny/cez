@@ -52,8 +52,8 @@ class Application_Model_Products_Migration extends Application_Model_Products_Ro
                     if (!empty($technician)) {
                         list($lastName, $firstName) = @explode(' ', $technician);
                         $this->_technician = array(
-                            'firstname' => $firstName, 
-                            'lastname' => $lastName, 
+                            'firstname' => trim($firstName), 
+                            'lastname' => trim($lastName), 
                             //'email' => $technician,
                             //'symbol' => $technician
                         );

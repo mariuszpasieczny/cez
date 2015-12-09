@@ -13,6 +13,7 @@ class Application_Model_Products_Migration extends Application_Model_Products_Ro
     const COLUMN_NAME = 'F';
     const COLUMN_QUANTITY = 'G';
     const COLUMN_TECHNICIAN = 'A';
+    const COLUMN_PAIREDCARD = 'H';
     
     protected $_technician;
     protected $_releasedate;
@@ -25,6 +26,9 @@ class Application_Model_Products_Migration extends Application_Model_Products_Ro
                     break;
                 case self::COLUMN_NAME:
                     $this->name = $cell->getValue();
+                    break;
+                case self::COLUMN_PAIREDCARD:
+                    $this->pairedcard = $cell->getValue();
                     break;
                 case self::COLUMN_QUANTITY:
                     $this->quantity = $cell->getValue();

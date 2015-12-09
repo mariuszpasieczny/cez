@@ -318,6 +318,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                                         'productid' => $product->id,
                                         'technicianid' => $user->id,
                                         'quantity' => $product->qtyreleased,
+                                        'qtyavailable' => $product->qtyreleased,
                                         'releasedate' => $product->getReleasedate(),
                                         'statusid' => $orderStatusReleased->id));
                                     $orderline->save();

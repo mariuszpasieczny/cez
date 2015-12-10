@@ -304,30 +304,29 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                         try {
                             Zend_Db_Table::getDefaultAdapter()->beginTransaction();
                             $product->save();
-                            if ($data = $product->getTechnician()) {
-                                if (!empty($data['firstname']) && !empty($data['lastname'])) {
-                                    //$user = $this->_users->getAll(array('lastname' => $data['firstname'], 'firstname' => $data['lastname']))->current();
-                                    $this->_users->clearWhere();
-                                    $this->_users->setWhere($this->_users->getAdapter()->quoteInto("UPPER(firstname) = UPPER(?)", "{$data['firstname']}"));
-                                    $this->_users->setWhere($this->_users->getAdapter()->quoteInto("UPPER(lastname) = UPPER(?)", "{$data['lastname']}"));
-                                    $user = $this->_users->getAll()->current();
-                                    if (!$user) {
-                                        throw new Exception('Nie znaleziono technika');
-                                    }
-                                    $product->qtyreleased = $product->quantity;
-                                    $product->qtyavailable = 0;
-                                    $product->statusid = $productStatusReleased->id;
-                                    $product->save();
-                                    $orderline = $this->_orderlines->createRow(array('orderid' => $order->id,
-                                        'productid' => $product->id,
-                                        'technicianid' => $user->id,
-                                        'quantity' => $product->qtyreleased,
-                                        'qtyavailable' => $product->qtyreleased,
-                                        'releasedate' => $product->getReleasedate(),
-                                        'statusid' => $orderStatusReleased->id));
-                                    $orderline->save();
-                                }
-                            }//var_dump($product->toArray(),$orderline->toArray());exit;
+                            if (!($data = $product->getTechnician())) {
+                                throw new Exception('Brak technika');
+                            }
+                            //$user = $this->_users->getAll(array('lastname' => $data['firstname'], 'firstname' => $data['lastname']))->current();
+                            $this->_users->clearWhere();
+                            $this->_users->setWhere($this->_users->getAdapter()->quoteInto("UPPER(firstname) = UPPER(?)", "{$data['firstname']}"));
+                            $this->_users->setWhere($this->_users->getAdapter()->quoteInto("UPPER(lastname) = UPPER(?)", "{$data['lastname']}"));
+                            $user = $this->_users->getAll()->current();
+                            if (!$user) {
+                                throw new Exception('Nie znaleziono technika');
+                            }
+                            $product->qtyreleased = $product->quantity;
+                            $product->qtyavailable = 0;
+                            $product->statusid = $productStatusReleased->id;
+                            $product->save();
+                            $orderline = $this->_orderlines->createRow(array('orderid' => $order->id,
+                                'productid' => $product->id,
+                                'technicianid' => $user->id,
+                                'quantity' => $product->qtyreleased,
+                                'qtyavailable' => $product->qtyreleased,
+                                'releasedate' => $product->getReleasedate(),
+                                'statusid' => $orderStatusReleased->id));
+                            $orderline->save();//var_dump($product->toArray(),$orderline->toArray());exit;
                             $line[] = 'OK';
                             Zend_Db_Table::getDefaultAdapter()->commit();
                         } catch (Exception $e) {

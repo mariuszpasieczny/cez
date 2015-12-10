@@ -49,11 +49,11 @@ class Application_Model_Products_Migration extends Application_Model_Products_Ro
                     break;
                 case self::COLUMN_TECHNICIAN:
                     $technician = $cell->getCalculatedValue();
-                    if (!empty($technician)) {
-                        list($lastName, $firstName) = @explode(' ', $technician);
+                    if (preg_match('/^(\w+)\s*(\w+)$/', $technician, $found)) {
+                        //list($lastName, $firstName) = @explode('\s', trim($technician));
                         $this->_technician = array(
-                            'firstname' => trim($firstName), 
-                            'lastname' => trim($lastName), 
+                            'firstname' => trim($found[2]), 
+                            'lastname' => trim($found[1]), 
                             //'email' => $technician,
                             //'symbol' => $technician
                         );

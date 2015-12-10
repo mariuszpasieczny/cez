@@ -2626,7 +2626,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         //$defaults = array('recipient' => $this->_auth->getIdentity()->role == 'technician' ? 'koordynatorzy.lublin@nplay.pl' : 'lublin.instalacje@upc.com.pl;koordynatorzy.lublin@nplay.pl',
         //    'content' => $service->technicalcomments);
         $defaults = array('recipient' => $this->_auth->getIdentity()->role == 'technician' ? 
-                'koordynatorzy.lublin@nplay.pl' : 
+            $this->_config->get(APPLICATION_ENV)->comments->mail->from : 
             $this->_config->get(APPLICATION_ENV)->comments->mail->recipients,
             'content' => $service->technicalcomments);
         $dictionary = $this->_dictionaries->getDictionaryList('service');

@@ -26,6 +26,7 @@ class Application_Model_Products_Row extends Application_Db_Table_Row {
         $dictionaries = new Application_Model_Dictionaries_Table();
         $statusInvoiced = $dictionaries->getStatusList('orders')->find('invoiced', 'acronym');
         $statusReleased = $dictionaries->getStatusList('orders')->find('released', 'acronym');
+        $statusReleased = $dictionaries->getStatusList('orders')->find('returned', 'acronym');
         $products->setWhere($this->getTable()->getAdapter()->quoteInto('statusid IN (?)', array($statusInvoiced->id, $statusReleased->id)));
         return $products->getAll(array('productid' => $this->id));
     }

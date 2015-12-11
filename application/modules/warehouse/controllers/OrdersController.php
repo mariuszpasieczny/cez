@@ -438,7 +438,7 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                         if (!$data['demaged']['demaged-' . $i]) {
                             $data['demagecodeid']['demagecodeid-' . $i] = 1;
                         }
-                        $params = array('name' => $product->name, 
+                        $params = array('name' => $product->serial ? $product->serial : $product->name, 
                             'quantity' => $line->qtyavailable, 
                             'productid' => $line->id,
                             'unitid' => $units->find('szt', 'acronym') -> id,
@@ -452,6 +452,15 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                         } catch (Exception $e) {
                             $form->getElement('demaged-' . $i)->setErrors(array('demaged-' . $i => $e->getMessage()));
                             return;
+                        }
+                        $product->qtyreturned += $line->qtyavailable;
+                        if ($product->qtyreturned > $product->quantity) {
+                            $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Wystąpił problem ze zwrotem'));
+                            return;
+                        }
+                        if ($product->qtyreturned == $product->quantity) {
+                            $status = $this->_dictionaries->getStatusList('products')->find('returned', 'acronym');
+                            $product->statusid = $status->id;
                         }
                     } else {
                         $product->qtyreleased -= $line->qtyavailable;
@@ -468,7 +477,7 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                             $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
                             $product->statusid = $status->id;
                         }
-                    }
+                    }//var_dump($product->toArray());exit;
                     $product->save();
                     $line = $this->_orderlines->get($line->id);
                     $line->qtyreturned += $line->qtyavailable;

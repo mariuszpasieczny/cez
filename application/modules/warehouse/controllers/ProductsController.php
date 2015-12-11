@@ -327,14 +327,14 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                                 'releasedate' => $product->getReleasedate(),
                                 'statusid' => $orderStatusReleased->id));
                             $orderline->save();//var_dump($product->toArray(),$orderline->toArray());exit;
-                            $line[] = 'OK';
+                            array_unshift($line, 'OK');
                             Zend_Db_Table::getDefaultAdapter()->commit();
                         } catch (Exception $e) {
                             Zend_Db_Table::getDefaultAdapter()->rollBack();
                             //var_dump($e->getMessage(), $e->getTraceAsString());exit;
                             //exit;
                             //array_unshift($line, $e->getMessage());
-                            $line[] = $e->getMessage();
+                            array_unshift($line, $e->getMessage());
                         }
                         if (!empty($values['report'])) {
                             $value = current($line);
@@ -353,7 +353,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                             $columnNo++;
                         }
 
-                        $lines[] = $line;
+                        $lines[] = $line;//var_dump($lines);return;
                     }
                     
                     $this->view->data = $lines;

@@ -121,7 +121,7 @@ VIEW `orderlinesview` AS
         `p`.`unitid` AS `unitid`,
         `ol`.`dateadd` AS `dateadd`,
         `ol`.`releasedate` AS `releasedate`,
-        `sp`.`serviceid` AS `serviceid`,
+        NULL AS `serviceid`,
         (SELECT 
                 `d`.`id`
             FROM
@@ -154,14 +154,11 @@ VIEW `orderlinesview` AS
         NULL AS `clientnumber`,
         `o`.`userid` AS `userid`
     FROM
-        (((((((`orderlines` `ol`
+        ((((`orderlines` `ol`
         LEFT JOIN `users` `u` ON ((`ol`.`technicianid` = `u`.`id`)))
         LEFT JOIN `dictionaries` `ds` ON ((`ol`.`statusid` = `ds`.`id`)))
         LEFT JOIN `productsview` `p` ON ((`ol`.`productid` = `p`.`id`)))
-        LEFT JOIN `serviceproducts` `sp` ON ((`sp`.`productid` = `ol`.`id`)))
-        LEFT JOIN `services` `s` ON ((`sp`.`serviceid` = `s`.`id`)))
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
-        LEFT JOIN `clients` `c` ON ((`c`.`id` = `s`.`clientid`)))
     WHERE
         ((`ol`.`qtyavailable` > 0)
             AND (`ol`.`technicianid` > 0)) 
@@ -282,7 +279,9 @@ VIEW `orderlinesview` AS
         LEFT JOIN `servicereturns` `sr` ON ((`sr`.`productid` = `ol`.`id`)))
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
     WHERE
-        (`ol`.`qtyreturned` > 0);
+        ((`ol`.`qtyreturned` > 0)
+            AND (`ol`.`technicianid` IS NOT NULL)
+            AND (`ol`.`technicianid` > 0));
 
 update serviceproducts sp set quantity = (select quantity - qtyavailable from orderlines ol where ol.id = sp.productid);
 insert into dictionaries (parentid,acronym,name) (select parentid,'new','Nowe' from dictionaries where acronym = 'instock');

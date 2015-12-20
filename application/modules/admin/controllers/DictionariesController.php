@@ -17,7 +17,7 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
         parent::init();
 
         $this->_dictionaries->setItemCountPerPage($this->_hasParam('count') ? $this->_getParam('count') : Application_Db_Table::ITEMS_PER_PAGE);
-        $this->_dictionaries->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : 'acronym');
+        $this->_dictionaries->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : 'acronym ASC');
 
         $ajaxContext = $this->_helper->getHelper('AjaxContext');
 

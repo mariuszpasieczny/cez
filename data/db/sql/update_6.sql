@@ -43,7 +43,7 @@ VIEW `servicereturnsview` AS
         `ol`.`technicianid` AS `technicianid`,
         NULL AS `clientnumber`,
         NULL AS `NULL`,
-        `ol`.`technician` AS `technician`,
+        CONCAT(`u`.`lastname`, ' ', `u`.`firstname`) AS `technician`,
         `sr`.`statusid` AS `statusid`,
         `d`.`name` AS `status`,
         `d`.`acronym` AS `statusacronym`,
@@ -54,10 +54,11 @@ VIEW `servicereturnsview` AS
         `sr`.`catalogid` AS `catalogid`,
         `c`.`name` AS `catalogname`
     FROM
-        ((((`servicereturns` `sr`
-        JOIN `orderlinesview` `ol` ON ((`ol`.`id` = `sr`.`productid`)))
+        (((((`servicereturns` `sr`
+        JOIN `orderlines` `ol` ON ((`ol`.`id` = `sr`.`productid`)))
         LEFT JOIN `dictionaries` `d` ON ((`d`.`id` = `sr`.`statusid`)))
         LEFT JOIN `dictionaries` `dc` ON ((`dc`.`id` = `sr`.`demagecodeid`)))
-        LEFT JOIN `catalog` `c` ON ((`c`.`id` = `sr`.`catalogid`)));
+        LEFT JOIN `catalog` `c` ON ((`c`.`id` = `sr`.`catalogid`)))
+        LEFT JOIN `users` `u` ON ((`u`.`id` = `ol`.`technicianid`)));
 -- __ID__ = select id from dictionaries where acronym = 'products';
 insert into dictionaries (parentid,acronym,name) values (__ID__,'returned','Zwrócone');

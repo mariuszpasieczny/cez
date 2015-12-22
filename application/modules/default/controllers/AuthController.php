@@ -147,7 +147,7 @@ Jeśli nie zgłaszałeś chęci zmiany hasła, zignoruj ten list<br />
         $form    = new Application_Form_ChangePassword();
         
         $table = new Application_Model_Users_Table();
-        if (!$user = $table->getAll(array('repasshash' => $request->getParam('hash')))->current()) {
+        if (!$user = $table->getAll(array('repasshash' => $request->getParam('hash', '0')))->current()) {
             $this->view->error = 'Podany link jest nieprawidłowy';
             return;
         }
@@ -166,8 +166,8 @@ Jeśli nie zgłaszałeś chęci zmiany hasła, zignoruj ten list<br />
                     return;
                 }
                 $form->setDefaults($user->toArray());
-                $user->setFromArray($values);
                 $user->password = md5($values['password']);
+                $user->repasshash = null;
                 $user->save();
                 
                 $this->view->success = 'Hasło zostało zmienione';

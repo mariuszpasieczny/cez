@@ -184,8 +184,8 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
                     $this->_setPaginator($select);
                     $rows = $this->getPaginator()->getCurrentItems()->toArray();
                 } else {
-                    $rows = $select->query()->fetchAll();
-                }
+                        $rows = $select->query()->fetchAll();
+                    }
                 if ($this->cacheInClass()) {
                     $this->getCache()->save($rows, $cacheName, array($this->_name));
                 }

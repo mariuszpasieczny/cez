@@ -1,4 +1,4 @@
-<h2 class="sub-header">Edycja użytkownika</h2>
+<h2 class="sub-header"><?php echo $this->request['active'] ? 'Aktywacja' : 'Deaktywacja'; ?> użytkownika</h2>
 
 <?php if ($this->success): ?>
     <div class="alert alert-success"><?php echo $this->success; ?></div> 
@@ -16,7 +16,3 @@
     ?>
 
 <?php endif; ?> 
-        
-<script>
-    $('#role').find('option[value=superadmin]').attr('disabled', 'disabled');
-</script>

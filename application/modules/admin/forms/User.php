@@ -12,20 +12,27 @@ class Application_Form_User extends Application_Form
 {
     
     public function setRoles($config) {
-        $config = $config->toArray();
         $element = $this->getElement('role');
         $element->addMultiOption(null, 'Please select...');
-        foreach ($config as $role => $parent) {
-            $element->addMultiOption($role, $role);
+        foreach ($config as $role) {
+            $option = $element->addMultiOption($role, $role);
         }
     }
     
-    public function setDefaults(array $defaults) {
+    public function setRegions($config) {
+        $element = $this->getElement('region');
+        $element->addMultiOption(null, 'Please select...');
+        foreach ($config as $region) {
+            $element->addMultiOption($region, $region);
+        }
+    }
+    
+    /*public function setDefaults(array $defaults) {
         parent::setDefaults($defaults);
         $dictionary = new Application_Model_Dictionaries_Table();
         $parent = $dictionary->getStatusList('users')->find('active', 'acronym');
         $this->getElement('active')->setChecked($defaults['statusid'] == $parent['id'] ? true : false);
-    }
+    }*/
     
     public function init()
     {
@@ -89,7 +96,7 @@ class Application_Form_User extends Application_Form
             'class' => 'form-control',
         ));
         
-        $this->addElement('checkbox', 'active', array(
+        /*$this->addElement('checkbox', 'active', array(
             'label'      => 'Aktywny:',
         ));
         
@@ -119,11 +126,22 @@ class Application_Form_User extends Application_Form
                 'NotEmpty',
             ),
             'class' => 'form-control',
-        ));
+        ));*/
         
         $element = $this->createElement('select', 'role', array(
             'label'      => 'Rola:',
             //'required'   => true,
+            'filters'    => array('StringTrim'),
+            'validators' => array(
+            //    array('lessThan', true, array('score')),
+            ),
+            'class' => 'form-control chosen-select',
+        ));
+        $this->addElement($element);
+        
+        $element = $this->createElement('select', 'region', array(
+            'label'      => 'Region:',
+            'required'   => true,
             'filters'    => array('StringTrim'),
             'validators' => array(
             //    array('lessThan', true, array('score')),

@@ -68,6 +68,8 @@ class AuthController extends Application_Controller_Abstract
                 $storage->write($return);
                 
                 switch ($return->role) {
+                    case 'superadmin':
+                        //$this->_helper->redirector('list','users','admin');
                     case 'admin':
                     case 'coordinator':
                     case 'technician':
@@ -124,7 +126,7 @@ class AuthController extends Application_Controller_Abstract
                 $mail = new Zend_Mail('UTF-8');
                 $mail->setDefaultTransport($transport);
                 $mail->addTo($user->email);
-                $mail->setSubject('Zmiana hasła do konta ESOZ');
+                $mail->setSubject('Zmiana hasła do konta CEZ');
                 $link = 'http://' . $_SERVER['SERVER_NAME'] . '/auth/change-password?hash=' . $user->repasshash;
                 $mail->setBodyHtml("Aby dokonać jednorazowej zmiany hasła kliknij w poniższy link:<br />
 $link<br /><br />
@@ -147,7 +149,7 @@ Jeśli nie zgłaszałeś chęci zmiany hasła, zignoruj ten list<br />
         $form    = new Application_Form_ChangePassword();
         
         $table = new Application_Model_Users_Table();
-        if (!$user = $table->getAll(array('repasshash' => $request->getParam('hash')))->current()) {
+        if (!$user = $table->getAll(array('repasshash' => $request->getParam('hash', 0)))->current()) {
             $this->view->error = 'Podany link jest nieprawidłowy';
             return;
         }
@@ -166,7 +168,6 @@ Jeśli nie zgłaszałeś chęci zmiany hasła, zignoruj ten list<br />
                     return;
                 }
                 $form->setDefaults($user->toArray());
-                $user->setFromArray($values);
                 $user->password = md5($values['password']);
                 $user->save();
                 

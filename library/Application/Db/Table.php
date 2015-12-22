@@ -27,6 +27,14 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
         return $this->_name;
     }
 
+    public function setSchema($schema) {
+        $this->_schema = $schema;
+    }
+
+    public function getSchema() {
+        return $this->_schema;
+    }
+
     public static function setDefaultCache($cache = null) {
         self::$_defaultCache = self::_setupCache($cache);
     }

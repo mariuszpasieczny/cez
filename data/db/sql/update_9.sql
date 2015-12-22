@@ -1,0 +1,1 @@
+ALTER TABLE users ADD repasshash varchar(255) NOT NULL;

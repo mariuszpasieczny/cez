@@ -53,7 +53,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         if (!$this->_productsreleased) {
             $products = array();
             foreach ($this->getProducts() as $product) {
-                $products[] = $product->serial ? $product->serial : $product->productname;
+                $products[] = $product->serial ? $product->serial : $product->name;
             }
             $this->_productsreleased = @join(',', array_filter($products));
         }

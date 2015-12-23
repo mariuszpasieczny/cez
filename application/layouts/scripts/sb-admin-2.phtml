@@ -216,7 +216,7 @@
                                                         array('module' => 'admin', 'controller' => 'dictionaries', 'action' => 'edit'), 'default', true)
                                                 ?>" class="content-load">Dodaj</a></li>
                                                <?php endif; ?>
-                                               <?php if ($this->auth && $this->HasAccess($this->auth->role, 'products', 'import')): ?>
+                                               <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'import')): ?>
                                             <li><a href="<?php
                                                 echo $this->url(
                                                         array('module' => 'admin', 'controller' => 'dictionaries', 'action' => 'import'), 'default', true)

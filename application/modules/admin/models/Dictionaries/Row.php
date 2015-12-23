@@ -17,7 +17,8 @@ class Application_Model_Dictionaries_Row extends Application_Db_Table_Row
     
     public function getChildren($params = null) {
         //return $this->findDependentRowset('Application_Model_Dictionaries_Table', 'Children');
-        $codes = new Application_Model_Dictionaries_Table();
+        //$codes = new Application_Model_Dictionaries_Table();
+        $codes = $this->getTable();
         //$codes->setFrom('dictionaryattributesview');
         $codes->setLazyLoading(false);
         if (!empty($params['active'])) {

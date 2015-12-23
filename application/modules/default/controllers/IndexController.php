@@ -30,12 +30,14 @@ class IndexController extends Application_Controller_Abstract {
     }
 
     public function indexAction() {
-        // action body
-        $this->view->services = $this->_services->getAll(array('technicianid' => $this->_auth->getIdentity()->id)); //var_dump($this->view->services);exit;
-        if ($this->_auth->getIdentity()->role == 'technician')
-            $this->view->products = $this->_products->getAll(array('technicianid' => $this->_auth->getIdentity()->id)); //var_dump($this->view->products);exit;
-        else
-            $this->view->products = $this->_products->getAll(array('userid' => $this->_auth->getIdentity()->id)); //var_dump($this->view->products);exit;
+        if (!$this->_auth->getIdentity()->role == 'superadmin') {
+            // action body
+            $this->view->services = $this->_services->getAll(array('technicianid' => $this->_auth->getIdentity()->id)); //var_dump($this->view->services);exit;
+            if ($this->_auth->getIdentity()->role == 'technician')
+                $this->view->products = $this->_products->getAll(array('technicianid' => $this->_auth->getIdentity()->id)); //var_dump($this->view->products);exit;
+            else
+                $this->view->products = $this->_products->getAll(array('userid' => $this->_auth->getIdentity()->id)); //var_dump($this->view->products);exit;
+        }
     }
 
 }

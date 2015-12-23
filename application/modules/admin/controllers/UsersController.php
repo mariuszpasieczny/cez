@@ -18,15 +18,21 @@ class Admin_UsersController extends Application_Controller_Abstract
         /* Initialize action controller here */
         $this->_users = new Application_Model_Users_Table();
         $this->_users->setItemCountPerPage($this->_hasParam('count') ? $this->_getParam('count') : Application_Db_Table::ITEMS_PER_PAGE);
-        $this->_users->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : 'lastname DESC');
+        $this->_users->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : array('lastname','firstname'));
         parent::init();
         
-        $ajaxContext = $this->_helper->getHelper('AjaxContext');
-        $ajaxContext->addActionContext('index', 'html')
+        $context = $this->_helper->getHelper('xlsContext');
+        $context->addActionContext('index', array('html', 'json', 'xls'))
             ->addActionContext('edit', 'html')
+            ->addActionContext('set', 'html')
+            ->addActionContext('change-password', 'html')
             ->addActionContext('account', 'html')
             ->setSuffix('html', '')
             ->initContext();
+        
+        if ($context->getCurrentContext() == 'xls') {
+            $this->_users->setItemCountPerPage(null);
+        }
     }
     
     public function listAction()
@@ -45,7 +51,9 @@ class Admin_UsersController extends Application_Controller_Abstract
             $this->_users->setPageNumber($pageNumber);
         }
         $orderBy = $request->getParam('orderBy');
-        $columns = array('firstname', 'lastname', 'symbol', 'email', 'phoneno', 'role', 'status');
+        $columns = array('lastname', 'firstname', 'symbol', 'email', 'phoneno', 'role', 'status');
+        if ($this->_auth->getIdentity()->role == 'superadmin')
+            array_unshift ($columns, 'region');
         if ($orderBy) {
             $orderBy = explode(" ", $orderBy);
             $this->_users->setOrderBy("{$columns[$orderBy[0]]} {$orderBy[1]}");
@@ -60,9 +68,17 @@ class Admin_UsersController extends Application_Controller_Abstract
         $request->setParam('orderBy', $orderBy);
         $request->setParam('count', $this->_users->getItemCountPerPage());
         $this->_users->setLazyLoading(false);
-        $this->view->users = $this->_users->getAll();
+        $this->view->users = $this->_users->getAll($request->getParams());
         $this->view->paginator = $this->_users->getPaginator();
         $this->view->request = $request->getParams();
+        $roles = $this->_config->get('production')->get('resources')->get('acl')->get('roles')->toArray();
+        $this->view->roles = array_keys($roles);
+        $this->view->regions = array('warszawa','lublin');
+        $statuses = $this->_dictionaries->getStatusList('users');
+        $this->view->statuses = $statuses;
+        
+        $this->view->filepath = '/../data/temp/';
+        $this->view->filename = 'Lista uzytkownikow-' . date('YmdHis') . '.xlsx';
     }
  
     public function editAction()
@@ -72,34 +88,49 @@ class Admin_UsersController extends Application_Controller_Abstract
         $request = $this->getRequest();
         $id = $request->getParam('id');
         $form    = new Application_Form_User();
-        $form->setOptions(array('roles' => $this->_config->get('production')->get('resources')->get('acl')->get('roles')));
-        $status = $this->_dictionaries->getStatusList('users')->find('active', 'acronym');
+        $roles = $this->_config->get('production')->get('resources')->get('acl')->get('roles')->toArray();
+        $roles = array_keys($roles);
+        if ($schema = $request->getParam('region')) {
+            $this->_users->setSchema('cez_' . $schema);
+        }
         if ($id) {
             $user = $this->_users->get($id);
             $form->setDefaults($user->toArray());
+            if ($schema)
+                $form->setDefault('region', $schema);
+            //$form->getElement('region')->setAttrib('disabled', 'disabled');
+        } else {
+            $roles = array_filter($roles, function($value) {
+                return $value != 'superadmin';
+            });
         }
+        if ($this->_auth->getIdentity()->role != 'superadmin') {
+            $form->removeElement('region');
+        }
+        $form->setOptions(array('roles' => $roles,
+            'regions' => array('lublin','warszawa')));
         $this->view->form = $form;
  
         if ($this->getRequest()->isPost()) {
-            $validator = $form->getElement('password')->getValidator('identical');
-            $validator->setToken($this->_request->getPost('verifypassword'));
+            //$validator = $form->getElement('password')->getValidator('identical');
+            //$validator->setToken($this->_request->getPost('verifypassword'));
             if ($form->isValid($request->getPost())) {
                 $values = $form->getValues();
-                if (!$values['changepassword'] && $user) {
-                    $values['password'] = $user->password;
-                } else {
-                    $values['password'] = md5($values['password']);
-                }
+                //if (!$values['changepassword'] && $user) {
+                //    $values['password'] = $user->password;
+                //} else {
+                //    $values['password'] = md5($values['password']);
+                //}
                 if ($id) {
                     $user->setFromArray($values);
                 } else {
                     $user = $this->_users->createRow($values);
                     $user->id = null;
                 }
-                if (!$values['active']) {
-                    $status = $this->_dictionaries->getStatusList('users')->find('inactive', 'acronym');
-                }
-                $user->statusid = $status->id;
+                //if (!$values['active']) {
+                //    $status = $this->_dictionaries->getStatusList('users')->find('inactive', 'acronym');
+                //}
+                //$user->statusid = $status->id;
                 $user->save();
                 $this->view->success = 'Użytkownik zapisany';
             }
@@ -112,5 +143,87 @@ class Admin_UsersController extends Application_Controller_Abstract
         $request = $this->getRequest();
         
     }  
+    
+    public function setAction() {
+        $request = $this->getRequest();
+        $id = $request->getParam('id');
+        if ($region = $request->getParam('region')) {
+            $this->_users->setSchema('cez_' . $region);
+            $this->_dictionaries->setSchema('cez_' . $region);
+        }
+        $user = $this->_users->get($id);
+        if (!$user) {
+            throw new Exception('Nie znaleziono użytkownika');
+        }
+        $form = new Application_Form();
+        $form->setDefaults($user->toArray());
+        $this->view->form = $form;
+        $this->view->user = $user;
+
+        if ($this->getRequest()->isPost()) {
+            if ($form->isValid($request->getPost())) {
+                $values = $form->getValues();
+                Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                $params = $request->getParams();
+                $this->_dictionaries->clearCache();
+                if (!empty($params['active'])) {
+                    $status = $this->_dictionaries->getStatusList('users')->find('active', 'acronym');
+                } else {
+                    $status = $this->_dictionaries->getStatusList('users')->find('inactive', 'acronym');
+                }
+                $user->statusid = $status->id;
+                $user->modifieddate = date('Y-m-d H:i:s');
+                $user->save();
+                Zend_Db_Table::getDefaultAdapter()->commit();
+                if (!$user->password) {
+                    $user->repasshash = md5(time());
+                    $user->save();
+                    $mail = new Zend_Mail();
+                    $mail->setFrom('no-reply@cez.nplay.pl');
+                    $mail->setSubject('Aktywacja konta w systemie CEZ Nplay');
+                    $html = 'Witaj ' . $user->firstname . '<br><br>'
+                            . 'Przejdź na stronę <a href="http://www.' . $region . '.cez.nplay.pl/auth/change-password/hash/' . $user->repasshash . '">www.' . $region . '.cez.nplay.pl</a> by ustawić hasło.';
+                    $mail->setBodyHtml($html);
+                    $mail->send();
+                }
+                $this->view->success = 'Użytkownik został zmodyfikowany';
+            }
+        }
+    } 
+    
+    public function changePasswordAction() {
+        $request = $this->getRequest();
+        $id = $request->getParam('id');
+        if ($schema = $request->getParam('region')) {
+            $this->_users->setSchema('cez_' . $schema);
+            $this->_dictionaries->setSchema('cez_' . $schema);
+        }
+        $user = $this->_users->get($id);
+        if (!$user) {
+            throw new Exception('Nie znaleziono użytkownika');
+        }
+        $form = new Application_Form_User_Password();
+        $form->setDefaults($user->toArray());
+        $this->view->form = $form;
+        $this->view->user = $user;
+
+        if ($this->getRequest()->isPost()) {
+            $validator = $form->getElement('password')->getValidator('identical');
+            $validator->setToken($this->_request->getPost('verifypassword'));
+            if ($form->isValid($request->getPost())) {
+                $values = $form->getValues();
+                if ($values['score'] <= 0) {
+                    $form->setDescription('Hasło jest zbyt słabe');
+                    return;
+                }
+                Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                $values['password'] = md5($values['password']);
+                $user->modifieddate = date('Y-m-d H:i:s');
+                $user->save();
+                Zend_Db_Table::getDefaultAdapter()->commit();
+                $this->view->success = 'Hasło zostało zmienione';
+            }
+        }
+    }
     
 }

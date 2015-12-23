@@ -1,11 +1,59 @@
 <h2 class="sub-header">Lista użytkowników</h2>
 
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-inline form-load" action="<?php
+        echo $this->url(
+                array('module' => 'admin', 'controller' => 'users', 'action' => 'list'), 'default', true)
+        ?>">
+            <div class="form-group">
+                <select class="form-control chosen-select" name="region[]" multiple placeholder="Wybierz region">
+                    <option value="">Wybierz region</option>
+                    <?php
+                    foreach ($this->regions as $region):
+                        ?>
+                        <option value="<?php echo $region; ?>" <?php if (!empty($this->request['region']) && in_array($region, (array) $this->request['region'])): ?>selected<?php endif; ?>><?php echo $region; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control chosen-select" name="role[]" multiple placeholder="Wybierz rolę">
+                    <option value="">Wybierz rolę</option>
+                    <?php
+                    foreach ($this->roles as $role):
+                        ?>
+                        <option value="<?php echo $role; ?>" <?php if (!empty($this->request['role']) && in_array($role, (array) $this->request['role'])): ?>selected<?php endif; ?>><?php echo $role; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control chosen-select" name="status[]" multiple placeholder="Wybierz status">
+                    <option value="">Wybierz status</option>
+                    <?php
+                    foreach ($this->statuses as $status):
+                        ?>
+                        <option value="<?php echo $status->name; ?>" <?php if (!empty($this->request['status']) && in_array($status->name, (array) $this->request['status'])): ?>selected<?php endif; ?>><?php echo $status->name; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text" style="width:150px;" class="form-control" name="name" placeholder="E-mail lub nazwisko" value="<?php if (!empty($this->request['name'])) echo $this->request['name']; ?>">
+            </div>
+            <button type="button" class="btn btn-default search">Szukaj</button>
+            <button type="button" class="btn btn-link xls">Zapisz XLS</button>
+        </form>
+    </div>
+</div>
+
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover table-condensed" style="empty-cells: hide;" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <th>Imię</th>
+                <?php if ($this->auth->role == 'superadmin'): ?>
+                <th>Region</th>
+                <?php endif; ?>
                 <th>Nazwisko</th>
+                <th>Imię</th>
                 <th>Symbol</th>
                 <th>E-mail</th>
                 <th>Telefon</th>
@@ -16,18 +64,33 @@
         </thead>
         <?php foreach ($this->users as $user) : ?>
             <tr>
-                <td><?php echo $this->escape($user->firstname); ?></td>
+                <?php if ($this->auth->role == 'superadmin'): ?>
+                <td><?php echo $this->escape($user->region); ?></td>
+                <?php endif; ?>
                 <td><?php echo $this->escape($user->lastname); ?></td>
+                <td><?php echo $this->escape($user->firstname); ?></td>
                 <td><?php echo $this->escape($user->symbol); ?></td>
                 <td><?php echo $this->escape($user->email); ?></td>
-                <td><?php echo $this->escape($user->phoneno); ?></td>
+                <td><?php echo $user->phoneno ? $this->escape($user->phoneno) : '&nbsp;'; ?></td>
                 <td><?php echo $this->escape($user->role); ?></td>
                 <td><?php echo $this->escape($user->status); ?></td>
-                <td>
+                <td style="white-space: nowrap;">
                     <?php if ($this->auth && $this->HasAccess($this->auth->role, 'users', 'edit')): ?>
-                        <a href="<?php echo $this->baseUrl; ?>/admin/users/edit/id/<?php echo $user->id; ?>" class="content-load" title="Edytuj">
+                        <a href="<?php echo $this->baseUrl; ?>/admin/users/edit/id/<?php echo $user->id; ?><?php if ($this->auth->role == 'superadmin'): echo '/region/' . $user->region; endif; ?>" class="content-load" title="Edytuj">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         </a>
+                        <?php if ($user->status == 'Aktywny'): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/admin/users/change-password/id/<?php echo $user->id; ?><?php if ($this->auth->role == 'superadmin'): echo '/region/' . $user->region; endif; ?>" class="popup-load" data-target=".modal-body" title="Zmień hasło">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        </a>
+                        <a href="<?php echo $this->baseUrl; ?>/admin/users/set/id/<?php echo $user->id; ?><?php if ($this->auth->role == 'superadmin'): echo '/region/' . $user->region; endif; ?>/active/0" class="popup-load" data-target=".modal-body" title="Deaktywuj">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                        </a>
+                        <?php else: ?>
+                        <a href="<?php echo $this->baseUrl; ?>/admin/users/set/id/<?php echo $user->id; ?><?php if ($this->auth->role == 'superadmin'): echo '/region/' . $user->region; endif; ?>/active/1" class="popup-load" data-target=".modal-body" title="Aktywuj">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </a>
+                        <?php endif; ?>
                     <?php endif; ?>
                     <!--<?php if ($this->auth && $this->HasAccess($this->auth->role, 'users', 'delete')): ?>
                             <a href="<?php echo $this->baseUrl; ?>/admin/users/delete/id/<?php echo $user->id; ?>" class="content-load" title="Usuń">
@@ -42,10 +105,18 @@
 <?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
 <script>
     params = <?php echo Zend_Json::encode($this->request); ?>;
+    <?php if ($this->auth->role == 'superadmin'): ?>
     columnsDef = [{
                     'bSortable': false,
-                    'aTargets': [0]
+                    'aTargets': [8]
                 }];
-    sorting =  false;
+    <?php else: ?>
+    columnsDef = [{
+                    'bSortable': false,
+                    'aTargets': [7]
+                }];
+    <?php endif; ?>
+    sorting =  true;
+    $('.chosen-select').chosen({allow_single_deselect: true});
 </script>
 <script src="/js/dataTables.js" />

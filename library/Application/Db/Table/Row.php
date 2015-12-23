@@ -31,13 +31,17 @@ class Application_Db_Table_Row extends Zend_Db_Table_Row
     
     public function _update() {
         parent::_update();
-        foreach ($this->_modifiedFields as $key => $modified) {
-            $this->getTable()->getAdapter()->insert('history', 
-                array('userid' => Zend_Auth::getInstance()->getIdentity()->id,
-                    'tablename' => $this->getTable()->getName(),
-                    'rowid' => $this->id,
-                    'columnname' => $key,
-                    'value' => $this->{$key}));
+        try {
+            foreach ($this->_modifiedFields as $key => $modified) {
+                $this->getTable()->getAdapter()->insert((($schema = $this->getTable()->getSchema()) ? "$schema." : '') . 'history', 
+                    array('userid' => Zend_Auth::getInstance()->getIdentity()->id,
+                        'tablename' => $this->getTable()->getName(),
+                        'rowid' => $this->id,
+                        'columnname' => $key,
+                        'value' => $this->{$key}));
+            }
+        } catch (Exception $ex) {
+
         }
     }
     

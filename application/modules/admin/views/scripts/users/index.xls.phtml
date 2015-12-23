@@ -1,0 +1,44 @@
+<?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/../library/PHPExcel/PHPExcel.php';
+
+$filename = !empty($vars['filepath']) ? $_SERVER['DOCUMENT_ROOT'] . $vars['filepath'] : '';
+$filename .= !empty($vars['filename']) ? $vars['filename'] : 'document.xlsx';
+
+$objPHPExcel = new PHPExcel();
+$objPHPExcel->setActiveSheetIndex(0);
+
+$rowNo = 1;
+$objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, 'Region');
+$objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, 'Nazwisko');
+$objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, 'Imię');
+$objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, 'Symbol');
+$objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, 'E-mail');
+$objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, 'Telefon');
+$objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, 'Rola');
+$objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, 'Status');
+$rowNo = 2;
+foreach ($vars['users'] as $user) {//var_dump($user);exit;
+    try{
+        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowNo, $user->region);
+    } catch (Exception $e) {}
+    $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowNo, $user->lastname);
+    $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, $user->firstname);
+    $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, $user->symbol);
+    $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, $user->email);
+    $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, $user->phoneno);
+    $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, $user->role);
+    $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, $user->status);
+    $rowNo++;
+}
+
+//$objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+//$objWriter->save('php://output');
+$objWriter->save($filename);
+//$result = $_SERVER['DOCUMENT_ROOT'] . '/some_excel_file.xlsx';
+//header('Content-Description: File Transfer');
+//header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//header('Content-Disposition: attachment; filename=' . ($vars['filename'] ? $vars['filename'] : 'document.xlsx'));
+
+?>

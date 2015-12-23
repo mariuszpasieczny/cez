@@ -24,7 +24,19 @@ class Application_Model_Users_Table extends Application_Db_Table
         if ($this->_lazyLoading === true) {
             return parent::select();
         }
-        return parent::select()->setIntegrityCheck(false)->from($this->_from ? $this->_from : 'usersview');
+        return parent::select()->setIntegrityCheck(false)->from($this->_from ? $this->_from : array('users' => 'usersview'));
+    }
+    
+    public function getAll($params = array(), $rows = null, $root = null) {
+        if (!empty($params['status'])) {
+            $this->setWhere($this->getAdapter()->quoteInto("status = ?", $params['status']));
+        }
+        if (!empty($params['name'])) {
+            $where[] = $this->getAdapter()->quoteInto("UPPER(lastname) LIKE UPPER(?)", "{$params['name']}%");
+            $where[] = $this->getAdapter()->quoteInto("UPPER(email) LIKE UPPER(?)", "{$params['name']}%");
+            $this->setWhere(join(" OR ", $where));
+        }
+        return parent::getAll($params, $rows, $root);
     }
     
 }

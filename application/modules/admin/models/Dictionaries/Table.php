@@ -39,7 +39,7 @@ class Application_Model_Dictionaries_Table extends Application_Db_Table
         if ($this->_lazyLoading === true) {
             return parent::select();
         }
-        return parent::select()->setIntegrityCheck(false)->from($this->_from ? $this->_from : 'dictionariesview');
+        return parent::select()->setIntegrityCheck(false)->from(($this->_schema ? ($this->_schema . '.') : '') . ($this->_from ? $this->_from : 'dictionariesview'));
     }
     
     public function getDictionaryList($module = null, $acronym = null) {

@@ -53,7 +53,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         if (!$this->_productsreleased) {
             $products = array();
             foreach ($this->getProducts() as $product) {
-                $products[] = /*$product->serial ? $product->serial : */$product->productname;
+                $products[] = $product->serial ? $product->serial : $product->productname;
             }
             $this->_productsreleased = @join(',', array_filter($products));
         }
@@ -65,7 +65,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
             $products = array();
             $returns = $this->getReturns();
             foreach ($returns as $product) {
-                $products[] = /*$product->serial ? $product->serial : */$product->name;
+                $products[] = $product->serial ? $product->serial : $product->name;
             }
             $this->_productsreturned = @join(',', array_filter($products));
         }
@@ -75,7 +75,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
     public function getProducts() {
         //return $this->findDependentRowset('Application_Model_Services_Products_Table', 'Service');
         $products = new Application_Model_Services_Products_Table();
-        $products->setLazyLoading(true);
+        $products->setLazyLoading(false);
         $products->setOrderBy(array('id ASC'));
         return $products->getAll(array('serviceid' => $this->id));
     }
@@ -83,7 +83,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
     public function getReturns() {
         //return $this->findDependentRowset('Application_Model_Services_Products_Table', 'Service');
         $products = new Application_Model_Services_Returns_Table();
-        $products->setLazyLoading(true);
+        $products->setLazyLoading(false);
         $products->setOrderBy(array('id ASC'));
         return $products->getAll(array('serviceid' => $this->id));
     }

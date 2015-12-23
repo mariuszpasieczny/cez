@@ -47,20 +47,22 @@ class Application_Form_Services_Installation_Finish extends Application_Form
                     $desc = $product->serial . ', ';
                 }
                 $desc .= max(0, $product->qtyavailable) . ' ' . $product->unitacronym;
-                if ($desc) {
-                    $desc = $product->product . ' (' . $desc . ')';
-                } else {
-                    $desc = $product->product;
-                }
                 $element->addMultiOption($product->id, 
-                        $desc, 
+                        $desc ? $product->product . ' (' . $desc . ')' : $desc, 
                         array('data-serial' => $product->serial));
             }
         }
         $element->addMultiOption(null, 'Wybierz opcję...');
         $selected = array();
-        foreach ($config as $parent) {
-            $element->addMultiOption($parent['id'], $parent->getProduct() ? ($parent->getProduct()->name . ' (' . $parent->getProduct()->serial . ')') : '');
+        foreach ($config as $product) {
+            $desc = '';
+            if (!empty($product->serial)) {
+                $desc = $product->serial . ', ';
+            }
+            $desc .= max(0, $product->qtyavailable) . ' ' . $product->unitacronym;
+            $element->addMultiOption($product->id, 
+                    $desc ? $product->product . ' (' . $desc . ')' : $desc, 
+                    array('data-serial' => $product->serial));
         }
     }
 

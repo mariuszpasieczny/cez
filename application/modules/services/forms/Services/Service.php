@@ -98,15 +98,22 @@ class Application_Form_Services_Service extends Application_Form {
                     $desc = $product->serial . ', ';
                 }
                 $desc .= max(0, $product->qtyavailable) . ' ' . $product->unitacronym;
-                if ($desc) {
-                    $desc = $product->product . ' (' . $desc . ')';
-                } else {
-                    $desc = $product->product;
-                }
                 $element->addMultiOption($product->id, 
-                        $desc, 
+                        $desc ? $product->product . ' (' . $desc . ')' : $desc, 
                         array('data-serial' => $product->serial));
             }
+        }
+        $element->addMultiOption(null, 'Wybierz opcję...');
+        $selected = array();
+        foreach ($config as $product) {
+            $desc = '';
+            if (!empty($product->serial)) {
+                $desc = $product->serial . ', ';
+            }
+            $desc .= max(0, $product->qtyavailable) . ' ' . $product->unitacronym;
+            $element->addMultiOption($product->id, 
+                    $desc ? $product->product . ' (' . $desc . ')' : $desc, 
+                    array('data-serial' => $product->serial));
         }
     }
 

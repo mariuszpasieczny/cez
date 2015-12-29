@@ -147,7 +147,7 @@ class Admin_UsersController extends Application_Controller_Abstract
     public function setAction() {
         $request = $this->getRequest();
         $id = $request->getParam('id');
-        if ($region = $request->getParam('region')) {
+        if ($schema = $request->getParam('region')) {
             $this->_users->setSchema($this->_config->get('production')->get('regions')->get($schema));
             $this->_dictionaries->setSchema($this->_config->get('production')->get('regions')->get($schema));
         }

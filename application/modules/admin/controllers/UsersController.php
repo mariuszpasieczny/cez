@@ -148,8 +148,8 @@ class Admin_UsersController extends Application_Controller_Abstract
         $request = $this->getRequest();
         $id = $request->getParam('id');
         if ($region = $request->getParam('region')) {
-            $this->_users->setSchema('cez_' . $region);
-            $this->_dictionaries->setSchema('cez_' . $region);
+            $this->_users->setSchema($this->_config->get('production')->get('regions')->get($schema));
+            $this->_dictionaries->setSchema($this->_config->get('production')->get('regions')->get($schema));
         }
         $user = $this->_users->get($id);
         if (!$user) {
@@ -195,8 +195,8 @@ class Admin_UsersController extends Application_Controller_Abstract
         $request = $this->getRequest();
         $id = $request->getParam('id');
         if ($schema = $request->getParam('region')) {
-            $this->_users->setSchema('cez_' . $schema);
-            $this->_dictionaries->setSchema('cez_' . $schema);
+            $this->_users->setSchema($this->_config->get('production')->get('regions')->get($schema));
+            $this->_dictionaries->setSchema($this->_config->get('production')->get('regions')->get($schema));
         }
         $user = $this->_users->get($id);
         if (!$user) {

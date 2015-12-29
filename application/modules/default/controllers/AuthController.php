@@ -56,11 +56,12 @@ class AuthController extends Application_Controller_Abstract {
                     'lastname',
                     'admin',
                     'role',
-                    'modifieddate'
+                    'modifieddate',
+                    'dateadd'
                 ));
                 $storage->write($return);
                 $currDate = new Zend_Date();
-                $modDate = new Zend_Date($return->modifieddate);
+                $modDate = new Zend_Date($return->modifieddate ? $return->modifieddate : $return->dateadd);
                 $difference = $currDate->sub($modDate);
                 $measure = new Zend_Measure_Time($difference, Zend_Measure_Time::SECOND);
                 $measure->convertTo(Zend_Measure_Time::MONTH);

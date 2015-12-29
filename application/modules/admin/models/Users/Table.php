@@ -28,6 +28,9 @@ class Application_Model_Users_Table extends Application_Db_Table
     }
     
     public function getAll($params = array(), $rows = null, $root = null) {
+        if (!empty($params['region'])) {
+            $this->setWhere($this->getAdapter()->quoteInto("region = ?", $params['region']));
+        }
         if (!empty($params['status'])) {
             $this->setWhere($this->getAdapter()->quoteInto("status = ?", $params['status']));
         }

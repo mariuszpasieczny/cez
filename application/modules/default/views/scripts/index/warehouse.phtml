@@ -4,14 +4,14 @@
             <div class="panel-body">
                 <h1 class="fs30 mt5 mbn">
                     <?php if ($this->auth->role == 'technician'): ?><?php
-                        if ($stats = $this->products->find('Wydane technikowi', 'status')):
+                        if ($this->products && $stats = $this->products->find('Wydane technikowi', 'status')):
                             echo $stats->quantity;
                         else:
                             echo 0;
                         endif;
                         ?>
                     <?php else: ?><?php
-                        if ($stats = $this->products->find('Nowe', 'status')):
+                        if ($this->products && $stats = $this->products->find('Nowe', 'status')):
                             echo $stats->quantity;
                         else:
                             echo 0;

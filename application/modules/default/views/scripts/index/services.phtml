@@ -5,7 +5,7 @@
                 <h1 class="fs30 mt5 mbn">
                     <?php if ($this->auth->role == 'technician'): ?>
                         <?php
-                        if ($stats = $this->services->find('Przypisane', 'status')):
+                        if ($this->services && $stats = $this->services->find('Przypisane', 'status')):
                             echo $stats->quantity;
                         else:
                             echo 0;
@@ -13,7 +13,7 @@
                         ?>
                     <?php else: ?>
                         <?php
-                        if ($stats = $this->services->find('Nowe', 'status')):
+                        if ($this->services && $stats = $this->services->find('Nowe', 'status')):
                             echo $stats->quantity;
                         else:
                             echo 0;
@@ -36,7 +36,7 @@
             <div class="panel-body">
                 <h1 class="fs30 mt5 mbn">
                     <?php
-                    if ($stats = $this->services->find('Zakończone', 'status')):
+                    if ($this->services && $stats = $this->services->find('Zakończone', 'status')):
                         echo $stats->quantity;
                     else:
                         echo 0;
@@ -59,7 +59,7 @@
                 <div class="panel-body">
                     <h1 class="fs30 mt5 mbn">
                         <?php
-                        if ($stats = $this->services->find('Zwrócone', 'status')):
+                        if ($this->services && $stats = $this->services->find('Zwrócone', 'status')):
                             echo $stats->quantity;
                         else:
                             echo 0;

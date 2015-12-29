@@ -217,7 +217,7 @@ class Admin_UsersController extends Application_Controller_Abstract
                     return;
                 }
                 Zend_Db_Table::getDefaultAdapter()->beginTransaction();
-                $values['password'] = md5($values['password']);
+                $user->password = md5($values['password']);
                 $user->modifieddate = date('Y-m-d H:i:s');
                 $user->save();
                 Zend_Db_Table::getDefaultAdapter()->commit();

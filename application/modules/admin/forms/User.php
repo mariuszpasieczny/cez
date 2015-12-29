@@ -20,7 +20,8 @@ class Application_Form_User extends Application_Form
     }
     
     public function setRegions($config) {
-        $element = $this->getElement('region');
+        if (!$element = $this->getElement('region'))
+                return;
         $element->addMultiOption(null, 'Please select...');
         foreach ($config as $region) {
             $element->addMultiOption($region, $region);

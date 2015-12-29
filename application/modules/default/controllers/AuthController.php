@@ -135,7 +135,7 @@ class AuthController extends Application_Controller_Abstract {
                 $mail = new Zend_Mail('UTF-8');
                 $mail->setDefaultTransport($transport);
                 $mail->setFrom($this->_config->get(APPLICATION_ENV)->comments->mail->from);
-                $mail->addTo($user->email);
+                $mail->addTo($user->email, "{$user->lastname} {$user->firstname}");
                 $mail->setSubject('Zmiana hasła do konta CEZ');
                 $link = 'http://' . $_SERVER['SERVER_NAME'] . '/auth/change-password?hash=' . $user->repasshash;
                 $mail->setBodyHtml("Aby dokonać jednorazowej zmiany hasła kliknij w poniższy link:<br />

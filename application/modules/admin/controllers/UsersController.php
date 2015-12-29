@@ -180,6 +180,7 @@ class Admin_UsersController extends Application_Controller_Abstract
                     $user->save();
                     $mail = new Zend_Mail();
                     $mail->setFrom($this->_config->get(APPLICATION_ENV)->comments->mail->from);
+                    $mail->addTo($user->email, "{$user->lastname} {$user->firstname}");
                     $mail->setSubject('Aktywacja konta w systemie CEZ Nplay');
                     $html = 'Witaj ' . $user->firstname . '<br><br>'
                             . 'Przejdź na stronę <a href="http://www.' . $region . '.cez.nplay.pl/auth/change-password/hash/' . $user->repasshash . '">www.' . $region . '.cez.nplay.pl</a> by ustawić hasło.';

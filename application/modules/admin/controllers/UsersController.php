@@ -73,7 +73,7 @@ class Admin_UsersController extends Application_Controller_Abstract
         $this->view->request = $request->getParams();
         $roles = $this->_config->get('production')->get('resources')->get('acl')->get('roles')->toArray();
         $this->view->roles = array_keys($roles);
-        $this->view->regions = array('warszawa','lublin');
+        $this->view->regions = array('consys', 'art', 'damp', 'eska');
         $statuses = $this->_dictionaries->getStatusList('users');
         $this->view->statuses = $statuses;
         
@@ -108,7 +108,7 @@ class Admin_UsersController extends Application_Controller_Abstract
             $form->removeElement('region');
         }
         $form->setOptions(array('roles' => $roles,
-            'regions' => array('lublin','warszawa')));
+            'regions' => array('consys', 'art', 'damp', 'eska')));
         $this->view->form = $form;
  
         if ($this->getRequest()->isPost()) {

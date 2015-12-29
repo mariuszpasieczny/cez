@@ -73,7 +73,7 @@ class Admin_UsersController extends Application_Controller_Abstract
         $this->view->request = $request->getParams();
         $roles = $this->_config->get('production')->get('resources')->get('acl')->get('roles')->toArray();
         $this->view->roles = array_keys($roles);
-        $this->view->regions = array('consys', 'art', 'damp', 'eska');
+        $this->view->regions = array_keys($this->_config->get('production')->get('regions')->toArray());
         $statuses = $this->_dictionaries->getStatusList('users');
         $this->view->statuses = $statuses;
         
@@ -91,7 +91,7 @@ class Admin_UsersController extends Application_Controller_Abstract
         $roles = $this->_config->get('production')->get('resources')->get('acl')->get('roles')->toArray();
         $roles = array_keys($roles);
         if ($schema = $request->getParam('region')) {
-            $this->_users->setSchema('cez_' . $schema);
+            $this->_users->setSchema($this->_config->get('production')->get('regions')->get($schema));
         }
         if ($id) {
             $user = $this->_users->get($id);
@@ -108,7 +108,7 @@ class Admin_UsersController extends Application_Controller_Abstract
             $form->removeElement('region');
         }
         $form->setOptions(array('roles' => $roles,
-            'regions' => array('consys', 'art', 'damp', 'eska')));
+            'regions' => array_keys($this->_config->get('production')->get('regions')->toArray())));
         $this->view->form = $form;
  
         if ($this->getRequest()->isPost()) {

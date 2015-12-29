@@ -73,7 +73,8 @@ class Admin_UsersController extends Application_Controller_Abstract
         $this->view->request = $request->getParams();
         $roles = $this->_config->get('production')->get('resources')->get('acl')->get('roles')->toArray();
         $this->view->roles = array_keys($roles);
-        $this->view->regions = array_keys($this->_config->get('production')->get('regions')->toArray());
+        if ($regions = $this->_config->get('production')->get('regions'))
+            $this->view->regions = array_keys($regions->toArray());
         $statuses = $this->_dictionaries->getStatusList('users');
         $this->view->statuses = $statuses;
         
@@ -107,8 +108,9 @@ class Admin_UsersController extends Application_Controller_Abstract
         if ($this->_auth->getIdentity()->role != 'superadmin') {
             $form->removeElement('region');
         }
+        $regions = $this->_config->get('production')->get('regions');
         $form->setOptions(array('roles' => $roles,
-            'regions' => array_keys($this->_config->get('production')->get('regions')->toArray())));
+            'regions' => $regions ? array_keys($regions->toArray()) : null));
         $this->view->form = $form;
  
         if ($this->getRequest()->isPost()) {

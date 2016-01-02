@@ -184,8 +184,12 @@ class Admin_UsersController extends Application_Controller_Abstract
                     $mail->setFrom($this->_config->get(APPLICATION_ENV)->comments->mail->from);
                     $mail->addTo($user->email, "{$user->lastname} {$user->firstname}");
                     $mail->setSubject('Aktywacja konta w systemie CEZ Nplay');
+                    $host = $_SERVER['SERVER_NAME'];
+                    if ($schema) {
+                        $host = $schema . '.' . $host;
+                    }
                     $html = 'Witaj ' . $user->firstname . '<br><br>'
-                            . 'Przejdź na stronę <a href="http://www.' . $schema . '.cez.nplay.pl/auth/change-password/hash/' . $user->repasshash . '">www.' . $schema . '.cez.nplay.pl</a> by ustawić hasło.';
+                            . 'Przejdź na stronę <a href="http://www.' . $host . '/auth/change-password/hash/' . $user->repasshash . '">www.' . $schema . '.cez.nplay.pl</a> by ustawić hasło.';
                     $mail->setBodyHtml($html);
                     $mail->send();
                 }

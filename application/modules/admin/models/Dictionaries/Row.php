@@ -21,6 +21,7 @@ class Application_Model_Dictionaries_Row extends Application_Db_Table_Row
         $codes = $this->getTable();
         //$codes->setFrom('dictionaryattributesview');
         $codes->setLazyLoading(false);
+        $codes->setItemCountPerPage(null);
         if (!empty($params['active'])) {
             $codes->setWhere('SYSDATE() BETWEEN IF(datefrom IS NULL, SYSDATE(), datefrom) AND IF(datetill IS NULL, SYSDATE(), datetill)');
         }

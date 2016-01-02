@@ -219,6 +219,7 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
             $cacheName = $this->_name . '_' . md5(serialize($where));
         }
         //var_dump($this->cacheInClass(),$cacheName);
+        $this->setLazyLoading(true);
         if (!$this->cacheInClass() || ($row = $this->getCache()->load($cacheName)) === false) {
             $row = parent::fetchRow($where, $order);
             if ($this->cacheInClass()) {

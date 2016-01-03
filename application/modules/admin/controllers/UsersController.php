@@ -177,7 +177,7 @@ class Admin_UsersController extends Application_Controller_Abstract
                 $user->modifieddate = date('Y-m-d H:i:s');
                 $user->save();
                 Zend_Db_Table::getDefaultAdapter()->commit();
-                if (!$user->password) {
+                if (!empty($params['active']) && !$user->password) {
                     $user->repasshash = md5(time());
                     $user->save();
                     $mail = new Zend_Mail('UTF-8');
@@ -189,7 +189,7 @@ class Admin_UsersController extends Application_Controller_Abstract
                         $host = $schema . '.' . $host;
                     }
                     $html = 'Witaj ' . $user->firstname . '<br><br>'
-                            . 'Przejdź na stronę <a href="http://www.' . $host . '/auth/change-password/hash/' . $user->repasshash . '">www.' . $schema . '.cez.nplay.pl</a> by ustawić hasło.';
+                            . 'Przejdź na stronę <a href="http://www.' . $host . '/auth/change-password/hash/' . $user->repasshash . '">www.' . $host . '</a> by ustawić hasło.';
                     $mail->setBodyHtml($html);
                     $mail->send();
                 }

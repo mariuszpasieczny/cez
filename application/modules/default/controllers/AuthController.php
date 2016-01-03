@@ -137,9 +137,10 @@ class AuthController extends Application_Controller_Abstract {
                 $mail->setFrom($this->_config->get(APPLICATION_ENV)->comments->mail->from);
                 $mail->addTo($user->email, "{$user->lastname} {$user->firstname}");
                 $mail->setSubject('Zmiana hasła do konta CEZ');
-                $link = 'http://' . $_SERVER['SERVER_NAME'] . '/auth/change-password?hash=' . $user->repasshash;
+                $host = $_SERVER['SERVER_NAME'];
+                $link = 'http://' . $host . '/auth/change-password?hash=' . $user->repasshash;
                 $mail->setBodyHtml("Aby dokonać jednorazowej zmiany hasła kliknij w poniższy link:<br />
-<a href=\"$link\">www.{$_SERVER['SERVER_NAME']}</a><br /><br />
+<a href=\"$link\">$host</a><br /><br />
 
 Jeśli nie zgłaszałeś chęci zmiany hasła, zignoruj ten list<br />
 (prawdopodobnie inna osoba podała omyłkowo Twój adres)");

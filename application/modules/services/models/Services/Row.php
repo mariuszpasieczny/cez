@@ -51,39 +51,46 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
 
     public function getProductsreleased() {
         if (!$this->_productsreleased) {
-            $products = array();
-            foreach ($this->getProducts() as $product) {
-                $products[] = $product->serial ? $product->serial : $product->name;
+            $data = array();
+            $products = $this->getProducts(true);
+            if (!$products->count()) {
+                return null;
             }
-            $this->_productsreleased = @join(',', array_filter($products));
+            foreach ($products as $product) {
+                $data[] = $product->productname;
+            }
+            $this->_productsreleased = @join(',', array_filter($data));
         }
         return $this->_productsreleased;
     }
 
     public function getProductsreturned() {
         if (!$this->_productsreturned) {
-            $products = array();
-            $returns = $this->getReturns();
-            foreach ($returns as $product) {
-                $products[] = $product->serial ? $product->serial : $product->name;
+            $data = array();
+            $returns = $this->getReturns(true);
+            if (!$returns->count()) {
+                return null;
             }
-            $this->_productsreturned = @join(',', array_filter($products));
+            foreach ($returns as $product) {
+                $data[] = $product->name;
+            }
+            $this->_productsreturned = @join(',', array_filter($data));
         }
         return $this->_productsreturned;
     }
 
-    public function getProducts() {
+    public function getProducts($lazy = false) {
         //return $this->findDependentRowset('Application_Model_Services_Products_Table', 'Service');
         $products = new Application_Model_Services_Products_Table();
-        $products->setLazyLoading(false);
+        $products->setLazyLoading($lazy);
         $products->setOrderBy(array('id ASC'));
         return $products->getAll(array('serviceid' => $this->id));
     }
 
-    public function getReturns() {
+    public function getReturns($lazy = false) {
         //return $this->findDependentRowset('Application_Model_Services_Products_Table', 'Service');
         $products = new Application_Model_Services_Returns_Table();
-        $products->setLazyLoading(false);
+        $products->setLazyLoading($lazy);
         $products->setOrderBy(array('id ASC'));
         return $products->getAll(array('serviceid' => $this->id));
     }

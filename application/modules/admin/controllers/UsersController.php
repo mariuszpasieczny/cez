@@ -100,18 +100,23 @@ class Admin_UsersController extends Application_Controller_Abstract
             if ($schema)
                 $form->setDefault('region', $schema);
             //$form->getElement('region')->setAttrib('disabled', 'disabled');
-            if ($user->role != 'admin') {
-                $roles = array_filter($roles, function($value) {
-                    return $value != 'admin';
-                });
+            foreach ($roles as $key => $value) {
+                if ($value == 'admin' && !($value == $user->role || !in_array($this->_auth->getIdentity()->role, array('admin','superadmin')))) {
+                    unset($roles[$key]);
+                }
+                if ($value == 'superadmin' && !($value == $user->role || !in_array($this->_auth->getIdentity()->role, array('superadmin')))) {
+                    unset($roles[$key]);
+                }
             }
         } else {
-            $roles = array_filter($roles, function($value) {
-                return $value != 'superadmin';
-            });
-            $roles = array_filter($roles, function($value) {
-                return $value != 'admin';
-            });
+            foreach ($roles as $key => $value) {
+                if ($value == 'admin' && !in_array($this->_auth->getIdentity()->role, array('superadmin'))) {
+                    unset($roles[$key]);
+                }
+                if ($value == 'superadmin' && !in_array($this->_auth->getIdentity()->role, array('superadmin'))) {
+                    unset($roles[$key]);
+                }
+            }
         }
         if ($this->_auth->getIdentity()->role != 'superadmin') {
             $form->removeElement('region');

@@ -78,7 +78,7 @@
         <?php endforeach; ?> 
     </table> 
 </div>
-<?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
+<?php if ($this->paginator): echo $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); endif; ?>
 <script>
     $('.chosen-select').chosen({allow_single_deselect: true});
     params = <?php echo Zend_Json::encode($this->request); ?>;

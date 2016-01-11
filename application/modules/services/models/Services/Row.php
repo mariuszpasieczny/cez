@@ -51,15 +51,11 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
 
     public function getProductsreleased() {
         if (!$this->_productsreleased) {
-            $data = array();
-            $products = $this->getProducts(true);
-            if (!$products->count()) {
-                return null;
+            $products = array();
+            foreach ($this->getProducts() as $product) {
+                $products[] = $product->serial ? $product->serial : $product->name;
             }
-            foreach ($products as $product) {
-                $data[] = $product->productname;
-            }
-            $this->_productsreleased = @join(',', array_filter($data));
+            $this->_productsreleased = @join(',', array_filter($products));
         }
         return $this->_productsreleased;
     }

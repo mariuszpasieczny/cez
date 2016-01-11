@@ -100,9 +100,17 @@ class Admin_UsersController extends Application_Controller_Abstract
             if ($schema)
                 $form->setDefault('region', $schema);
             //$form->getElement('region')->setAttrib('disabled', 'disabled');
+            if ($user->role != 'admin') {
+                $roles = array_filter($roles, function($value) {
+                    return $value != 'admin';
+                });
+            }
         } else {
             $roles = array_filter($roles, function($value) {
                 return $value != 'superadmin';
+            });
+            $roles = array_filter($roles, function($value) {
+                return $value != 'admin';
             });
         }
         if ($this->_auth->getIdentity()->role != 'superadmin') {

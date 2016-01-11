@@ -179,6 +179,10 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                         $form->getElement('unitid-' . $i)->setErrors(array('unitid-' . $i => 'Brak wartości w polu jednostka'));
                         return;
                     }
+                    if ($values['quantity-' . $i] <= 0) {
+                        $form->getElement('quantity-' . $i)->setErrors(array('unitid-' . $i => 'Nieprawidłowa wartość w polu ilość'));
+                        return;
+                    }
                     if ($values['quantity-' . $i] > $item->qtyavailable) {
                         $form->getElement('quantity-' . $i)->setErrors(array('quantity-' . $i => 'Zbyt duża wartość w polu ilość'));
                         return;
@@ -251,6 +255,10 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
                 foreach ($product as $i => $item) {
                     if (!$values['quantity-' . $i]) {
                         continue;
+                    }
+                    if ($values['quantity-' . $i] <= 0) {
+                        $form->getElement('quantity-' . $i)->setErrors(array('unitid-' . $i => 'Nieprawidłowa wartość w polu ilość'));
+                        return;
                     }
                     $status = $this->_dictionaries->getStatusList('orders')->find('new', 'acronym');
                     if (!$order = $this->_orders->getAll(array('userid' => $this->_auth->getIdentity()->id))->current()) {

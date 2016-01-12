@@ -96,7 +96,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
             //return $this->findDependentRowset('Application_Model_Services_Codes_Table', 'Service');
             $codes = new Application_Model_Services_Codes_Table();
             $codes->setLazyLoading(false);
-            $codes->setOrderBy(array('id ASC'));
+            $codes->setOrderBy(array('codeacronym ASC'));
             $this->_servicecodes = $codes->getAll(array('serviceid' => $this->id));
         }
         return $this->_servicecodes;

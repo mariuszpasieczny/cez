@@ -30,7 +30,7 @@ class IndexController extends Application_Controller_Abstract {
     }
 
     public function indexAction() {
-        if (!$this->_auth->getIdentity()->role == 'superadmin') {
+        if ($this->_auth->getIdentity()->role != 'superadmin') {
             // action body
             $this->view->services = $this->_services->getAll(array('technicianid' => $this->_auth->getIdentity()->id)); //var_dump($this->view->services);exit;
             if ($this->_auth->getIdentity()->role == 'technician')

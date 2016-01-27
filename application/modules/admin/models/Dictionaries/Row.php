@@ -92,6 +92,48 @@ class Application_Model_Dictionaries_Row extends Application_Db_Table_Row
         return parent::findDependentRowset('Application_Model_Dictionaries_Attributes_Table', 'Solution');
     }
     
+    public function getInstance() {
+        $table = $this->getTable();
+        $table->setLazyLoading(false);
+        $attributes = $table->getAttributeList();
+        $attributeId = $attributes->find('instanceid', 'acronym')->id;
+        $rowset = $this->getAttributes(array('attributeid' => $attributeId), 'Instance');
+        if ($rowset->count()) $row = $rowset->current()->toArray();
+        $table = new Application_Model_Dictionaries_Attributes_Table();
+        if (empty($row)) {
+            $cols = $table->info();
+            $row = array_combine($cols['cols'], array_fill(0, sizeof($cols['cols']), null));
+            $row['attributeid'] = $attributeId;
+        }
+        return new Application_Db_Table_Row(array(
+            'table' => $table,
+            'data' => $row,
+            'readOnly' => false,
+            'stored' => true
+        ));
+    }
+    
+    public function getRegion() {
+        $table = $this->getTable();
+        $table->setLazyLoading(false);
+        $attributes = $table->getAttributeList();
+        $attributeId = $attributes->find('regionid', 'acronym')->id;
+        $rowset = $this->getAttributes(array('attributeid' => $attributeId), 'Region');
+        if ($rowset->count()) $row = $rowset->current()->toArray();
+        $table = new Application_Model_Dictionaries_Attributes_Table();
+        if (empty($row)) {
+            $cols = $table->info();
+            $row = array_combine($cols['cols'], array_fill(0, sizeof($cols['cols']), null));
+            $row['attributeid'] = $attributeId;
+        }
+        return new Application_Db_Table_Row(array(
+            'table' => $table,
+            'data' => $row,
+            'readOnly' => false,
+            'stored' => true
+        ));
+    }
+    
     public function getPrice() {
         $table = $this->getTable();
         $table->setLazyLoading(false);
@@ -105,7 +147,7 @@ class Application_Model_Dictionaries_Row extends Application_Db_Table_Row
             $row = array_combine($cols['cols'], array_fill(0, sizeof($cols['cols']), null));
             $row['attributeid'] = $attributeId;
         }
-        return new Application_Model_Dictionaries_Attributes_Solution(array(
+        return new Application_Db_Table_Row(array(
             'table' => $table,
             'data' => $row,
             'readOnly' => false,
@@ -126,7 +168,7 @@ class Application_Model_Dictionaries_Row extends Application_Db_Table_Row
             $row = array_combine($cols['cols'], array_fill(0, sizeof($cols['cols']), null));
             $row['attributeid'] = $attributeId;
         }
-        return new Application_Model_Dictionaries_Attributes_Solution(array(
+        return new Application_Db_Table_Row(array(
             'table' => $table,
             'data' => $row,
             'readOnly' => false,
@@ -147,7 +189,7 @@ class Application_Model_Dictionaries_Row extends Application_Db_Table_Row
             $row = array_combine($cols['cols'], array_fill(0, sizeof($cols['cols']), null));
             $row['attributeid'] = $attributeId;
         }
-        return new Application_Model_Dictionaries_Attributes_Solution(array(
+        return new Application_Db_Table_Row(array(
             'table' => $table,
             'data' => $row,
             'readOnly' => false,

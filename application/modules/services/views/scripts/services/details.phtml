@@ -54,7 +54,7 @@
                                     if ($serial = $info->serial) {
                                         $desc .= $info->serial . ', ';
                                     }
-                                    $desc .= $info->quantity . ' ' . $info->getUnit()->acronym . ')';
+                                    $desc .= $product->quantity . ' ' . $info->getUnit()->acronym . ')';
                                 } else {
                                     $desc = $product->name . ' (';
                                     if ($serial = $product->serial) {
@@ -270,7 +270,7 @@
             <div class="row">
                 <div class="col-xs-3 date">
                     <i class="fa"></i>
-                    Kod wymiany dedera
+                    Kod wymiany dekodera
                 </div>
                 <div class="col-xs-7 content no-top-border">
                     <p>
@@ -301,7 +301,7 @@
                                     if ($serial = $info->serial) {
                                         $desc .= $info->serial . ', ';
                                     }
-                                    $desc .= $info->quantity . ' ' . $info->getUnit()->acronym . ')';
+                                    $desc .= $product->quantity . ' ' . $info->getUnit()->acronym . ')';
                                 } else {
                                     $desc = $product->name . ' (';
                                     if ($serial = $product->serial) {

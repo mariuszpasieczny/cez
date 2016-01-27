@@ -7,12 +7,21 @@
                 array('module' => 'admin', 'controller' => 'dictionaries', 'action' => 'list'), 'default', true)
         ?>">
             <div class="form-group">
-                <select class="form-control chosen-select" name="parentid[]" multiple placeholder="Wybierz kategorie">
+                <select class="form-control chosen-select" name="parentid" placeholder="Wybierz kategorie">
                     <option value="">Wybierz kategorie</option>
                     <?php
                     foreach ($this->parents as $parent):
                         ?>
-                        <option value="<?php echo $parent->id; ?>" <?php if (!empty($this->request['parentid']) && in_array($parent->id, (array) $this->request['parentid'])): ?>selected<?php endif; ?>><?php echo $parent->name; ?></option>
+                        <option value="<?php echo $parent->id; ?>" <?php if (!empty($this->request['parentid']) && in_array($parent->id, (array) $this->request['parentid'])): ?>selected<?php endif; ?>>
+                            <?php echo $parent->name; ?>
+                        </option>
+                        <?php
+                        foreach ($parent->getChildren() as $parent):
+                            ?>
+                            <option value="<?php echo $parent->id; ?>" <?php if (!empty($this->request['parentid']) && in_array($parent->id, (array) $this->request['parentid'])): ?>selected<?php endif; ?>>
+                                <?php echo '---' . $parent->name; ?>
+                            </option>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
                 </select>
                 <button type="button" class="btn btn-default search">Szukaj</button>
@@ -27,12 +36,16 @@
             <tr>
                 <th>Kod</th>
                 <th>Nazwa</th>
-                <?php if (@in_array($this->parent->id, array($this->errorCode,$this->cancellationCode,$this->decoderinterchangeCode,$this->installationcancelCode,$this->installationCode,$this->modeminterchangeCode))):; ?>
+                <?php if (@in_array($this->parent->id, array($this->errorCode, $this->cancellationCode, $this->decoderinterchangeCode, $this->installationcancelCode, $this->installationCode, $this->modeminterchangeCode))):; ?>
                     <th>Cena</th>
                     <th>Data od</th>
                     <th>Data do</th>
                 <?php elseif (@in_array($this->parent->id, array($this->solutionCode))):; ?>
                     <th>Nazwa błędu</th>
+                <?php elseif (@in_array($this->parent->id, array($this->calendar))):; ?>
+                    <th>Instancja</th>
+                <?php elseif (@in_array($this->parent->id, array($this->instance))):; ?>
+                    <th>Region</th>
                 <?php endif; ?>
                 <th style="white-space: nowrap;">&nbsp;</th>
             </tr>
@@ -40,33 +53,30 @@
         <?php foreach ($this->dictionaries as $dictionary) : ?>
             <tr>
                 <td><?php echo $this->escape($dictionary->acronym); ?></td>
-                <td>
-                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'edit')): ?>
-                        <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/list/parentid/<?php echo $dictionary->id; ?>" class="content-load"><?php echo $this->escape($dictionary->name); ?></a>
-                        <?php
-                    endif;
-                    ;
-                    ?>
-                </td>
-                <?php if (@in_array($this->parent->id, array($this->errorCode,$this->cancellationCode,$this->decoderinterchangeCode,$this->installationcancelCode,$this->installationCode,$this->modeminterchangeCode))): ?>
+                <td><?php echo $this->escape($dictionary->name); ?></td>
+                <?php if (@in_array($this->parent->id, array($this->errorCode, $this->cancellationCode, $this->decoderinterchangeCode, $this->installationcancelCode, $this->installationCode, $this->modeminterchangeCode))): ?>
                     <th><?php echo $this->escape($dictionary->price); ?></th>
                     <th><?php echo $this->escape($dictionary->datefrom); ?></th>
                     <th><?php echo $this->escape($dictionary->datetill); ?></th>
                 <?php elseif (@in_array($this->parent->id, array($this->solutionCode))):; ?>
                     <th><?php echo $this->escape($dictionary->errorcodename); ?></th>
+                <?php elseif (@in_array($this->parent->id, array($this->calendar))):; ?>
+                    <th><?php echo $this->escape($dictionary->instancename); ?></th>
+                <?php elseif (@in_array($this->parent->id, array($this->instance))):; ?>
+                    <th><?php echo $this->escape($dictionary->regionacronym); ?></th>
                 <?php endif; ?>
                 <td>
                     <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'edit')): ?>
-                        <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/edit/id/<?php echo $dictionary->id; ?>" class="content-load" title="Edytuj">
+                        <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/edit/id/<?php echo $dictionary->id; ?>" class="popup-load" title="Edytuj">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         </a>
-                        <?php if (@in_array($this->parent->id, array($this->errorCode))&&0):; ?>
-                            <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/edit/id/<?php echo $dictionary->id; ?>/copy/1" class="content-load" title="Kopiuj">
+                        <?php if (@in_array($this->parent->id, array($this->errorCode)) && 0):; ?>
+                            <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/edit/id/<?php echo $dictionary->id; ?>/copy/1" class="popup-load" title="Kopiuj">
                                 <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
                             </a>
                         <?php endif; ?>
                     <?php endif; ?>
-                    <?php if (@!in_array($this->parent->id, array($this->solutionCode))||1):; ?>
+                    <?php if (@!in_array($this->parent->id, array($this->solutionCode)) || 1):; ?>
                         <?php if ($this->auth && $this->HasAccess($this->auth->role, 'dictionaries', 'delete')): ?>
                             <a href="<?php echo $this->baseUrl; ?>/admin/dictionaries/delete/id/<?php echo $dictionary->id; ?>" data-target=".modal-body" class="popup-load" title="Usuń">
                                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
@@ -78,26 +88,27 @@
         <?php endforeach; ?> 
     </table> 
 </div>
-<?php if ($this->paginator): echo $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); endif; ?>
+<?php if ($this->paginator): echo $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request));
+endif; ?>
 <script>
     $('.chosen-select').chosen({allow_single_deselect: true});
     params = <?php echo Zend_Json::encode($this->request); ?>;
-    <?php if (@in_array($this->parent->id, array($this->errorCode,$this->cancellationCode,$this->decoderinterchangeCode,$this->installationcancelCode,$this->installationCode,$this->modeminterchangeCode))): ?>
-    columnsDef = [{
-                    'bSortable': false,
-                    'aTargets': [5]
-                }];
-    <?php elseif (@in_array($this->parent->id, array($this->solutionCode))):; ?>
-    columnsDef = [{
-                    'bSortable': false,
-                    'aTargets': [3]
-                }];
-    <?php else: ?>
-    columnsDef = [{
-                    'bSortable': false,
-                    'aTargets': [2]
-                }];
-    <?php endif; ?>
-    sorting =  false;
+<?php if (@in_array($this->parent->id, array($this->errorCode, $this->cancellationCode, $this->decoderinterchangeCode, $this->installationcancelCode, $this->installationCode, $this->modeminterchangeCode))): ?>
+        columnsDef = [{
+                'bSortable': false,
+                'aTargets': [5]
+            }];
+<?php elseif (@in_array($this->parent->id, array($this->solutionCode))):; ?>
+        columnsDef = [{
+                'bSortable': false,
+                'aTargets': [3]
+            }];
+<?php else: ?>
+        columnsDef = [{
+                'bSortable': false,
+                'aTargets': [2]
+            }];
+<?php endif; ?>
+    sorting = false;
 </script>
 <script src="/js/dataTables.js" />

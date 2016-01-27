@@ -21,7 +21,7 @@ class Application_Db_Table_Rowset extends Zend_Db_Table_Rowset
             $value = (array)$value;
         }
         foreach ($this as $row) {
-            if (sizeof(@array_intersect_assoc($row->toArray(),@array_combine($column,$value))) == sizeof($column)) {
+            if (sizeof(@array_intersect_assoc(array_map('strtoupper', $row->toArray()), @array_combine($column, array_map('strtoupper', $value)))) == sizeof($column)) {
                 return $row;
             }
         }
@@ -65,6 +65,12 @@ class Application_Db_Table_Rowset extends Zend_Db_Table_Rowset
             Zend_Loader::loadClass($rowsetClass);
         }
         return new $rowsetClass($data);
+    }
+    
+    public function add($row) {
+        array_push($this->_data, $row->toArray());
+        $this->_count++;
+        return $this;
     }
     
 }

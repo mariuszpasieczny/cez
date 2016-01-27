@@ -27,6 +27,15 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
         return $this->_name;
     }
 
+    public static function checkSchema($schema) {
+        $query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$schema'";
+        $result = Zend_Db_Table_Abstract::getDefaultAdapter()->query($query)->fetchColumn(0);
+        if (!$result) {
+            return false;
+        }
+        return $schema;
+    }
+
     public function setSchema($schema) {
         $this->_schema = $schema;
     }
@@ -84,17 +93,17 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
                 Zend_Cache::CLEANING_MODE_MATCHING_TAG, array($this->_name)
         );
     }
-    
+
     public function update(array $data, $where) {
         $this->clearCache();
         return parent::update($data, $where);
     }
-    
+
     public function insert(array $data) {
         $this->clearCache();
         return parent::insert($data);
     }
-    
+
     public function delete($where) {
         $this->clearCache();
         return parent::delete($where);
@@ -211,7 +220,7 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
         }
         return new $this->_rowsetClass($data);
     }
-    
+
     public function fetchRow($where = null, $order = null) {
         if ($where instanceof Zend_Db_Select) {
             $cacheName = $this->_name . '_' . md5(serialize($where->getPart(Zend_Db_Select::WHERE)));

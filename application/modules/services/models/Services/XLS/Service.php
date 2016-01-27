@@ -99,7 +99,7 @@ class Application_Model_Services_XLS_Service extends Application_Model_Services_
                     //var_dump($cell->getValue());exit;
                     break;
                 case self::COLUMN_SERVICETYPE:
-                    $this->_servicetype = trim($cell->getValue());
+                    $this->_servicetype = strtoupper(trim($cell->getValue()));
                     break;
                 case self::COLUMN_PLANNEDDATE:
                     $value = $cell->getValue();
@@ -155,31 +155,31 @@ class Application_Model_Services_XLS_Service extends Application_Model_Services_
                     $this->_client['cellphone'] = $cell->getValue();
                     break;
                 case self::COLUMN_REGION:
-                    $this->_region = trim($cell->getValue());
+                    $this->_region = strtoupper(trim($cell->getValue()));
                     break;
                 case self::COLUMN_NUMBER:
                     $this->number = trim($cell->getValue());
                     break;
                 case self::COLUMN_SYSTEM:
-                    $this->_system = trim($cell->getValue());
+                    $this->_system = strtoupper(trim($cell->getValue()));
                     break;
                 case self::COLUMN_LABORCODE:
-                    $this->_laborcode = trim($cell->getValue());
+                    $this->_laborcode = strtoupper(trim($cell->getValue()));
                     break;
                 case self::COLUMN_BLOCKADECODE:
-                    $this->_blockadecode = trim($cell->getValue());
+                    $this->_blockadecode = strtoupper(trim($cell->getValue()));
                     break;
                 case self::COLUMN_COMPLAINTCODE:
-                    $this->_complaintcode = trim($cell->getValue());
+                    $this->_complaintcode = strtoupper(trim($cell->getValue()));
                     break;
                 case self::COLUMN_CALENDAR:
-                    $this->_calendar = trim($cell->getValue());
+                    $this->_calendar = strtoupper(trim($cell->getValue()));
                     break;
                 case self::COLUMN_COMMENTS:
                     $this->comments = $cell->getValue();
                     break;
                 case self::COLUMN_AREA:
-                    $this->_area = trim($cell->getValue());
+                    $this->_area = strtoupper(trim($cell->getValue()));
                     break;
                 case self::COLUMN_SLOTS:
                     $this->slots = $cell->getValue();
@@ -194,7 +194,7 @@ class Application_Model_Services_XLS_Service extends Application_Model_Services_
                     $this->macnumbers = $cell->getValue();
                     break;
                 case self::COLUMN_TECHNICIANCODE:
-                    $technician = trim($cell->getCalculatedValue());
+                    $technician = strtoupper(trim($cell->getCalculatedValue()));
                     if (!empty($technician)) {
                         //@list($firstName, $lastName) = @explode('.', $technician);
                         //if (!$firstName) {

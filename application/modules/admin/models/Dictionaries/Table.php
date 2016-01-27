@@ -15,7 +15,7 @@ class Application_Model_Dictionaries_Table extends Application_Db_Table
     protected $_lazyLoading = false;
     protected $_cacheInClass = true;
     
-    protected $_dependentTables = array('Application_Model_Products_Table', 'Application_Model_Dictionaries_Attributes_Table');
+    //protected $_dependentTables = array('Application_Model_Products_Table', 'Application_Model_Dictionaries_Attributes_Table');
     
     protected $_referenceMap = array(
         'Children' => array(
@@ -51,7 +51,10 @@ class Application_Model_Dictionaries_Table extends Application_Db_Table
         if (!$module) {
             return $rowset;
         }
-        $rowset = $rowset->find($module, 'acronym')->getChildren();
+        if (!($row = $rowset->find($module, 'acronym'))) {
+            throw new Exception('Słownik dla modułu ' . $module . ' nie znaleziony');
+        }
+        $rowset = $row->getChildren();
         if (!$acronym) {
             return $rowset;
         }

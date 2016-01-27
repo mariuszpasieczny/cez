@@ -22,22 +22,24 @@
         $('#parentid').on('change', function() {
             var selected = $(this).val();
             
-            $.each($('#price,#datefrom,#datetill,#solutioncodeid,#errorcodeid'), function(key, value) {
+            $.each($('#price,#datefrom,#datetill,#solutioncodeid,#errorcodeid,#regionid,#instanceid'), function(key, value) {
                 if (jQuery.inArray(selected, ['<?php echo $this->escape($this->errorCode);?>','<?php echo $this->escape($this->cancellationCode);?>','<?php echo $this->escape($this->decoderinterchangeCode);?>','<?php echo $this->escape($this->installationcancelCode);?>','<?php echo $this->escape($this->installationCode);?>','<?php echo $this->escape($this->modeminterchangeCode);?>']) != -1) {
                     switch ($(value).attr('id')) {
-                        case 'solutioncodeid':
+                        /*case 'solutioncodeid':
                             $('#' + $(value).attr('id') + '-element').show();
                             $('#' + $(value).attr('id') + '-label').show();
                             $('.chosen-container').width('100%');
-                            break;
-                        case 'errorcodeid':
-                            $('#' + $(value).attr('id') + '-element').hide();
-                            $('#' + $(value).attr('id') + '-label').hide();
+                            break;*/
+                        case 'price':
+                        case 'datefrom':
+                        case 'datetill':
+                            $('#' + $(value).attr('id')).parents('dd').hide();
                             $('.chosen-container').width('100%');
                             break;
                         default:
-                            $(value).show();
-                            $('label[for=' + $(value).attr('name') + ']').show();
+                            $('#' + $(value).attr('id') + '-element').hide();
+                            $('#' + $(value).attr('id') + '-label').hide();
+                            $('.chosen-container').width('100%');
                             break;
                     }
                 } else if (jQuery.inArray(selected, ['<?php echo $this->escape($this->solutionCode);?>']) != -1) {
@@ -47,29 +49,68 @@
                             $('#' + $(value).attr('id') + '-label').show();
                             $('.chosen-container').width('100%');
                             break;
-                        case 'solutioncodeid':
+                        case 'price':
+                        case 'datefrom':
+                        case 'datetill':
+                            $('#' + $(value).attr('id')).parents('dd').show();
+                            $('.chosen-container').width('100%');
+                            break;
+                        default:
                             $('#' + $(value).attr('id') + '-element').hide();
                             $('#' + $(value).attr('id') + '-label').hide();
                             $('.chosen-container').width('100%');
                             break;
+                    }
+                } else if (jQuery.inArray(selected, ['<?php echo $this->escape($this->calendar);?>']) != -1) {
+                    switch ($(value).attr('id')) {
+                        case 'instanceid':
+                            $('#' + $(value).attr('id') + '-element').show();
+                            $('#' + $(value).attr('id') + '-label').show();
+                            $('.chosen-container').width('100%');
+                            break;
+                        case 'price':
+                        case 'datefrom':
+                        case 'datetill':
+                            $('#' + $(value).attr('id')).parents('dd').hide();
+                            $('.chosen-container').width('100%');
+                            break;
                         default:
-                            $(value).hide();
-                            $('label[for=' + $(value).attr('name') + ']').hide();
+                            $('#' + $(value).attr('id') + '-element').hide();
+                            $('#' + $(value).attr('id') + '-label').hide();
+                            $('.chosen-container').width('100%');
+                            break;
+                    }
+                } else if (jQuery.inArray(selected, ['<?php echo $this->escape($this->instance);?>']) != -1) {
+                    switch ($(value).attr('id')) {
+                        case 'regionid':
+                            $('#' + $(value).attr('id') + '-element').show();
+                            $('#' + $(value).attr('id') + '-label').show();
+                            $('.chosen-container').width('100%');
+                            break;
+                        case 'price':
+                        case 'datefrom':
+                        case 'datetill':
+                            $('#' + $(value).attr('id')).parents('dd').hide();
+                            $('.chosen-container').width('100%');
+                            break;
+                        default:
+                            $('#' + $(value).attr('id') + '-element').hide();
+                            $('#' + $(value).attr('id') + '-label').hide();
+                            $('.chosen-container').width('100%');
                             break;
                     }
                 } else {
                     switch ($(value).attr('id')) {
-                        case 'solutioncodeid':
-                            $('#' + $(value).attr('id') + '-element').hide();
-                            $('#' + $(value).attr('id') + '-label').hide();
-                            break;
-                        case 'errorcodeid':
-                            $('#' + $(value).attr('id') + '-element').hide();
-                            $('#' + $(value).attr('id') + '-label').hide();
+                        case 'price':
+                        case 'datefrom':
+                        case 'datetill':
+                            $('#' + $(value).attr('id')).parents('dd').hide();
+                            $('.chosen-container').width('100%');
                             break;
                         default:
-                            $(value).hide();
-                            $('label[for=' + $(value).attr('name') + ']').hide();
+                            $('#' + $(value).attr('id') + '-element').hide();
+                            $('#' + $(value).attr('id') + '-label').hide();
+                            $('.chosen-container').width('100%');
                             break;
                     }
                 }

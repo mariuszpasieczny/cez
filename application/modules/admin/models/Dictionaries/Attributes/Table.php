@@ -29,6 +29,16 @@ class Application_Model_Dictionaries_Attributes_Table extends Application_Db_Tab
             'columns' => 'entryid',
             'refTableClass' => 'Application_Model_Dictionaries_Table',
             'refColumns' => 'id'
+        ),
+        'Instance' => array(
+            'columns' => 'entryid',
+            'refTableClass' => 'Application_Model_Dictionaries_Table',
+            'refColumns' => 'id'
+        ),
+        'Region' => array(
+            'columns' => 'entryid',
+            'refTableClass' => 'Application_Model_Dictionaries_Table',
+            'refColumns' => 'id'
         )
     );
     

@@ -16,8 +16,8 @@ class Application_Form_Dictionaries extends Application_Form {
         $element = $this->getElement('parentid');
         $element->addMultiOption(null, 'Please select...');
         $table = new Application_Model_Dictionaries_Table();
-        $errorCode = $table->getDictionaryList('service')->find('errorcode', 'acronym');
-        $solutionCode = $table->getDictionaryList('service')->find('solutioncode', 'acronym');
+        //$errorCode = $table->getDictionaryList('service')->find('errorcode', 'acronym');
+        //$solutionCode = $table->getDictionaryList('service')->find('solutioncode', 'acronym');
         foreach ($config as $parent) {
             $disabledIds[] = $parent['id'];
             $element->addMultiOption($parent['id'], $parent['name']);
@@ -53,13 +53,37 @@ class Application_Form_Dictionaries extends Application_Form {
         }
     }
     
+    public function setRegions($config) {
+        if (!$element = $this->getElement('regionid')) {
+            return;
+        }
+        $config = $config->toArray();
+        $element = $this->getElement('regionid');
+        $element->addMultiOption(null, 'Please select...');
+        foreach ($config as $parent) {
+            $element->addMultiOption($parent['id'], $parent['acronym'] . ' - ' . $parent['name']);
+        }
+    }
+    
+    public function setInstances($config) {
+        if (!$element = $this->getElement('instanceid')) {
+            return;
+        }
+        $config = $config->toArray();
+        $element = $this->getElement('instanceid');
+        $element->addMultiOption(null, 'Please select...');
+        foreach ($config as $parent) {
+            $element->addMultiOption($parent['id'], $parent['acronym'] . ' - ' . $parent['name']);
+        }
+    }
+    
     public function setDefaults(array $defaults) {
         parent::setDefaults($defaults);
         $dictionary = new Application_Model_Dictionaries_Table();
-        $parent = $dictionary->getDictionaryList('service')->find('solutioncode', 'acronym');
-        if (!empty($defaults['parentid']) && $defaults['parentid'] !== $parent['id']) {
+        //$parent = $dictionary->getDictionaryList('service')->find('solutioncode', 'acronym');
+        //if (!empty($defaults['parentid']) && $defaults['parentid'] !== $parent['id']) {
             //$this->removeElement('errorcodeid');
-        }
+        //}
     }
     
     public function setDefault($name, $value) {
@@ -118,6 +142,28 @@ class Application_Form_Dictionaries extends Application_Form {
         ));
         $this->addElement($element);
 
+        $element = $this->createElement('select', 'regionid', array(
+            'label' => 'Region:',
+            //'required'   => true,
+            'filters' => array('StringTrim'),
+            'validators' => array(
+            //    array('lessThan', true, array('score')),
+            ),
+            'class' => 'form-control chosen-select',
+        ));
+        $this->addElement($element);
+
+        $element = $this->createElement('select', 'instanceid', array(
+            'label' => 'Instancja:',
+            //'required'   => true,
+            'filters' => array('StringTrim'),
+            'validators' => array(
+            //    array('lessThan', true, array('score')),
+            ),
+            'class' => 'form-control chosen-select',
+        ));
+        $this->addElement($element);
+
         $element = $this->createElement('select', 'errorcodeid', array(
             'label' => 'Kod błędu:',
             //'required'   => true,
@@ -137,7 +183,7 @@ class Application_Form_Dictionaries extends Application_Form {
             //    array('lessThan', true, array('score')),
             ),
             'class' => 'form-control chosen-select',
-        ))->setAttribs(array('multiple' => 'multiple', 'placeholder' => 'Choose product', 'disabled' => 'disabled'))->setRegisterInArrayValidator(false);
+        ))->setAttribs(array('placeholder' => 'Choose product', 'disabled' => 'disabled'))->setRegisterInArrayValidator(false);
         $this->addElement($element);
 
         // Add an email element

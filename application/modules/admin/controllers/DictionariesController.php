@@ -64,75 +64,51 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
         $request->setParam('count', $this->_dictionaries->getItemCountPerPage());
         $status = $this->_dictionaries->getStatusList('dictionaries')->find('deleted', 'acronym');
         $this->_dictionaries->setWhere("statusid != {$status->id}");
-        $errorCode = $this->_dictionaries->getDictionaryList('service')->find('errorcode', 'acronym');
-        $solutionCode = $this->_dictionaries->getDictionaryList('service')->find('solutioncode', 'acronym');
-        $cancellationCode = $this->_dictionaries->getDictionaryList('service')->find('cancellationcode', 'acronym');
-        $decoderinterchangeCode = $this->_dictionaries->getDictionaryList('service')->find('decoderinterchangecode', 'acronym');
-        $installationcancelCode = $this->_dictionaries->getDictionaryList('service')->find('installationcancelcode', 'acronym');
-        $installationCode = $this->_dictionaries->getDictionaryList('service')->find('installationcode', 'acronym');
-        $modeminterchangeCode = $this->_dictionaries->getDictionaryList('service')->find('modeminterchangecode', 'acronym');
-        $this->view->errorCode = $errorCode->id;
-        $this->view->solutionCode = $solutionCode->id;
-        $this->view->cancellationCode = $cancellationCode->id;
-        $this->view->decoderinterchangeCode = $decoderinterchangeCode->id;
-        $this->view->installationcancelCode = $installationcancelCode->id;
-        $this->view->installationCode = $installationCode->id;
-        $this->view->modeminterchangeCode = $modeminterchangeCode->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('errorcode', 'acronym'))
+            $this->view->errorCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('solutioncode', 'acronym'))
+            $this->view->solutionCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('cancellationcode', 'acronym'))
+            $this->view->cancellationCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('decoderinterchangecode', 'acronym'))
+            $this->view->decoderinterchangeCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('installationcancelcode', 'acronym'))
+            $this->view->installationcancelCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('installationcode', 'acronym'))
+            $this->view->installationCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('modeminterchangecode', 'acronym'))
+            $this->view->modeminterchangeCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('system')->find('calendar', 'acronym'))
+            $this->view->calendar = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('system')->find('instance', 'acronym'))
+            $this->view->instance = $code->id;
         $this->_dictionaries->setWhere("system != '1'");
+        if (!in_array($this->_auth->getIdentity()->role, array('admin','superadmin'))) {
+            $parents = $this->_dictionaries->getDictionaryList()->find('service', 'acronym')->getChildren();
+        } else {
+            $parents = $this->_dictionaries->getDictionaryList();
+        }
         if (!$parentid = $request->getParam('parentid')) {
-            if ($this->_auth->getIdentity()->role != 'admin') {
+            if (!in_array($this->_auth->getIdentity()->role, array('admin','superadmin'))) {
                 $parentid = $this->_dictionaries->getDictionaryList()->find('service', 'acronym')->id;
                 $this->_dictionaries->setWhere("acronym NOT IN ('area','blockadecode','calendar','laborcode','complaintcode','region','system','type')");
             } else {
                 $parentid = 1;
             }
-        }
-
-        if ($this->_auth->getIdentity()->role != 'admin') {
-            $parents = $this->_dictionaries->getDictionaryList()->find('service', 'acronym')->getChildren();
+            foreach ($parents as $row) {
+                $params['parentid'][] = $row->id;
+            }
         } else {
-            $parents = $this->_dictionaries->getDictionaryList();
+            $params['parentid'][] = $parentid;
         }
         $this->_dictionaries->setCacheInClass(false);
         $parent = $this->_dictionaries->get($parentid);
         $this->view->parent = $parent;
         $this->_dictionaries->setLazyLoading(false);
-        $this->view->dictionaries = $this->_dictionaries->getAll(array('parentid' => $parentid));
+        $this->view->dictionaries = $this->_dictionaries->getAll($params);//var_dump($parentid,$this->view->dictionaries);exit;
         $this->view->paginator = $this->_dictionaries->getPaginator();
         $this->view->request = $request->getParams();
         $this->view->parents = $parents;
-    }
-
-    public function deleteAction() {
-        $request = $this->getRequest();
-        $id = $request->getParam('id');
-        $this->_dictionaries->setLazyLoading(true);
-        $dictionary = $this->_dictionaries->find($id)->current();
-        if (!$dictionary) {
-            throw new Exception('Nie znaleziono pozycji słownika');
-        }
-        $form = new Application_Form_Dictionaries_Delete();
-        $form->setDefaults($dictionary->toArray());
-        $this->view->form = $form;
-        $this->view->dictionary = $dictionary;
-
-        if ($this->getRequest()->isPost()) {
-            if ($form->isValid($request->getPost())) {
-                $values = $form->getValues();
-                $status = $this->_dictionaries->getStatusList('dictionaries')->find('deleted', 'acronym');
-                Zend_Db_Table::getDefaultAdapter()->beginTransaction();
-                if ($solutionCodes = $dictionary->getSolutioncodes()) {
-                    foreach ($solutionCodes as $code) {
-                        //$code->delete();
-                    }
-                }
-                //$dictionary->current()->delete();
-                $dictionary->statusid = $status->id;
-                $dictionary->save();
-                Zend_Db_Table::getDefaultAdapter()->commit();
-                $this->view->success = 'Wpis usunięty';
-            }
-        }
     }
 
     public function editAction() {
@@ -145,7 +121,7 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
         $this->_dictionaries->setLazyLoading(false);
         $this->_dictionaries->clearCache();
         if (!$parentid = $request->getParam('parentid')) {
-            if ($this->_auth->getIdentity()->role != 'admin') {
+            if (!in_array($this->_auth->getIdentity()->role, array('admin','superadmin'))) {
                 $parentid = $this->_dictionaries->getDictionaryList()->find('service', 'acronym')->id;
             } else {
                 $parentid = 1;
@@ -181,26 +157,48 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
             } else {
                 //$form->setDefault('datetill', date('Y-m-d'));
             }
+            $instance = $dictionary->getInstance();
+            if ($instance->value) {
+                $form->setDefault('instanceid', $instance->value);
+            }
+            $region = $dictionary->getRegion();
+            if ($region->value) {
+                $form->setDefault('regionid', $region->value);
+            }
         } else {
             $form->setDefaults(array('parentid' => $parent->id));
         }
         $parents = $this->_dictionaries->getDictionaryList();
-        $error = $this->_dictionaries->getDictionaryList('service')->find('errorcode', 'acronym');
-        $solution = $this->_dictionaries->getDictionaryList('service')->find('solutioncode', 'acronym');
-        $cancellation = $this->_dictionaries->getDictionaryList('service')->find('cancellationcode', 'acronym');
-        $decoderinterchange = $this->_dictionaries->getDictionaryList('service')->find('decoderinterchangecode', 'acronym');
-        $installationcancel = $this->_dictionaries->getDictionaryList('service')->find('installationcancelcode', 'acronym');
-        $installation = $this->_dictionaries->getDictionaryList('service')->find('installationcode', 'acronym');
-        $modeminterchange = $this->_dictionaries->getDictionaryList('service')->find('modeminterchangecode', 'acronym');
-        $this->view->errorCode = $error->id;
-        $this->view->solutionCode = $solution->id;
-        $this->view->cancellationCode = $cancellation->id;
-        $this->view->decoderinterchangeCode = $decoderinterchange->id;
-        $this->view->installationcancelCode = $installationcancel->id;
-        $this->view->installationCode = $installation->id;
-        $this->view->modeminterchangeCode = $modeminterchange->id;
-        $this->view->parent = $parent;
-        $form->setOptions(array('parents' => $parents, 'errorcodes' => $error->getChildren(), 'solutioncodes' => $solution->getChildren()));
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('errorcode', 'acronym')) {
+            $this->view->errorCode = $code->id;
+            $form->setOptions(array('errorcodes' => $code->getChildren()));
+        }
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('solutioncode', 'acronym')) {
+            $this->view->solutionCode = $code->id;
+            $form->setOptions(array('solutioncodes' => $code->getChildren()));
+        }
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('cancellationcode', 'acronym'))
+            $this->view->cancellationCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('decoderinterchangecode', 'acronym'))
+            $this->view->decoderinterchangeCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('installationcancelcode', 'acronym'))
+            $this->view->installationcancelCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('installationcode', 'acronym'))
+            $this->view->installationCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('service')->find('modeminterchangecode', 'acronym'))
+            $this->view->modeminterchangeCode = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('system')->find('calendar', 'acronym'))
+            $this->view->calendar = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('system')->find('instance', 'acronym')) {
+            $this->view->instance = $code->id;
+            $form->setOptions(array('instances' => $code->getChildren()));
+        }
+        if ($code = $this->_dictionaries->getDictionaryList('system')->find('region', 'acronym')) {
+            $this->view->region = $code->id;
+            $form->setOptions(array('regions' => $code->getChildren()));
+        }
+        $this->view->parent = $parent;//var_dump($parents);exit;
+        $form->setOptions(array('parents' => $parents));
 
         $this->view->form = $form;
 
@@ -215,7 +213,7 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
                     $dictionary->id = null;
                 }
                 $this->_dictionaries->setLazyLoading(true);
-                if ($dictionary->parentid == $this->_dictionaries->getDictionaryList('service')->find('solutioncode', 'acronym')->id) {
+                if (0&&$dictionary->parentid == $this->_dictionaries->getDictionaryList('service')->find('solutioncode', 'acronym')->id) {
                     $error = $this->_dictionaries->get($values['errorcodeid']);
                     if (strpos($dictionary->acronym, $error->acronym) === false) {
                         $dictionary->acronym = $error->acronym . '-' . $values['acronym'];
@@ -228,6 +226,34 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
                   $attributes->entryid = $dictionary->id; //var_dump($dictionary->toArray(),$attributes->toArray());//exit;
                   $attributes->save(); */
                 $attributes = $this->_dictionaries->getAttributeList();
+                if (!empty($instance)) {
+                    if (!$attribute = $table->find($instance->id)->current()) {
+                        $attribute = $table->createRow($instance->toArray());
+                    }
+                }
+                if ($values['instanceid']) {
+                    if (!$attribute) {
+                        $attribute = $table->createRow();
+                        $attribute->attributeid = $attributes->find('instanceid', 'acronym')->id;
+                    }
+                    $attribute->entryid = $dictionary->id;
+                    $attribute->value = $values['instanceid'];
+                    $attribute->save();
+                }
+                if (!empty($region)) {
+                    if (!$attribute = $table->find($region->id)->current()) {
+                        $attribute = $table->createRow($region->toArray());
+                    }
+                }
+                if ($values['regionid']) {
+                    if (!$attribute) {
+                        $attribute = $table->createRow();
+                        $attribute->attributeid = $attributes->find('regionid', 'acronym')->id;
+                    }
+                    $attribute->entryid = $dictionary->id;
+                    $attribute->value = $values['regionid'];
+                    $attribute->save();
+                }
                 if (!empty($errorCode)) {
                     if (!$attribute = $table->find($errorCode->id)->current()) {
                         $attribute = $table->createRow($errorCode->toArray());
@@ -310,6 +336,38 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
                 }
                 $this->view->success = 'Słownik zapisany';
                 Zend_Db_Table::getDefaultAdapter()->commit();
+            }
+        }
+    }
+
+    public function deleteAction() {
+        $request = $this->getRequest();
+        $id = $request->getParam('id');
+        $this->_dictionaries->setLazyLoading(true);
+        $dictionary = $this->_dictionaries->find($id)->current();
+        if (!$dictionary) {
+            throw new Exception('Nie znaleziono pozycji słownika');
+        }
+        $form = new Application_Form_Dictionaries_Delete();
+        $form->setDefaults($dictionary->toArray());
+        $this->view->form = $form;
+        $this->view->dictionary = $dictionary;
+
+        if ($this->getRequest()->isPost()) {
+            if ($form->isValid($request->getPost())) {
+                $values = $form->getValues();
+                $status = $this->_dictionaries->getStatusList('dictionaries')->find('deleted', 'acronym');
+                Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                if ($solutionCodes = $dictionary->getSolutioncodes()) {
+                    foreach ($solutionCodes as $code) {
+                        //$code->delete();
+                    }
+                }
+                //$dictionary->current()->delete();
+                $dictionary->statusid = $status->id;
+                $dictionary->save();
+                Zend_Db_Table::getDefaultAdapter()->commit();
+                $this->view->success = 'Wpis usunięty';
             }
         }
     }

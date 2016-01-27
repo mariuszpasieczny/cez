@@ -243,6 +243,7 @@
                 "region": {
                     "acronym": "region",
                     "name": "Region",
+                    "system": 1,
                     "R1": {
                         "acronym": "R1",
                         "name": "R1"

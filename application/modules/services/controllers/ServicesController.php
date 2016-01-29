@@ -87,10 +87,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->view->filename = 'Zestawienie_instalacyjne-' . date('YmdHis') . '.xlsx';
                 $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zlecenia instalacyjne.xls';
                 $this->view->rowNo = 2;
-                $columns = array('planneddate', 'timefrom', 'servicetype', 'calendar', 'number', 'clientid', 'client', 'technician', 'documentspassed', 'closedupc', 'status', 'performed');
+                $columns = array('planneddate', 'timefrom', 'servicetype', 'calendar', 'number', 'clientid', 'city', 'clientcity', 'technician', 'documentspassed', 'closedupc', 'status', 'performed');
                 $this->view->codeTypes = array('installation', 'installationcancel');
                 if ($this->_auth->getIdentity()->role == 'technician') {
-                    $this->_services->setWhere($this->_services->getAdapter()->quoteInto("(technicianid = {$this->_auth->getIdentity()->id})", null));
+                    $this->_services->setWhere($this->_services->getAdapter()->quoteInto("(technician = ?)", $this->_auth->getIdentity()->lastname . ' ' . $this->_auth->getIdentity()->firstname));
                 }
                 break;
             case $types->find('service', 'acronym')->id:
@@ -98,16 +98,19 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->view->filename = 'Zestawienie_serwisowe-' . date('YmdHis') . '.xlsx';
                 $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zlecenia serwisowe.xls';
                 $this->view->rowNo = 2;
-                $columns = array('planneddate', 'timefrom', 'timetill', 'number', 'clientid', 'client', 'technician', 'status', 'performed');
+                $columns = array('planneddate', 'timefrom', 'timetill', 'servicetype', 'calendar', 'number', 'clientid', 'clientcity', 'client', 'technician', 'status', 'performed');
                 $this->view->codeTypes = array('error', 'solution', 'cancellation', 'modeminterchange', 'decoderinterchange');
                 if ($this->_auth->getIdentity()->role == 'technician') {
                     $status = $statuses->find('new', 'acronym');
-                    $this->_services->setWhere($this->_services->getAdapter()->quoteInto("(technicianid = {$this->_auth->getIdentity()->id} OR statusid = {$status->id})", null));
+                    $this->_services->setWhere($this->_services->getAdapter()->quoteInto("(technician = ? OR status = {$status->name})", $this->_auth->getIdentity()->lastname . ' ' . $this->_auth->getIdentity()->firstname));
                 }
                 $this->_services->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : array('planneddate', 'timefrom', new Zend_Db_Expr('clientstreet COLLATE utf8_polish_ci'), 'clientstreetno', 'clientapartment'));
                 break;
             default:
                 throw new Exception('Nieprawidłowy typ zlecenia');
+        }
+        if (in_array($this->_auth->getIdentity()->role, array('superadmin','supercoordinator'))) {
+            array_unshift($columns, 'instance');
         }
 
         $this->view->dictionary = $dictionary = $this->_dictionaries->getDictionaryList('service');
@@ -142,9 +145,13 @@ class Services_ServicesController extends Application_Controller_Abstract {
 
         $status = $statuses->find('deleted', 'acronym');
         if (!$request->getParam('statusid')) {
-            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("statusid != ?", $status->id));
+            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("status != ?", $status->name));
         }
-        $params = array_filter(array_intersect_key($request->getParams(), array_flip(array('statusid', 'technicianid', 'clientnumber', 'client', 'clientstreet', 'clientstreetno', 'clientapartment', 'number', 'planneddatefrom', 'planneddatetill'))));
+        $params = array('status', 'technician', 'clientnumber', 'client', 'clientstreet', 'clientstreetno', 'clientapartment', 'number', 'planneddatefrom', 'planneddatetill');
+        if (in_array($this->_auth->getIdentity()->role, array('superadmin','supercoordinator'))) {
+            array_unshift($params, 'instance');
+        }
+        $params = array_filter(array_intersect_key($request->getParams(), array_flip($params)));
         if ($request->getParam('street') && 0) {
             $params['clientaddress'] = $request->getParam('street');
             if ($request->getParam('streetno')) {
@@ -156,27 +163,32 @@ class Services_ServicesController extends Application_Controller_Abstract {
             $request->setParam('clientaddress', $params['clientaddress']);
         }
         if (empty($params)) {
-            $statuses = array($statuses->find('new', 'acronym')->id,
-                $statuses->find('assigned', 'acronym')->id,
-                $statuses->find('reassigned', 'acronym')->id);
-            //$this->_services->setWhere($this->_services->getAdapter()->quoteInto("statusid IN (?)", $statuses));
-            //$request->setParam('statusid', $statuses);
             $planneddatefrom = date('Y-m-d');
             $this->_services->setWhere($this->_services->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') >= ?", $planneddatefrom));
             $request->setParam('planneddatefrom', $planneddatefrom);
         }
         $this->view->request = $request->getParams();
-        $this->view->services = $this->_services->getAll($request->getParams());
+        $params = $request->getParams();
+        $params['type'] = $types->find($typeid)->name;
+        unset($params['typeid']);
+        $this->view->services = $this->_services->getAll($params);
         $this->view->paginator = $this->_services->getPaginator();
         $status = $this->_dictionaries->getStatusList('users')->find('active', 'acronym');
-        $params['statusid'] = $status->id;
+        $params['status'] = $status->name;
         $params['role'] = 'technician';
         $this->_users->setOrderBy(array('lastname', 'firstname'));
+        $this->_users->setLazyLoading(false);
         $technicians = $this->_users->getAll($params);
         $this->view->technicians = $technicians;
         $this->view->statuses = $this->_dictionaries->getStatusList('service');
         $this->view->types = $types;
+        $this->_clients->setLazyLoading(false);
         $this->view->clients = $this->_clients->getAllStreets();
+        $this->view->cities = $this->_clients->getAllCities();
+        if ($regions = $this->_config->get('production')->get('regions'))
+            $this->view->regions = array_keys($regions->toArray());
+        $this->view->calendars = $this->_services->getCalendarList();
+        $this->view->servicetypes = $this->_services->getServicetypeList();
     }
 
     public function searchAction() {
@@ -204,6 +216,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if (!empty($params)) {
             $this->view->services = $this->_services->getAll($params);
         }
+        $this->_clients->setLazyLoading(false);
         $this->view->clients = $this->_clients->getAllStreets();
     }
 
@@ -217,6 +230,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $typeid = $request->getParam('typeid');
         //$id = array_unique((array)$id);
         $types = $this->_dictionaries->getTypeList('service');
+        if ($schema = $request->getParam('instance')) {
+            $this->_services->setSchema($this->_config->get('production')->get('regions')->get($schema));
+        }
         switch ($this->_getParam('typeid')) {
             case $types->find('installation', 'acronym')->id:
                 $this->_services->setRowClass('Application_Model_Services_Installation');
@@ -225,9 +241,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->_services->setRowClass('Application_Model_Services_Service');
                 break;
             default:
-                throw new Exception('Nieprawidłowy typ zlecenia');
+                //throw new Exception('Nieprawidłowy typ zlecenia');
         }
-        $service = $this->_services->get($id);
+        $this->_services->setLazyLoading(false);
+        $service = $this->_services->getAll(array('id' => $id))->current();
         if (!$service) {
             throw new Exception('Nie znaleziono zgłoszenia');
         }
@@ -242,6 +259,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $typeid = $request->getParam('typeid');
         //$id = array_unique((array)$id);
         $types = $this->_dictionaries->getTypeList('service');
+        if ($schema = $request->getParam('instance')) {
+            $this->_services->setSchema($this->_config->get('production')->get('regions')->get($schema));
+        }
         switch ($this->_getParam('typeid')) {
             case $types->find('installation', 'acronym')->id:
                 $this->_services->setRowClass('Application_Model_Services_Installation');
@@ -250,9 +270,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->_services->setRowClass('Application_Model_Services_Service');
                 break;
             default:
-                throw new Exception('Nieprawidłowy typ zlecenia');
+                //throw new Exception('Nieprawidłowy typ zlecenia');
         }
-        $service = $this->_services->get($id);
+        $this->_services->setLazyLoading(false);
+        $service = $this->_services->getAll(array('id' => $id))->current();
         if (!$service) {
             throw new Exception('Nie znaleziono zgłoszenia');
         }

@@ -29,7 +29,7 @@ class Application_Model_Services_Products_Table extends Application_Db_Table
         if ($this->_lazyLoading === true) {
             return parent::select();
         }
-        return parent::select()->setIntegrityCheck(false)->from('serviceproductsview');
+        return parent::select()->setIntegrityCheck(false)->from(($this->_schema ? ($this->_schema . '.') : '') . 'serviceproductsview');
     }
     
 }

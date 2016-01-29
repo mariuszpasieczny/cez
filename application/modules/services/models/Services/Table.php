@@ -1,19 +1,17 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-class Application_Model_Services_Table extends Application_Db_Table
-{
-    protected $_name = 'services';// table name
+class Application_Model_Services_Table extends Application_Db_Table {
+
+    protected $_name = 'services'; // table name
     protected $_primary = 'id'; // primary column name
     protected $_rowClass = 'Application_Model_Services_Row';
-    
     protected $_dependentTables = array('Application_Model_Services_Products_Table', 'Application_Model_Services_Codes_Table');
-    
     protected $_referenceMap = array(
         'Warehouse' => array(
             'columns' => 'warehouseid',
@@ -81,39 +79,44 @@ class Application_Model_Services_Table extends Application_Db_Table
             'refColumns' => 'id'
         )
     );
-    
+
     public function init($config = array()) {
         //$this->setCacheInClass(true);
         //$this->_setCache(Application_Db_Table::getDefaultCache());
     }
-    
+
     public function select() {
         if ($this->_lazyLoading === true) {
             return parent::select();
         }
+        $tableName = ($this->_schema ? ($this->_schema . '.') : '') . 'servicecodesview';
         $select = parent::select()->setIntegrityCheck(false)
-                ->from(array('s' => 'servicesview'),
-                        array('*',
-                            'installationcode' => new Zend_Db_Expr('(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR \', \') from servicecodesview where serviceid = s.id and attributeacronym = \'installationcode\')'),
-                            'installationcancelcode' => new Zend_Db_Expr('(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR \', \') from servicecodesview where serviceid = s.id and attributeacronym = \'installationcancelcode\')'),
-                            'solutioncode' => new Zend_Db_Expr('(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR \', \') from servicecodesview where serviceid = s.id and attributeacronym = \'solutioncode\')'),
-                            'cancellationcode' => new Zend_Db_Expr('(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR \', \') from servicecodesview where serviceid = s.id and attributeacronym = \'cancellationcode\')'),
-                            'modeminterchangecode' => new Zend_Db_Expr('(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR \', \') from servicecodesview where serviceid = s.id and attributeacronym = \'modeminterchangecode\')'),
-                            'decoderinterchangecode' => new Zend_Db_Expr('(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR \', \') from servicecodesview where serviceid = s.id and attributeacronym = \'decoderinterchangecode\')')));
+                ->from(array('s' => 'servicesview'), array('*',
+            'installationcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'installationcode')"),
+            'installationcancelcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'installationcancelcode')"),
+            'solutioncode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'solutioncode')"),
+            'cancellationcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'cancellationcode')"),
+            'modeminterchangecode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'modeminterchangecode')"),
+            'decoderinterchangecode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'decoderinterchangecode')")));
         return $select;
     }
-    
+
     public function getSearchFields() {
         $fields = parent::getSearchFields();
         $fields[] = 'technician';
         $fields[] = 'status';
+        $fields[] = 'instance';
+        $fields[] = 'type';
+        $fields[] = 'calendar';
+        $fields[] = 'servicetype';
         $fields[] = 'clientnumber';
         $fields[] = 'clientstreet';
         $fields[] = 'clientstreetno';
         $fields[] = 'clientapartment';
+        $fields[] = 'clientcity';
         return $fields;
     }
-    
+
     public function getAll($params = array(), $rows = null, $root = null) {
         if (!empty($params['planneddatefrom'])) {
             $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') >= ?", $params['planneddatefrom']));
@@ -130,4 +133,16 @@ class Application_Model_Services_Table extends Application_Db_Table
         return parent::getAll($params, $rows, $root);
     }
     
+    public function getCalendarList() {
+        $select = $this->getAdapter()->select();
+        $select = $select->from(array('s' => $this->_lazyLoading === true ? 'services' : 'servicesview'), array('acronym' => 'calendar'))->distinct()->order('calendar');
+        return $rows = $select->query()->fetchAll();
+    }
+    
+    public function getServicetypeList() {
+        $select = $this->getAdapter()->select();
+        $select = $select->from(array('s' => $this->_lazyLoading === true ? 'services' : 'servicesview'), array('acronym' => 'servicetype'))->distinct()->order('servicetype');
+        return $rows = $select->query()->fetchAll();
+    }
+
 }

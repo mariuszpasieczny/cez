@@ -13,7 +13,12 @@ class Application_Model_Products_Row extends Application_Db_Table_Row {
     }
 
     public function getUnit() {
-        return parent::findParentRow('Application_Model_Dictionaries_Table', 'Unit');
+        //return parent::findParentRow('Application_Model_Dictionaries_Table', 'Unit');
+        $dictionaries = new Application_Model_Dictionaries_Table();
+        //$dictionaries->setLazyLoading(false);
+        //$dictionaries->setOrderBy(array('product ASC'));
+        $dictionaries->setSchema($this->getTable()->getSchema());
+        return $dictionaries->getAll(array('id' => $this->unitid))->current();
     }
 
     public function getStatus() {

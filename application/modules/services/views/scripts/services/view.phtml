@@ -1,7 +1,7 @@
 <h2 class="sub-header">
-    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id || $this->service->type == 'Instalacyjne'): ?>
         Instalacja
-    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+    <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id || $this->service->type == 'Serwisowe'): ?>
         Serwis
     <?php endif; ?>
     - <?php echo $this->service->client; ?>
@@ -25,7 +25,7 @@
                 Status
             </div>
             <div class="col-xs-7 content no-top-border">
-                <p><?php echo $this->service->getStatus(); ?></p>
+                <p><?php echo $this->service->status; ?></p>
             </div>
         </div>
         <div class="row">
@@ -55,7 +55,7 @@
                 Kalendarz
             </div>
             <div class="col-xs-7 content no-top-border">
-                <p><?php echo $this->service->getCalendar(); ?></p>
+                <p><?php echo $this->service->calendar; ?></p>
             </div>
         </div>
         <div class="row">
@@ -64,7 +64,7 @@
                 Typ
             </div>
             <div class="col-xs-7 content no-top-border">
-                <p><?php echo $this->service->getServicetype(); ?></p>
+                <p><?php echo $this->service->servicetype; ?></p>
             </div>
         </div>
         <div class="row">
@@ -78,12 +78,12 @@
                     echo $technician ? $technician : 'nieprzypisany';
                     ?>
                     <?php if($technician): ?>
-                    <!--<?php echo $technician->phoneno; ?>-->
-                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
+                        <!--<?php echo $technician->phoneno; ?>-->
+                        <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
                     <?php endif; ?>
                 </p>
                 <p>
-                    
+
                 </p>
             </div>
         </div>
@@ -119,8 +119,8 @@
     $(document).ready(function() {
         $('[data-toggle="tooltip"]').tooltip({
             html: true,
-            content: function () {
-                return $(this).attr('title').replace(/\[br\]/g,"<br />");
+            content: function() {
+                return $(this).attr('title').replace(/\[br\]/g, "<br />");
             }
         });
     })

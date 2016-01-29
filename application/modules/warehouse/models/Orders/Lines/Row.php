@@ -25,6 +25,11 @@ class Application_Model_Orders_Lines_Row extends Application_Db_Table_Row {
     }
 
     public function getProduct() {
+        $products = new Application_Model_Products_Table();
+        //$products->setLazyLoading(false);
+        //$products->setOrderBy(array('product ASC'));
+        $products->setSchema($this->getTable()->getSchema());
+        return $products->getAll(array('id' => $this->productid))->current();
         return parent::findParentRow('Application_Model_Products_Table', 'Product');
     }
 

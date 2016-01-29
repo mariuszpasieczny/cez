@@ -120,7 +120,10 @@ class Services_ReportsController extends Application_Controller_Abstract {
             if ($form->isValid($request->getPost())) {
                 $values = $form->getValues();
                 $this->_services->setLazyLoading(false);
-                $this->view->services = $this->_services->getAll($request->getParams());
+                $params = $request->getParams();
+                $params['type'] = $types->find($typeid)->name;
+                unset($params['typeid']);
+                $this->view->services = $this->_services->getAll($params);
                 if (!$this->view->services->count()) {
                     $form->setDescription('Brak zgłoszeń dla podanej daty');
                     return;

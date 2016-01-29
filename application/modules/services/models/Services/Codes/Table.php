@@ -25,7 +25,7 @@ class Application_Model_Services_Codes_Table extends Application_Db_Table
         if ($this->_lazyLoading === true) {
             return parent::select();
         }
-        $select = parent::select()->setIntegrityCheck(false)->from('servicecodesview');
+        $select = parent::select()->setIntegrityCheck(false)->from(($this->_schema ? ($this->_schema . '.') : '') . 'servicecodesview');
         return $select;
     }
     

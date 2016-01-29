@@ -1,7 +1,7 @@
 <div class="ibox-content inspinia-timeline">
     <?php $codes = $this->service->getCodes(); ?>
     <div class="timeline-item">
-        <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+        <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id || $this->service->type == 'Instalacyjne'): ?>
             <div class="row">
                 <div class="col-xs-3 date">
                     <i class="fa"></i>
@@ -111,7 +111,7 @@
                     <p><?php echo $this->service->coordinatorcomments ? nl2br($this->service->coordinatorcomments) : 'brak'; ?></p>
                 </div>
             </div>
-        <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
+        <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id || $this->service->type == 'Serwisowe'): ?>
             <div class="row">
                 <div class="col-xs-3 date">
                     <i class="fa"></i>

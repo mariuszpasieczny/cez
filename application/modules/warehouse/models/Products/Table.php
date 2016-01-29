@@ -36,7 +36,7 @@ class Application_Model_Products_Table extends Application_Db_Table
         }
         $select = parent::select()
             ->setIntegrityCheck(false)
-            ->from('productsview');
+            ->from(($this->_schema ? ($this->_schema . '.') : '') . 'productsview');
         return $select;
     }
     

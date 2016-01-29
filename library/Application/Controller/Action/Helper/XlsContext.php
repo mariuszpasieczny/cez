@@ -52,7 +52,8 @@ class Application_Controller_Action_Helper_XlsContext extends Zend_Controller_Ac
      * @return void
      */
     public function postXlsContext() {
-        error_reporting(E_ERROR);
+        if (APPLICATION_ENV == 'production') 
+            error_reporting(E_ERROR);
         $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
         $view = $viewRenderer->view;
         if ($view instanceof Zend_View_Interface) {

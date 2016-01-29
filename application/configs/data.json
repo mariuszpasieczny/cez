@@ -105,11 +105,11 @@
                 },
                 "sent": {
                     "acronym": "sent",
-                    "name": "Wysłane",
-                    "deleted": {
-                        "acronym": "deleted",
-                        "name": "Usunięty"
-                    }
+                    "name": "Wysłane"
+                },
+                "deleted": {
+                    "acronym": "deleted",
+                    "name": "Usunięty"
                 }
             }
         },

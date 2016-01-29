@@ -28,7 +28,7 @@ class Application_Model_Orders_Lines_Table extends Application_Db_Table
         }
         $select = parent::select()
             ->setIntegrityCheck(false)
-            ->from('orderlinesview');
+            ->from(($this->_schema ? ($this->_schema . '.') : '') . 'orderlinesview');
             //->join('products', 'orderlines.productid = products.id', array('name', 'serial', 'acronym'));
         //echo$select;exit;
         return $select;

@@ -52,7 +52,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
     public function getProductsreleased() {
         if (!$this->_productsreleased) {
             $products = array();
-            foreach ($this->getProducts() as $product) {
+            foreach ($this->getProducts(false) as $product) {
                 $products[] = $product->serial ? $product->serial : $product->name;
             }
             $this->_productsreleased = @join(',', array_filter($products));
@@ -80,6 +80,11 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         $products = new Application_Model_Services_Products_Table();
         $products->setLazyLoading($lazy);
         $products->setOrderBy(array('id ASC'));
+        $products->setSchema($this->getTable()->getSchema());
+        $options = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getApplication()->getOptions();
+        try {
+            $products->setSchema($options['regions'][$this->instance]);
+        } catch (Exception $ex) {}
         return $products->getAll(array('serviceid' => $this->id));
     }
 
@@ -88,6 +93,11 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         $products = new Application_Model_Services_Returns_Table();
         $products->setLazyLoading($lazy);
         $products->setOrderBy(array('id ASC'));
+        $products->setSchema($this->getTable()->getSchema());
+        $options = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getApplication()->getOptions();
+        try {
+            $products->setSchema($options['regions'][$this->instance]);
+        } catch (Exception $ex) {}
         return $products->getAll(array('serviceid' => $this->id));
     }
 
@@ -97,6 +107,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
             $codes = new Application_Model_Services_Codes_Table();
             $codes->setLazyLoading(false);
             $codes->setOrderBy(array('codeacronym ASC'));
+            $codes->setSchema($this->getTable()->getSchema());
             $this->_servicecodes = $codes->getAll(array('serviceid' => $this->id));
         }
         return $this->_servicecodes;
@@ -133,14 +144,22 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
 
     public function getClient() {
         if (!$this->_client && !empty($this->clientid)) {
-            $this->_client = parent::findParentRow('Application_Model_Clients_Table');
+            //$this->_client = parent::findParentRow('Application_Model_Clients_Table');
+            $clients = new Application_Model_Clients_Table();
+            //$clients->setLazyLoading(false);
+            $clients->setSchema($this->getTable()->getSchema());
+            return $clients->getAll(array('id' => $this->clientid))->current();
         }
         return $this->_client;
     }
 
     public function getTechnician() {
         if (!$this->_technician && !empty($this->technicianid)) {
-            $this->_technician = parent::findParentRow('Application_Model_Users_Table');
+            //$this->_technician = parent::findParentRow('Application_Model_Users_Table');
+            $users = new Application_Model_Users_Table();
+            //$users->setLazyLoading(false);
+            $users->setSchema($this->getTable()->getSchema());
+            return $users->getAll(array('id' => $this->technicianid))->current();
         }
         return $this->_technician;
     }

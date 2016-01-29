@@ -129,7 +129,7 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
         $info = $this->info();
         return $info['cols'];
     }
-
+    
     public function get() {
         $args = func_get_args();
         $cacheName = $this->_name . '_' . md5(serialize($args));
@@ -184,17 +184,24 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
 
             if ($this->getOrderBy())
                 $select->order($this->getOrderBy());
-            //echo $select;
+            //echo '<br />'.$select;
             //var_dump($params,$this->getOrderBy());echo $select;
             //if ($params['parentid']==53)try{throw new Exception('test');}catch(Exception$e){var_dump($params,$this->getOrderBy(),$e->getTraceAsString());}
             if (!$this->cacheInClass() || ($rows = $this->getCache()->load($cacheName)) === false) {
 
-                if ($this->getItemCountPerPage() != null) {
-                    $this->_setPaginator($select);
-                    $rows = $this->getPaginator()->getCurrentItems()->toArray();
-                } else {
+                try {
+                    if ($this->getItemCountPerPage() != null) {
+                        $this->_setPaginator($select);
+                        $rows = $this->getPaginator()->getCurrentItems()->toArray();
+                    } else {
                         $rows = $select->query()->fetchAll();
                     }
+                } catch (Exception $ex) {
+                    if (APPLICATION_ENV == 'development') {
+                        echo '<br />'.$ex->getMessage().': '.$select;exit;
+                    }
+                    throw new Exception($ex->getMessage());
+                }
                 if ($this->cacheInClass()) {
                     $this->getCache()->save($rows, $cacheName, array($this->_name));
                 }

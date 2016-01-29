@@ -14,14 +14,22 @@ class Application_Model_Clients_Table extends Application_Db_Table
     
     protected $_dependentTables = array('Application_Model_Orders_Table');
     
+    public function select() {
+        if ($this->_lazyLoading === true) {
+            return parent::select();
+        }
+        return parent::select()->setIntegrityCheck(false)->from(($this->_schema ? ($this->_schema . '.') : '') . 'clientsview');
+    }
+    
     public function getAllStreets() {
-        $select = parent::select();
-        $rows = $select->from(array('c' => 'clients'), 'street')->distinct()->order(new Zend_Db_Expr('street COLLATE utf8_polish_ci'))->query()->fetchAll();
+        $select = $this->getAdapter()->select();
+        $select = $select->from(array('c' => $this->_lazyLoading === true ? 'clients' : 'clientsview'), 'street')->distinct()->order(new Zend_Db_Expr('street COLLATE utf8_polish_ci'));
+        return $rows = $select->query()->fetchAll();
         
         $data = array(
             'table' => $this,
             'data' => $rows,
-            'readOnly' => $select->isReadOnly(),
+            'readOnly' => true,
             'rowClass' => $this->_rowClass,
             'stored' => true
         );
@@ -31,6 +39,12 @@ class Application_Model_Clients_Table extends Application_Db_Table
             Zend_Loader::loadClass($this->_rowsetClass);
         }
         return new $this->_rowsetClass($data);
+    }
+    
+    public function getAllCities() {
+        $select = $this->getAdapter()->select();
+        $select = $select->from(array('c' => $this->_lazyLoading === true ? 'clients' : 'clientsview'), 'city')->distinct()->order(new Zend_Db_Expr('city COLLATE utf8_polish_ci'));
+        return $rows = $select->query()->fetchAll();
     }
     
 }

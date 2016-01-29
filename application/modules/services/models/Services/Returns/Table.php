@@ -24,7 +24,7 @@ class Application_Model_Services_Returns_Table extends Application_Db_Table
         if ($this->_lazyLoading === true) {
             return parent::select();
         }
-        return parent::select()->setIntegrityCheck(false)->from('servicereturnsview');
+        return parent::select()->setIntegrityCheck(false)->from(($this->_schema ? ($this->_schema . '.') : '') . 'servicereturnsview');
     }
     
 }

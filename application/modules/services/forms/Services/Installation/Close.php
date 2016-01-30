@@ -132,7 +132,7 @@ class Application_Form_Services_Installation_Close extends Application_Form
         $name = (string) $name;
         if (strpos($name, 'productreturnedid') !== false) {
             $selectedIds = array();
-            if (!$value['name']) {
+            if (empty($value['name'])) {
                 $value['name'] = current($value);
             }
             $selectedIds[] = $value['name'];
@@ -156,10 +156,10 @@ class Application_Form_Services_Installation_Close extends Application_Form
         }
 	if (strpos($name, 'productid') !== false) {
             $selectedIds = array();
-            if (!$value['productid']) {
+            if (empty($value['productid'])) {
                 $value['productid'] = current($value);
             }
-            if (!$value['name']) {
+            if (empty($value['name'])) {
                 $value['name'] = current($value);
             }
             $selectedIds[] = $value['productid'];
@@ -176,15 +176,16 @@ class Application_Form_Services_Installation_Close extends Application_Form
         switch ($name) {
             case 'productid':
                 $selectedIds = array();
-                foreach ($value as $row) {
-                    $selectedIds[] = $row['productid'];
-                    $attribs = $this->getElement($name)->getAttribs();
-                    $options = $attribs['options'];
-                    if (!isset($options[$row['productid']])) {
-                        $this->getElement($name)->addMultiOption($row['productid'] < 0 ? $row['name'] : $row['productid'], $row['name'] . ' (' . $row['serial'] . ')');
-                        $selectedIds[] = $row['productid'] < 0 ? $row['name'] : $row['productid'];
+                if (!empty($value))
+                    foreach ($value as $row) {
+                        $selectedIds[] = $row['productid'];
+                        $attribs = $this->getElement($name)->getAttribs();
+                        $options = $attribs['options'];
+                        if (!isset($options[$row['productid']])) {
+                            $this->getElement($name)->addMultiOption($row['productid'] < 0 ? $row['name'] : $row['productid'], $row['name'] . ' (' . $row['serial'] . ')');
+                            $selectedIds[] = $row['productid'] < 0 ? $row['name'] : $row['productid'];
+                        }
                     }
-                }
                 $value = $selectedIds;
                 break;
             case 'installationcodeid':
@@ -195,16 +196,18 @@ class Application_Form_Services_Installation_Close extends Application_Form
             case 'modeminterchangecodeid':
             case 'decoderinterchangecodeid':
                 $selectedIds = array();
-                foreach ($value as $row) {
-                    $selectedIds[] = $row['codeid'];
-                }
+                if (!empty($value))
+                    foreach ($value as $row) {
+                        $selectedIds[] = $row['codeid'];
+                    }
                 $value = $selectedIds;
                 break;
             case 'productreturnedid':
                 $selectedIds = array();
-                foreach ($value as $row) {
-                    $selectedIds[] = trim($row);
-                }
+                if (!empty($value))
+                    foreach ($value as $row) {
+                        $selectedIds[] = trim($row);
+                    }
                 $value = $selectedIds;
                 break;
         }

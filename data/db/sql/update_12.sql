@@ -1,4 +1,22 @@
 CREATE OR REPLACE
+VIEW `cez_lublin`.`clientsview` AS
+    SELECT 
+        `c`.`id` AS `id`,
+        `c`.`addressid` AS `addressid`,
+        `c`.`city` AS `city`,
+        `c`.`street` AS `street`,
+        `c`.`number` AS `number`,
+        `c`.`postcode` AS `postcode`,
+        `c`.`dateadd` AS `dateadd`,
+        `c`.`streetno` AS `streetno`,
+        `c`.`apartmentno` AS `apartmentno`,
+        `c`.`homephone` AS `homephone`,
+        `c`.`workphone` AS `workphone`,
+        `c`.`cellphone` AS `cellphone`,
+        `c`.`statusid` AS `statusid`
+    FROM
+        `cez_lublin`.`clients` `c`;
+CREATE OR REPLACE
 VIEW `cez`.`clientsview` AS
     SELECT 
         `c`.`id` AS `id`,

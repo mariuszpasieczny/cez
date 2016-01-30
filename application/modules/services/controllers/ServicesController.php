@@ -1491,15 +1491,18 @@ class Services_ServicesController extends Application_Controller_Abstract {
 
         if ($this->getRequest()->isPost()) {
             $data = $request->getPost();
-            foreach ($data['installationcodeid'] as $key => $value) {
-                $data[$key] = $value;
-            }
-            foreach ($data['productid'] as $key => $value) {
-                $data[$key] = $value;
-            }
-            foreach ($data['quantity'] as $key => $value) {
-                $data[$key] = $value;
-            }
+            if (!empty($data['installationcodeid']))
+                foreach ($data['installationcodeid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+            if (!empty($data['productid']))
+                foreach ($data['productid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+            if (!empty($data['quantity']))
+                foreach ($data['quantity'] as $key => $value) {
+                    $data[$key] = $value;
+                }
             if (!empty($data['productreturnedid']))
                 foreach ($data['productreturnedid'] as $key => $value) {
                     $data[$key] = $value;

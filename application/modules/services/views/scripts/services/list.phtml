@@ -16,7 +16,7 @@
             <input type="hidden" name="typeid" value="<?php echo $this->request['typeid']; ?>" />
             <?php if (in_array($this->auth->role, array('superadmin'))): ?>
                 <div class="form-group">
-                    <select class="form-control chosen-select" name="instance[]" multiple placeholder="Wybierz region">
+                    <select style="width:150px;" class="form-control chosen-select" name="instance[]" multiple placeholder="Wybierz region">
                         <option value="">Wybierz region</option>
                         <?php
                         foreach ($this->regions as $region):
@@ -27,7 +27,7 @@
                 </div>
             <?php endif; ?>
             <div class="form-group">
-                <select class="form-control chosen-select" name="status[]" multiple data-placeholder="Wybierz status">
+                <select style="width:150px;" class="form-control chosen-select" name="status[]" multiple data-placeholder="Wybierz status">
                     <option value="">Wybierz status</option>
                     <?php
                     foreach ($this->statuses as $status): if ($status['acronym'] == 'deleted'): continue;
@@ -39,7 +39,7 @@
             </div>
             <?php if ($this->auth->role != 'technician'): ?>
                 <div class="form-group">
-                    <select class="form-control chosen-select" name="technician[]" multiple data-placeholder="Wybierz technika">
+                    <select style="width:150px;" class="form-control chosen-select" name="technician[]" multiple data-placeholder="Wybierz technika">
                         <option value="">Wybierz technika</option>
                         <?php foreach ($this->technicians as $technician): ?>
                             <option value="<?php echo $technician; ?>" <?php if (!empty($this->request['technician']) && in_array($technician->__toString(), (array) $this->request['technician'])): ?>selected<?php endif; ?>><?php echo $technician; ?></option>
@@ -54,7 +54,7 @@
                 <input type="text" class="form-control" name="client" placeholder="Adres" value="<?php if (!empty($this->request['client'])) echo $this->request['client']; ?>">
             </div>-->
             <div class="form-group">
-                <select class="form-control chosen-select" style="width: 200px" name="clientcity" data-placeholder="Wybierz miasto">
+                <select style="width:150px;" class="form-control chosen-select" name="clientcity" data-placeholder="Wybierz miasto">
                     <option value="">Wybierz miasto</option>
                     <?php foreach ($this->cities as $client): ?>
                         <option value="<?php echo $client['city']; ?>" <?php if (!empty($this->request['clientcity']) && $client['city'] == $this->request['clientcity']): ?>selected<?php endif; ?>><?php echo $client['city']; ?></option>
@@ -62,7 +62,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <select class="form-control chosen-select" style="width: 200px" name="clientstreet" data-placeholder="Wybierz ulicę">
+                <select style="width:150px;" class="form-control chosen-select" name="clientstreet" data-placeholder="Wybierz ulicę">
                     <option value="">Wybierz ulicę</option>
                     <?php foreach ($this->clients as $client): ?>
                         <option value="<?php echo $client['street']; ?>" <?php if (!empty($this->request['clientstreet']) && $client['street'] == $this->request['clientstreet']): ?>selected<?php endif; ?>><?php echo $client['street']; ?></option>
@@ -103,7 +103,7 @@
                 </div>
             <?php endif; ?>
             <div class="form-group">
-                <select class="form-control chosen-select" style="width: 200px" name="calendar[]" multiple placeholder="Wybierz kalendarz">
+                <select style="width:90px;" class="form-control chosen-select" name="calendar[]" multiple placeholder="Wybierz kalendarz">
                     <option value="">Wybierz kalendarz</option>
                     <?php
                     foreach ($this->calendars as $calendar):
@@ -113,7 +113,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <select style="width:100px;" class="form-control chosen-select" name="servicetype[]" multiple placeholder="Wybierz Typ">
+                <select style="width:90px;" class="form-control chosen-select" name="servicetype[]" multiple placeholder="Wybierz Typ">
                     <option value="">Wybierz typ</option>
                     <?php
                     foreach ($this->servicetypes as $servicetype):
@@ -141,7 +141,7 @@
         </th>
         <!--<th>Lp.</th>-->
         <?php if (in_array($this->auth->role, array('superadmin', 'supercoordinator'))): ?>
-            <th>Region</th>
+            <th style="max-width: 75px !important;">Region</th>
         <?php endif; ?>
         <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
             <th style="max-width: 75px !important;">Data</th>

@@ -87,7 +87,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->view->filename = 'Zestawienie_instalacyjne-' . date('YmdHis') . '.xlsx';
                 $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zlecenia instalacyjne.xls';
                 $this->view->rowNo = 2;
-                $columns = array('planneddate', 'timefrom', 'servicetype', 'calendar', 'number', 'clientid', 'client', 'technician', 'documentspassed', 'closedupc', 'status', 'performed');
+                $columns = array('planneddate', 'timefrom', 'servicetype', 'calendar', 'number', 'clientid', 'city', 'clientcity', 'technician', 'documentspassed', 'closedupc', 'status', 'performed');
                 $this->view->codeTypes = array('installation', 'installationcancel');
                 if ($this->_auth->getIdentity()->role == 'technician') {
                     $this->_services->setWhere($this->_services->getAdapter()->quoteInto("(technicianid = {$this->_auth->getIdentity()->id})", null));
@@ -98,7 +98,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->view->filename = 'Zestawienie_serwisowe-' . date('YmdHis') . '.xlsx';
                 $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zlecenia serwisowe.xls';
                 $this->view->rowNo = 2;
-                $columns = array('planneddate', 'timefrom', 'timetill', 'number', 'clientid', 'client', 'technician', 'status', 'performed');
+                $columns = array('planneddate', 'timefrom', 'timetill', 'servicetype', 'calendar', 'number', 'clientid', 'clientcity', 'client', 'technician', 'status', 'performed');
                 $this->view->codeTypes = array('error', 'solution', 'cancellation', 'modeminterchange', 'decoderinterchange');
                 if ($this->_auth->getIdentity()->role == 'technician') {
                     $status = $statuses->find('new', 'acronym');
@@ -144,7 +144,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if (!$request->getParam('statusid')) {
             $this->_services->setWhere($this->_services->getAdapter()->quoteInto("statusid != ?", $status->id));
         }
-        $params = array_filter(array_intersect_key($request->getParams(), array_flip(array('statusid', 'technicianid', 'clientnumber', 'client', 'clientstreet', 'clientstreetno', 'clientapartment', 'number', 'planneddatefrom', 'planneddatetill'))));
+        $params = array('status', 'technician', 'clientnumber', 'client', 'clientstreet', 'clientstreetno', 'clientapartment', 'number', 'planneddatefrom', 'planneddatetill');
+        $params = array_filter(array_intersect_key($request->getParams(), array_flip($params)));
         if ($request->getParam('street')&&0) {
             $params['clientaddress'] = $request->getParam('street');
             if ($request->getParam('streetno')) {
@@ -176,7 +177,11 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $this->view->technicians = $technicians;
         $this->view->statuses = $this->_dictionaries->getStatusList('service');
         $this->view->types = $types;
+        $this->_clients->setLazyLoading(false);
         $this->view->clients = $this->_clients->getAllStreets();
+        $this->view->cities = $this->_clients->getAllCities();
+        $this->view->calendars = $this->_services->getCalendarList();
+        $this->view->servicetypes = $this->_services->getServicetypeList();
     }
 
     public function searchAction() {

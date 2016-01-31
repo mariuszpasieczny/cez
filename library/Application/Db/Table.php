@@ -175,7 +175,7 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
 
             if ($this->getOrderBy())
                 $select->order($this->getOrderBy());
-            //echo $select;
+            //echo '<br />'.$select;
             //var_dump($params,$this->getOrderBy());echo $select;
             //if ($params['parentid']==53)try{throw new Exception('test');}catch(Exception$e){var_dump($params,$this->getOrderBy(),$e->getTraceAsString());}
             if (!$this->cacheInClass() || ($rows = $this->getCache()->load($cacheName)) === false) {

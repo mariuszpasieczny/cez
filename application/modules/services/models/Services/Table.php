@@ -130,4 +130,16 @@ class Application_Model_Services_Table extends Application_Db_Table
         return parent::getAll($params, $rows, $root);
     }
     
+    public function getCalendarList() {
+        $select = $this->getAdapter()->select();
+        $select = $select->from(array('s' => $this->_lazyLoading === true ? 'services' : 'servicesview'), array('acronym' => 'calendar'))->distinct()->order('calendar');
+        return $rows = $select->query()->fetchAll();
+    }
+    
+    public function getServicetypeList() {
+        $select = $this->getAdapter()->select();
+        $select = $select->from(array('s' => $this->_lazyLoading === true ? 'services' : 'servicesview'), array('acronym' => 'servicetype'))->distinct()->order('servicetype');
+        return $rows = $select->query()->fetchAll();
+    }
+    
 }

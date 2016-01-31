@@ -15,8 +15,9 @@ class Application_Model_Clients_Table extends Application_Db_Table
     protected $_dependentTables = array('Application_Model_Orders_Table');
     
     public function getAllStreets() {
-        $select = parent::select();
-        $rows = $select->from(array('c' => 'clients'), 'street')->distinct()->order(new Zend_Db_Expr('street COLLATE utf8_polish_ci'))->query()->fetchAll();
+        $select = $this->getAdapter()->select();
+        $select = $select->from(array('c' => $this->_lazyLoading === true ? 'clients' : 'clientsview'), 'street')->distinct()->order(new Zend_Db_Expr('street COLLATE utf8_polish_ci'));
+        return $rows = $select->query()->fetchAll();
         
         $data = array(
             'table' => $this,
@@ -31,6 +32,12 @@ class Application_Model_Clients_Table extends Application_Db_Table
             Zend_Loader::loadClass($this->_rowsetClass);
         }
         return new $this->_rowsetClass($data);
+    }
+    
+    public function getAllCities() {
+        $select = $this->getAdapter()->select();
+        $select = $select->from(array('c' => $this->_lazyLoading === true ? 'clients' : 'clientsview'), 'city')->distinct()->order(new Zend_Db_Expr('city COLLATE utf8_polish_ci'));
+        return $rows = $select->query()->fetchAll();
     }
     
 }

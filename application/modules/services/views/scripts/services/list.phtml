@@ -15,25 +15,25 @@
         ?>">
             <input type="hidden" name="typeid" value="<?php echo $this->request['typeid']; ?>" />
             <div class="form-group">
-                <select class="form-control chosen-select" name="statusid[]" multiple data-placeholder="Wybierz status">
+                <select style="width:150px;" class="form-control chosen-select" name="status[]" multiple data-placeholder="Wybierz status">
                     <option value="">Wybierz status</option>
                     <?php
                     foreach ($this->statuses as $status): if ($status['acronym'] == 'deleted'): continue;
                         endif;
                         ?>
-                        <option value="<?php echo $status->id; ?>" <?php if (!empty($this->request['statusid']) && in_array($status->id, (array) $this->request['statusid'])): ?>selected<?php endif; ?>><?php echo $status->name; ?></option>
+                        <option value="<?php echo $status->name; ?>" <?php if (!empty($this->request['status']) && in_array($status->name, (array) $this->request['status'])): ?>selected<?php endif; ?>><?php echo $status->name; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
             <?php if ($this->auth->role != 'technician'): ?>
-            <div class="form-group">
-                <select class="form-control chosen-select" name="technicianid[]" multiple data-placeholder="Wybierz technika">
-                    <option value="">Wybierz technika</option>
-                    <?php foreach ($this->technicians as $technician): ?>
-                        <option value="<?php echo $technician->id; ?>" <?php if (!empty($this->request['technicianid']) && in_array($technician->id, (array) $this->request['technicianid'])): ?>selected<?php endif; ?>><?php echo $technician->lastname . ' ' . $technician->firstname; ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <div class="form-group">
+                    <select style="width:150px;" class="form-control chosen-select" name="technician[]" multiple data-placeholder="Wybierz technika">
+                        <option value="">Wybierz technika</option>
+                        <?php foreach ($this->technicians as $technician): ?>
+                            <option value="<?php echo $technician; ?>" <?php if (!empty($this->request['technician']) && in_array($technician->__toString(), (array) $this->request['technician'])): ?>selected<?php endif; ?>><?php echo $technician; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             <?php endif; ?>
             <div class="form-group">
                 <input type="text" style="width:150px;" class="form-control" name="clientnumber" placeholder="Nr klienta" value="<?php if (!empty($this->request['clientnumber'])) echo $this->request['clientnumber']; ?>">
@@ -41,12 +41,22 @@
             <!--<div class="form-group">
                 <input type="text" class="form-control" name="client" placeholder="Adres" value="<?php if (!empty($this->request['client'])) echo $this->request['client']; ?>">
             </div>-->
-            <select class="form-control chosen-select" style="width: 200px" name="clientstreet" data-placeholder="Wybierz ulicę">
-                <option value="">Wybierz ulicę</option>
-                <?php foreach ($this->clients as $client): ?>
-                    <option value="<?php echo $client->street; ?>" <?php if (!empty($this->request['clientstreet']) && $client->street == $this->request['clientstreet']): ?>selected<?php endif; ?>><?php echo $client->street; ?></option>
-                <?php endforeach; ?>
-            </select>
+            <div class="form-group">
+                <select style="width:150px;" class="form-control chosen-select" name="clientcity" data-placeholder="Wybierz miasto">
+                    <option value="">Wybierz miasto</option>
+                    <?php foreach ($this->cities as $client): ?>
+                        <option value="<?php echo $client['city']; ?>" <?php if (!empty($this->request['clientcity']) && $client['city'] == $this->request['clientcity']): ?>selected<?php endif; ?>><?php echo $client['city']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <select style="width:150px;" class="form-control chosen-select" name="clientstreet" data-placeholder="Wybierz ulicę">
+                    <option value="">Wybierz ulicę</option>
+                    <?php foreach ($this->clients as $client): ?>
+                        <option value="<?php echo $client['street']; ?>" <?php if (!empty($this->request['clientstreet']) && $client['street'] == $this->request['clientstreet']): ?>selected<?php endif; ?>><?php echo $client['street']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
             <input type="text" class="form-control" style="width: 50px" name="clientstreetno" placeholder="Nr domu" value="<?php if (!empty($this->request['clientstreetno'])) echo $this->request['clientstreetno']; ?>">
             <input type="text" class="form-control" style="width: 50px" name="clientapartment" placeholder="Nr mieszkania" value="<?php if (!empty($this->request['clientapartment'])) echo $this->request['clientapartment']; ?>">
             <div class="form-group">
@@ -59,27 +69,47 @@
                 <input type="text" style="width:100px;" class="form-control" name="planneddatetill" id="planneddatetill" placeholder="Data do" value="<?php if (!empty($this->request['planneddatetill'])) echo $this->request['planneddatetill']; ?>">
             </div>
             <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
-            <div class="form-group">
-                <select class="form-control chosen-select" name="documentspassed" data-placeholder="Dokumenty">
-                    <option value="">Dokumenty</option>
-                    <?php
-                    foreach (array('0' => 'nie', '1' => 'tak') as $key => $name): 
-                        ?>
-                        <option value="<?php echo $key; ?>" <?php if (isset($this->request['documentspassed']) && strlen($this->request['documentspassed']) && $key == $this->request['documentspassed']): ?>selected<?php endif; ?>><?php echo $name; ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="form-group">
-                <select class="form-control chosen-select" name="closedupc" data-placeholder="UPC">
-                    <option value="">UPC</option>
-                    <?php
-                    foreach (array('0' => 'nie', '1' => 'tak') as $key => $name): 
-                        ?>
-                        <option value="<?php echo $key; ?>" <?php if (isset($this->request['closedupc']) && strlen($this->request['closedupc']) && $key == $this->request['closedupc']): ?>selected<?php endif; ?>><?php echo $name; ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <div class="form-group">
+                    <select class="form-control chosen-select" name="documentspassed" data-placeholder="Dokumenty">
+                        <option value="">Dokumenty</option>
+                        <?php
+                        foreach (array('0' => 'nie', '1' => 'tak') as $key => $name):
+                            ?>
+                            <option value="<?php echo $key; ?>" <?php if (isset($this->request['documentspassed']) && strlen($this->request['documentspassed']) && $key == $this->request['documentspassed']): ?>selected<?php endif; ?>><?php echo $name; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="form-control chosen-select" name="closedupc" data-placeholder="UPC">
+                        <option value="">UPC</option>
+                        <?php
+                        foreach (array('0' => 'nie', '1' => 'tak') as $key => $name):
+                            ?>
+                            <option value="<?php echo $key; ?>" <?php if (isset($this->request['closedupc']) && strlen($this->request['closedupc']) && $key == $this->request['closedupc']): ?>selected<?php endif; ?>><?php echo $name; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             <?php endif; ?>
+            <div class="form-group">
+                <select style="width:90px;" class="form-control chosen-select" name="calendar[]" multiple placeholder="Wybierz kalendarz">
+                    <option value="">Wybierz kalendarz</option>
+                    <?php
+                    foreach ($this->calendars as $calendar):
+                        ?>
+                        <option value="<?php echo $calendar['acronym']; ?>" <?php if (!empty($this->request['calendar']) && in_array($calendar['acronym'], (array) $this->request['calendar'])): ?>selected<?php endif; ?>><?php echo $calendar['acronym']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <select style="width:90px;" class="form-control chosen-select" name="servicetype[]" multiple placeholder="Wybierz Typ">
+                    <option value="">Wybierz typ</option>
+                    <?php
+                    foreach ($this->servicetypes as $servicetype):
+                        ?>
+                        <option value="<?php echo $servicetype['acronym']; ?>" <?php if (!empty($this->request['servicetype']) && in_array($servicetype['acronym'], (array) $this->request['servicetype'])): ?>selected<?php endif; ?>><?php echo $servicetype['acronym']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
             <button type="button" class="btn btn-default search">Szukaj</button>
             <button type="button" class="btn btn-link xls">Zapisz XLS</button>
         </form>
@@ -105,6 +135,7 @@
             <th style="max-width: 25px !important;"><acronym title="Kalendarz">Kal.</acronym></th>
             <th style="max-width: 75px !important;">Nr zlecenia</th>
             <th style="max-width: 75px !important;">Nr klienta</th>
+            <th style="max-width: 75px !important;">Miasto</th>
             <th>Adres</th>
             <?php if ($this->auth->role != 'technician'): ?>
                 <th style="max-width: 195px !important;">Technik</th>
@@ -119,14 +150,17 @@
             <th style="max-width: 105px !important;">Data zlecenia</th>  
             <th style="max-width: 25px !important;">Od</th>
             <th style="max-width: 25px !important;">Do</th> 
+            <th style="max-width: 25px !important;">Typ</th>
+            <th style="max-width: 25px !important;"><acronym title="Kalendarz">Kal.</acronym></th>
             <th style="max-width: 95px !important;">Numer WO</th>
             <th style="max-width: 85px !important;">ID Klienta</th>
+            <th style="max-width: 75px !important;">Miasto</th>
             <th>Adres</th>
             <?php if ($this->auth->role != 'technician'): ?>
                 <th style="max-width: 195px !important;">Technik</th>
             <?php endif; ?>
-        <!--<th style="max-width: 75px !important;">Dokumenty</th>
-        <th style="max-width: 25px !important;">UPC</th>-->
+    <!--<th style="max-width: 75px !important;">Dokumenty</th>
+    <th style="max-width: 25px !important;">UPC</th>-->
             <th style="max-width: 125px !important;">Status</th>
             <th style="max-width: 15px !important;"><acronym title="Wykonane">Wyk.</acronym></th>
         <?php endif; ?>
@@ -181,134 +215,160 @@
                     </div>
                 </td>
                 <!--<td><?php echo $i + 1; ?></td>-->
-    <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
+                <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
                     <td><?php echo $this->escape($service->getPlanneddate()); ?></td>
                     <td><?php echo $this->escape($service->getPlannedtime()); ?></td>
                     <td><?php echo $this->escape($service->servicetype); ?></td>
                     <td><?php echo $this->escape($service->calendar); ?></td>
                     <td><?php echo $this->escape($service->number); ?></td>
                     <td><?php echo $this->escape($service->clientnumber); ?></td>
+                    <td><?php echo $this->escape($service->clientcity); ?></td>
                     <td><?php echo $this->escape($service->client); ?></td>
-                        <?php if ($this->auth->role != 'technician'): ?>
+                    <?php if ($this->auth->role != 'technician'): ?>
                         <td>
                             <?php echo $this->escape($service->technician); ?>
                             <?php if ($technician = $service->getTechnician()): ?>
                                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
-                        <?php else: echo "&nbsp;";
-                        endif;
-                        ?>
+                            <?php
+                            else: echo "&nbsp;";
+                            endif;
+                            ?>
                         </td>
                         <?php endif; ?>
                     <td>
-                        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+                               <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
                             <input type="checkbox" name="documentspassed[<?php echo $service->id; ?>]" value="1" <?php if ($service->documentspassed): echo 'checked';
-                endif; ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/documentspassed/<?php if ($service->documentspassed): echo 0;
-                else: echo 1;
-                endif; ?>" data-target=".modal-body" class="popup-load">
-                        <?php else: ?>
-                            <?php if ($service->documentspassed): echo 'zdane';
-                            else: echo '&nbsp;';
-                            endif; ?>
-                        <?php endif; ?>
+                       endif;
+                                   ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/documentspassed/<?php
+                                   if ($service->documentspassed): echo 0;
+                                   else: echo 1;
+                                   endif;
+                                   ?>" data-target=".modal-body" class="popup-load">
+                               <?php else: ?>
+                        <?php
+                        if ($service->documentspassed): echo 'zdane';
+                        else: echo '&nbsp;';
+                        endif;
+                        ?>
+                               <?php endif; ?>
                     </td>
-                    <?php if ($this->auth->role != 'technician'): ?>
+                               <?php if ($this->auth->role != 'technician'): ?>
                         <td>
-                            <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+                                   <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
                                 <input type="checkbox" name="closedupc[<?php echo $service->id; ?>]" value="1" <?php if ($service->closedupc): echo 'checked';
-                endif; ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/closedupc/<?php if ($service->closedupc): echo 0;
-                else: echo 1;
-                endif; ?>" data-target=".modal-body" class="popup-load">
-                        <?php else: ?>
-                <?php if ($service->closedupc): echo 'zakończone';
-                else: echo '&nbsp;';
-                endif; ?>
+                       endif;
+                                       ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/closedupc/<?php
+                       if ($service->closedupc): echo 0;
+                       else: echo 1;
+                       endif;
+                       ?>" data-target=".modal-body" class="popup-load">
+                            <?php else: ?>
+                                <?php
+                                if ($service->closedupc): echo 'zakończone';
+                                else: echo '&nbsp;';
+                                endif;
+                                ?>
             <?php endif; ?>
                         </td>
-                    <?php endif ?>
+        <?php endif ?>
                     <td><?php echo $this->escape($service->status); ?></td>
                     <td><?php
-                        if ($service->performed != null): echo $service->performed ? 'tak' : 'nie';
-                        else: echo "&nbsp;";
-                        endif;
-                        ?></td>
+                    if ($service->performed != null): echo $service->performed ? 'tak' : 'nie';
+                    else: echo "&nbsp;";
+                    endif;
+                    ?></td>
                     <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
                     <td><?php echo $this->escape($service->getPlanneddate()); ?></td>
                     <td><?php echo $this->escape($service->getTimefrom()); ?></td>
                     <td><?php echo $this->escape($service->getTimetill()); ?></td>
+                    <td><?php echo $this->escape($service->servicetype); ?></td>
+                    <td><?php echo $this->escape($service->calendar); ?></td>
                     <td><?php echo $this->escape($service->number); ?></td>
                     <td><?php echo $this->escape($service->clientnumber); ?></td>
+                    <td><?php echo $this->escape($service->clientcity); ?></td>
                     <td><?php echo $this->escape($service->client); ?></td>
                     <?php if ($this->auth->role != 'technician'): ?>
                         <td>
-            <?php echo $this->escape($service->technician); ?>
+                        <?php echo $this->escape($service->technician); ?>
                         <?php if ($technician = $service->getTechnician()): ?>
                                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="<?php echo '<span>Telefon: ' . $technician->phoneno . "<br />E-mail: " . $technician->email . "<br />Kod technika: " . $technician->symbol; ?></span>"></span>
-                        <?php else: echo "&nbsp;";
+                        <?php
+                        else: echo "&nbsp;";
                         endif;
                         ?>
                         </td>
         <?php endif; ?>
-                <!--<td>
-                        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+            <!--<td>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
                         <input type="checkbox" name="documentspassed[<?php echo $service->id; ?>]" value="1" <?php if ($service->documentspassed): echo 'checked';
-                endif; ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/documentspassed/<?php if ($service->documentspassed): echo 0;
-                else: echo 1;
-                endif; ?>" data-target=".modal-body" class="popup-load">
+            endif;
+                        ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/documentspassed/<?php
+                        if ($service->documentspassed): echo 0;
+                        else: echo 1;
+                        endif;
+                        ?>" data-target=".modal-body" class="popup-load">
                     <?php else: ?>
-            <?php if ($service->documentspassed): echo 'zdane';
-            else: echo '&nbsp;';
-            endif; ?>
+                        <?php
+                        if ($service->documentspassed): echo 'zdane';
+                        else: echo '&nbsp;';
+                        endif;
+                        ?>
                         <?php endif; ?>
-                </td>
-                <td>
-        <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
+            </td>
+            <td>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'services', 'close')): ?>
                         <input type="checkbox" name="closedupc[<?php echo $service->id; ?>]" value="1" <?php if ($service->closedupc): echo 'checked';
-            endif; ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/closedupc/<?php if ($service->closedupc): echo 0;
-            else: echo 1;
-            endif; ?>" data-target=".modal-body" class="popup-load">
+            endif;
+            ?> href="<?php echo $this->baseUrl; ?>/services/services/set/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>/closedupc/<?php
+                            if ($service->closedupc): echo 0;
+                            else: echo 1;
+                            endif;
+                            ?>" data-target=".modal-body" class="popup-load">
         <?php else: ?>
-                            <?php if ($service->closedupc): echo 'zakończone';
+                            <?php
+                            if ($service->closedupc): echo 'zakończone';
                             else: echo '&nbsp;';
-                            endif; ?>
-        <?php endif; ?>
-                </td>---->
+                            endif;
+                            ?>
+                        <?php endif; ?>
+            </td>---->
                     <td><?php echo $this->escape($service->status); ?></td>
                     <td><?php
-                        if ($service->performed != null): echo $service->performed ? 'tak' : 'nie';
-                        else: echo "&nbsp;";
-                        endif;
-                        ?></td>
-                    <?php endif; ?>
+                if ($service->performed != null): echo $service->performed ? 'tak' : 'nie';
+                else: echo "&nbsp;";
+                endif;
+                ?></td>
+    <?php endif; ?>
                 <td style="white-space: nowrap;">
                     <!--<span class="glyphicon glyphicon-info-sign" aria-hidden="true"data-toggle="popover" data-placement="left" 
                           title="<?php
-                //echo $this->escape($this->partial('services/details.phtml', array('service' => $service, 'request' => $this->request, 'types' => $this->types))); 
-                    ?>">
+    //echo $this->escape($this->partial('services/details.phtml', array('service' => $service, 'request' => $this->request, 'types' => $this->types))); 
+    ?>">
                     </span>-->
                     <a href="<?php echo $this->baseUrl; ?>/services/services/details/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Szczegóły">
                         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                     </a>
-                    <?php if ($this->auth && $service->isAssigned() && $this->HasAccess($this->auth->role, 'services', 'edit')): ?>
+    <?php if ($this->auth && $service->isAssigned() && $this->HasAccess($this->auth->role, 'services', 'edit')): ?>
                         <a href="<?php echo $this->baseUrl; ?>/services/services/edit/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Edytuj">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         </a>
-                    <?php endif; ?>
-                    <?php if (($service->isNew() || ($service->isAssigned() && in_array($this->auth->role, array('coordinator', 'admin')))) && !(!in_array($this->auth->role, array('coordinator', 'admin')) && $this->request['typeid'] == $this->types->find('installation', 'acronym')->id) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'assign')): ?>
+    <?php endif; ?>
+    <?php if (($service->isNew() || ($service->isAssigned() && in_array($this->auth->role, array('coordinator', 'admin')))) && !(!in_array($this->auth->role, array('coordinator', 'admin')) && $this->request['typeid'] == $this->types->find('installation', 'acronym')->id) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'assign')): ?>
                         <a href="<?php echo $this->baseUrl; ?>/services/services/assign/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Przypisz">
                             <span class="glyphicon glyphicon glyphicon-user" aria-hidden="true"></span>
                         </a>
-                    <?php endif; ?>
-                    <?php if ($service->typeid == $this->types->find('installation', 'acronym')->id && ($service->isUnperformed() || 1) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'send-comments')): ?>
+    <?php endif; ?>
+    <?php if ($service->typeid == $this->types->find('installation', 'acronym')->id && ($service->isUnperformed() || 1) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'send-comments')): ?>
                         <a href="<?php echo $this->baseUrl; ?>/services/services/send-comments/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Wyślij komentarz">
                             <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
                         </a>
-                    <?php endif; ?>
-                    <?php if (($service->isFinished() || $service->isClosed()) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'return')): ?>
+    <?php endif; ?>
+    <?php if (($service->isFinished() || $service->isClosed()) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'return')): ?>
                         <a href="<?php echo $this->baseUrl; ?>/services/services/return/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Cofnij">
                             <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
                         </a>
-    <?php endif; ?>
-    <?php if (($service->isAssigned()) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'finish')): ?>
+            <?php endif; ?>
+            <?php if (($service->isAssigned()) && $this->auth && $this->HasAccess($this->auth->role, 'services', 'finish')): ?>
                         <a href="<?php echo $this->baseUrl; ?>/services/services/finish/id/<?php echo $service->id; ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Zakończ">
                             <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                         </a>
@@ -370,7 +430,7 @@
                 //},
                 {
                     'bSortable': false,
-                    'aTargets': [11]
+                    'aTargets': [$('.table-responsive').find('table').find('th').size() - 1]
                 }];
     <?php else: ?>
             columnsDef = [{
@@ -382,7 +442,7 @@
                 //},
                 {
                     'bSortable': false,
-                    'aTargets': [13]
+                    'aTargets': [$('.table-responsive').find('table').find('th').size() - 1]
                 }];
     <?php endif; ?>
 <?php elseif ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
@@ -393,7 +453,7 @@
                 },
                 {
                     'bSortable': false,
-                    'aTargets': [9]
+                    'aTargets': [$('.table-responsive').find('table').find('th').size() - 1]
                 }];
     <?php else: ?>
             columnsDef = [{
@@ -402,7 +462,7 @@
                 },
                 {
                     'bSortable': false,
-                    'aTargets': [10]
+                    'aTargets': [$('.table-responsive').find('table').find('th').size() - 1]
                 }];
     <?php endif; ?>
 <?php endif; ?>

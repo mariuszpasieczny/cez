@@ -174,6 +174,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $this->view->services = $this->_services->getAll($params);
         $this->view->paginator = $this->_services->getPaginator();
         $status = $this->_dictionaries->getStatusList('users')->find('active', 'acronym');
+        $params = array();
         $params['status'] = $status->name;
         $params['role'] = 'technician';
         $this->_users->setOrderBy(array('lastname', 'firstname'));

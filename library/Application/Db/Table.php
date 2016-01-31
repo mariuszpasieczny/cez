@@ -198,7 +198,7 @@ class Application_Db_Table extends Zend_Db_Table_Abstract {
                     }
                 } catch (Exception $ex) {
                     if (APPLICATION_ENV == 'development') {
-                        echo '<br />'.$ex->getMessage().': '.$select;exit;
+                        echo '<br />'.$ex->getMessage().': '.$select;
                     }
                     throw new Exception($ex->getMessage());
                 }

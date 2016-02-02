@@ -75,10 +75,10 @@
                 <input type="text" style="width:150px;" class="form-control" name="number" placeholder="Nr zlecenia" value="<?php if (!empty($this->request['number'])) echo $this->request['number']; ?>">
             </div>
             <div class="form-group">
-                <input type="text" style="width:100px;" class="form-control" name="planneddatefrom" id="planneddatefrom" placeholder="Data od" value="<?php if (!empty($this->request['planneddatefrom'])) echo $this->request['planneddatefrom']; ?>">
+                <input type="text" style="width:150px;" class="form-control" name="planneddatefrom" id="planneddatefrom" placeholder="Data od" value="<?php if (!empty($this->request['planneddatefrom'])) echo $this->request['planneddatefrom']; ?>">
             </div>
             <div class="form-group">
-                <input type="text" style="width:100px;" class="form-control" name="planneddatetill" id="planneddatetill" placeholder="Data do" value="<?php if (!empty($this->request['planneddatetill'])) echo $this->request['planneddatetill']; ?>">
+                <input type="text" style="width:150px;" class="form-control" name="planneddatetill" id="planneddatetill" placeholder="Data do" value="<?php if (!empty($this->request['planneddatetill'])) echo $this->request['planneddatetill']; ?>">
             </div>
             <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
                 <div class="form-group">
@@ -103,20 +103,20 @@
                 </div>
             <?php endif; ?>
             <div class="form-group">
-                <select style="width:90px;" class="form-control chosen-select" name="calendar[]" multiple placeholder="Wybierz kalendarz">
-                    <option value="">Wybierz kalendarz</option>
+                <select style="width:90px;" class="form-control chosen-select" name="calendar[]" multiple data-placeholder="Kalendarz">
+                    <option value="">Kalendarz</option>
                     <?php
-                    foreach ($this->calendars as $calendar):
+                    foreach ($this->calendars as $calendar): if (!trim($calendar['acronym'])) continue;
                         ?>
                         <option value="<?php echo $calendar['acronym']; ?>" <?php if (!empty($this->request['calendar']) && in_array($calendar['acronym'], (array) $this->request['calendar'])): ?>selected<?php endif; ?>><?php echo $calendar['acronym']; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
             <div class="form-group">
-                <select style="width:90px;" class="form-control chosen-select" name="servicetype[]" multiple placeholder="Wybierz Typ">
-                    <option value="">Wybierz typ</option>
+                <select style="width:90px;" class="form-control chosen-select" name="servicetype[]" multiple data-placeholder="Typ">
+                    <option value="">Typ</option>
                     <?php
-                    foreach ($this->servicetypes as $servicetype):
+                    foreach ($this->servicetypes as $servicetype): if (!trim($servicetype['acronym'])) continue;
                         ?>
                         <option value="<?php echo $servicetype['acronym']; ?>" <?php if (!empty($this->request['servicetype']) && in_array($servicetype['acronym'], (array) $this->request['servicetype'])): ?>selected<?php endif; ?>><?php echo $servicetype['acronym']; ?></option>
                     <?php endforeach; ?>
@@ -150,7 +150,7 @@
             <th style="max-width: 25px !important;"><acronym title="Kalendarz">Kal.</acronym></th>
             <th style="max-width: 75px !important;">Nr zlecenia</th>
             <th style="max-width: 75px !important;">Nr klienta</th>
-            <th style="max-width: 75px !important;">Miasto</th>
+            <!--<th style="max-width: 75px !important;">Miasto</th>-->
             <th>Adres</th>
             <?php if ($this->auth->role != 'technician'): ?>
                 <th style="max-width: 195px !important;">Technik</th>
@@ -169,7 +169,7 @@
             <th style="max-width: 25px !important;"><acronym title="Kalendarz">Kal.</acronym></th>
             <th style="max-width: 95px !important;">Numer WO</th>
             <th style="max-width: 85px !important;">ID Klienta</th>
-            <th style="max-width: 75px !important;">Miasto</th>
+            <!--<th style="max-width: 75px !important;">Miasto</th>-->
             <th>Adres</th>
             <?php if ($this->auth->role != 'technician'): ?>
                 <th style="max-width: 195px !important;">Technik</th>
@@ -242,7 +242,7 @@
                     <td><?php echo $this->escape($service->calendar); ?></td>
                     <td><?php echo $this->escape($service->number); ?></td>
                     <td><?php echo $this->escape($service->clientnumber); ?></td>
-                    <td><?php echo $this->escape($service->clientcity); ?></td>
+                    <!--<td><?php echo $this->escape($service->clientcity); ?></td>-->
                     <td><?php echo $this->escape($service->client); ?></td>
                         <?php if ($this->auth->role != 'technician'): ?>
                         <td>
@@ -307,7 +307,7 @@
                     <td><?php echo $this->escape($service->calendar); ?></td>
                     <td><?php echo $this->escape($service->number); ?></td>
                     <td><?php echo $this->escape($service->clientnumber); ?></td>
-                    <td><?php echo $this->escape($service->clientcity); ?></td>
+                    <!--<td><?php echo $this->escape($service->clientcity); ?></td>-->
                     <td><?php echo $this->escape($service->client); ?></td>
                         <?php if ($this->auth->role != 'technician'): ?>
                         <td>
@@ -422,11 +422,19 @@
 <?= $this->paginationControl($this->paginator, 'Sliding', 'helpers/pagination.phtml', array('urlParams' => $this->request)); ?>
 <script>
     params = <?php echo Zend_Json::encode($this->request); ?>;
-    $("#planneddatefrom").datepicker({
+    $("#planneddatefrom").datetimepicker({
         dateFormat: "yy-mm-dd",
+        timeFormat: 'HH:mm',
+        hourGrid: 4,
+        minuteGrid: 10,
+        stepMinute: 15
     });
-    $("#planneddatetill").datepicker({
+    $("#planneddatetill").datetimepicker({
         dateFormat: "yy-mm-dd",
+        timeFormat: 'HH:mm',
+        hourGrid: 4,
+        minuteGrid: 10,
+        stepMinute: 15
     });
     $(document).ready(function() {
         $('[data-toggle="tooltip"]').tooltip({

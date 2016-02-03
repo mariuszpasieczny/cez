@@ -167,7 +167,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
             $this->_services->setWhere($this->_services->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') >= ?", $planneddatefrom));
             $request->setParam('planneddatefrom', $planneddatefrom);
             $planneddatetill = date('Y-m-d') . ' 23:59';
-            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') >= ?", $planneddatetill));
+            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') <= ?", $planneddatetill));
             $request->setParam('planneddatetill', $planneddatetill);
         }
         $this->view->request = $request->getParams();

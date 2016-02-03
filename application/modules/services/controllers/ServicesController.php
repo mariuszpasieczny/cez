@@ -144,7 +144,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if (!$request->getParam('statusid')) {
             $this->_services->setWhere($this->_services->getAdapter()->quoteInto("statusid != ?", $status->id));
         }
-        $params = array('status', 'technician', 'clientnumber', 'client', 'clientstreet', 'clientstreetno', 'clientapartment', 'number', 'planneddatefrom', 'planneddatetill');
+        $params = array('status', 'technician', 'calendar', 'servicetype', 'clientnumber', 'client', 'clientstreet', 'clientstreetno', 'clientapartment', 'number', 'planneddatefrom', 'planneddatetill');
         $params = array_filter(array_intersect_key($request->getParams(), array_flip($params)));
         if ($request->getParam('street')&&0) {
             $params['clientaddress'] = $request->getParam('street');
@@ -162,9 +162,12 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $statuses->find('reassigned', 'acronym')->id);
             //$this->_services->setWhere($this->_services->getAdapter()->quoteInto("statusid IN (?)", $statuses));
             //$request->setParam('statusid', $statuses);
-            $planneddatefrom = date('Y-m-d');
+            $planneddatefrom = date('Y-m-d') . ' 00:00';
             $this->_services->setWhere($this->_services->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') >= ?", $planneddatefrom));
             $request->setParam('planneddatefrom', $planneddatefrom);
+            $planneddatetill = date('Y-m-d') . ' 23:59';
+            $this->_services->setWhere($this->_services->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') >= ?", $planneddatetill));
+            $request->setParam('planneddatetill', $planneddatetill);
         }
         $this->view->request = $request->getParams();
         $this->view->services = $this->_services->getAll($request->getParams());

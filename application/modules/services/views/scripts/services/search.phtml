@@ -22,7 +22,7 @@
                 <select class="form-control chosen-select" style="width: 250px" name="street" data-placeholder="Wybierz ulicę">
                     <option value="">Wybierz ulicę</option>
                     <?php foreach ($this->clients as $client): ?>
-                        <option value="<?php echo $client->street; ?>" <?php if (!empty($this->request['street']) && $client->street == $this->request['street']): ?>selected<?php endif; ?>><?php echo $client->street; ?></option>
+                        <option value="<?php echo $client['street']; ?>" <?php if (!empty($this->request['street']) && $client['street'] == $this->request['street']): ?>selected<?php endif; ?>><?php echo $client['street']; ?></option>
                     <?php endforeach; ?>
                 </select>
                 <input type="text" class="form-control" style="width: 50px" name="streetno" placeholder="Nr domu" value="<?php if (!empty($this->request['streetno'])) echo $this->request['streetno']; ?>">

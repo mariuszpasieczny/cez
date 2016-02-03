@@ -25,7 +25,7 @@ foreach ($vars['products'] as $product) {//var_dump($product);exit;
     $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowNo, $product->technician);
     $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowNo, $product->product);
     $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, $product->serial);
-    $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, $product->quantity);
+    $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, $product->qtyreleased ? $product->qtyreleased : $product->quantity);
     $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, $product->clientnumber);
     $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, $product->client);
     $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowNo, $product->status);

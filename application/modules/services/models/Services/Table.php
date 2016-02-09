@@ -108,6 +108,7 @@ class Application_Model_Services_Table extends Application_Db_Table {
         $fields[] = 'instance';
         $fields[] = 'servicetype';
         $fields[] = 'calendar';
+        $fields[] = 'region';
         $fields[] = 'servicetype';
         $fields[] = 'clientnumber';
         $fields[] = 'clientstreet';
@@ -142,6 +143,12 @@ class Application_Model_Services_Table extends Application_Db_Table {
     public function getServicetypeList() {
         $select = $this->getAdapter()->select();
         $select = $select->from(array('s' => $this->_lazyLoading === true ? 'services' : 'servicesview'), array('acronym' => 'servicetype'))->distinct()->order('servicetype');
+        return $rows = $select->query()->fetchAll();
+    }
+    
+    public function getRegionsList() {
+        $select = $this->getAdapter()->select();
+        $select = $select->from(array('s' => $this->_lazyLoading === true ? 'services' : 'servicesview'), array('acronym' => 'region'))->distinct()->order('region');
         return $rows = $select->query()->fetchAll();
     }
 

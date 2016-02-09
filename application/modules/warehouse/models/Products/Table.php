@@ -62,8 +62,8 @@ class Application_Model_Products_Table extends Application_Db_Table
             if (strpos($params['serial'], "\r\n") !== false) {
                 $serials = explode("\r\n", $params['serial']);
             }
-            $trim = function ($item) {return trim($item, "\r\n,");};
-            $serials = array_map($trim, $serials);
+            $trim = function ($item) {return trim($item, "\r\n, ");};
+            $serials = array_filter(array_map($trim, $serials));
             if (!empty($serials)) {
                 if (sizeof($serials) > 30) {
                     //throw new Exception('Zbyt wiele numerów seryjnych');

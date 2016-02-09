@@ -98,7 +98,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->view->filename = 'Zestawienie_serwisowe-' . date('YmdHis') . '.xlsx';
                 $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zlecenia serwisowe.xls';
                 $this->view->rowNo = 2;
-                $columns = array('planneddate', 'timefrom', 'timetill', 'servicetype', 'calendar', 'number', 'clientid', /*'clientcity',*/ 'client', 'technician', 'status', 'performed');
+                $columns = array('planneddate', 'timefrom', 'timetill', 'servicetype', 'calendar', 'region', 'number', 'clientid', /*'clientcity',*/ 'client', 'technician', 'status', 'performed');
                 $this->view->codeTypes = array('error', 'solution', 'cancellation', 'modeminterchange', 'decoderinterchange');
                 if ($this->_auth->getIdentity()->role == 'technician') {
                     $status = $statuses->find('new', 'acronym');
@@ -144,7 +144,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if (!$request->getParam('statusid')) {
             $this->_services->setWhere($this->_services->getAdapter()->quoteInto("statusid != ?", $status->id));
         }
-        $params = array('status', 'technician', 'calendar', 'servicetype', 'clientnumber', 'client', 'clientstreet', 'clientstreetno', 'clientapartment', 'number', 'planneddatefrom', 'planneddatetill');
+        $params = array('status', 'technician', 'servicetype', 'calendar', 'region', 'clientnumber', 'client', 'clientstreet', 'clientstreetno', 'clientapartment', 'number', 'planneddatefrom', 'planneddatetill');
         $params = array_filter(array_intersect_key($request->getParams(), array_flip($params)));
         if ($request->getParam('street')&&0) {
             $params['clientaddress'] = $request->getParam('street');
@@ -186,6 +186,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $this->view->cities = $this->_clients->getAllCities();
         $this->view->calendars = $this->_services->getCalendarList();
         $this->view->servicetypes = $this->_services->getServicetypeList();
+        $this->view->regions = $this->_services->getRegionsList();
     }
 
     public function searchAction() {

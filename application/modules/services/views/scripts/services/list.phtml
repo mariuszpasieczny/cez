@@ -91,6 +91,16 @@
                 </div>
             <?php endif; ?>
             <div class="form-group">
+                <select style="width:90px;" class="form-control chosen-select" name="servicetype[]" multiple data-placeholder="Typ">
+                    <option value="">Typ</option>
+                    <?php
+                    foreach ($this->servicetypes as $servicetype): if (!trim($servicetype['acronym'])) continue;
+                        ?>
+                        <option value="<?php echo $servicetype['acronym']; ?>" <?php if (!empty($this->request['servicetype']) && in_array($servicetype['acronym'], (array) $this->request['servicetype'])): ?>selected<?php endif; ?>><?php echo $servicetype['acronym']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
                 <select style="width:90px;" class="form-control chosen-select" name="calendar[]" multiple data-placeholder="Kalendarz">
                     <option value="">Kalendarz</option>
                     <?php
@@ -101,12 +111,12 @@
                 </select>
             </div>
             <div class="form-group">
-                <select style="width:90px;" class="form-control chosen-select" name="servicetype[]" multiple data-placeholder="Typ">
-                    <option value="">Typ</option>
+                <select style="width:90px;" class="form-control chosen-select" name="region[]" multiple data-placeholder="Obszar dyspozytorski">
+                    <option value="">Obszar dyspozytorski</option>
                     <?php
-                    foreach ($this->servicetypes as $servicetype): if (!trim($servicetype['acronym'])) continue;
+                    foreach ($this->regions as $region): if (!trim($region['acronym'])) continue;
                         ?>
-                        <option value="<?php echo $servicetype['acronym']; ?>" <?php if (!empty($this->request['servicetype']) && in_array($servicetype['acronym'], (array) $this->request['servicetype'])): ?>selected<?php endif; ?>><?php echo $servicetype['acronym']; ?></option>
+                        <option value="<?php echo $region['acronym']; ?>" <?php if (!empty($this->request['region']) && in_array($region['acronym'], (array) $this->request['region'])): ?>selected<?php endif; ?>><?php echo $region['acronym']; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -133,6 +143,7 @@
             <th style="max-width: 55px !important;">Godzina</th>
             <th style="max-width: 25px !important;">Typ</th>
             <th style="max-width: 25px !important;"><acronym title="Kalendarz">Kal.</acronym></th>
+            <!--<th style="max-width: 25px !important;"><acronym title="Obszar dyspozytorski">Obsz.</acronym></th>-->
             <th style="max-width: 75px !important;">Nr zlecenia</th>
             <th style="max-width: 75px !important;">Nr klienta</th>
             <!--<th style="max-width: 75px !important;">Miasto</th>-->
@@ -152,6 +163,7 @@
             <th style="max-width: 25px !important;">Do</th> 
             <th style="max-width: 25px !important;">Typ</th>
             <th style="max-width: 25px !important;"><acronym title="Kalendarz">Kal.</acronym></th>
+            <th style="max-width: 25px !important;"><acronym title="Obszar dyspozytorski">Obsz.</acronym></th>
             <th style="max-width: 95px !important;">Numer WO</th>
             <th style="max-width: 85px !important;">ID Klienta</th>
             <!--<th style="max-width: 75px !important;">Miasto</th>-->
@@ -220,6 +232,7 @@
                     <td><?php echo $this->escape($service->getPlannedtime()); ?></td>
                     <td><?php echo $this->escape($service->servicetype); ?></td>
                     <td><?php echo $this->escape($service->calendar); ?></td>
+                    <!--<td><?php echo $this->escape($service->region); ?></td>-->
                     <td><?php echo $this->escape($service->number); ?></td>
                     <td><?php echo $this->escape($service->clientnumber); ?></td>
                     <!--<td><?php echo $this->escape($service->clientcity); ?></td>-->
@@ -283,6 +296,7 @@
                     <td><?php echo $this->escape($service->getTimetill()); ?></td>
                     <td><?php echo $this->escape($service->servicetype); ?></td>
                     <td><?php echo $this->escape($service->calendar); ?></td>
+                    <td><?php echo $this->escape($service->region); ?></td>
                     <td><?php echo $this->escape($service->number); ?></td>
                     <td><?php echo $this->escape($service->clientnumber); ?></td>
                     <!--<td><?php echo $this->escape($service->clientcity); ?></td>-->

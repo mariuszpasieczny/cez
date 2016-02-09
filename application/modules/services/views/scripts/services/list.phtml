@@ -110,6 +110,7 @@
                     <?php endforeach; ?>
                 </select>
             </div>
+            <?php if ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
             <div class="form-group">
                 <select style="width:90px;" class="form-control chosen-select" name="region[]" multiple data-placeholder="Obszar dyspozytorski">
                     <option value="">Obszar dyspozytorski</option>
@@ -120,6 +121,7 @@
                     <?php endforeach; ?>
                 </select>
             </div>
+            <?php endif; ?>
             <button type="button" class="btn btn-default search">Szukaj</button>
             <button type="button" class="btn btn-link xls">Zapisz XLS</button>
         </form>

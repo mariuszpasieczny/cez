@@ -6,7 +6,7 @@
             "system": 1,
             "users": {
                 "acronym": "users",
-                "name": "Statusy uzytkownikow",
+                "name": "Statusy użytkowników",
                 "active": {
                     "acronym": "active",
                     "name": "Aktywny"
@@ -26,7 +26,7 @@
             },
             "service": {
                 "acronym": "service",
-                "name": "Statusy zlecen",
+                "name": "Statusy zleceń",
                 "new": {
                     "acronym": "new",
                     "name": "Nowe"
@@ -37,15 +37,15 @@
                 },
                 "finished": {
                     "acronym": "finished",
-                    "name": "Zakonczone"
+                    "name": "Zakończone"
                 },
                 "closed": {
                     "acronym": "closed",
-                    "name": "Zamkniete"
+                    "name": "Zamknięte"
                 },
                 "deleted": {
                     "acronym": "deleted",
-                    "name": "Usuniete"
+                    "name": "Usunięte"
                 },
                 "reassigned": {
                     "acronym": "reassigned",
@@ -58,7 +58,7 @@
             },
             "products": {
                 "acronym": "products",
-                "name": "Statusy produktow",
+                "name": "Statusy produktów",
                 "instock": {
                     "acronym": "instock",
                     "name": "Na stanie"
@@ -74,7 +74,7 @@
             },
             "orders": {
                 "acronym": "orders",
-                "name": "Statusy zamowien",
+                "name": "Statusy zamówień",
                 "new": {
                     "acronym": "new",
                     "name": "Nowe"
@@ -93,7 +93,7 @@
                 },
                 "returned": {
                     "acronym": "returned",
-                    "name": "Zwrocone"
+                    "name": "Zwrócone"
                 }
             },
             "reports": {
@@ -119,7 +119,7 @@
             "system": 1,
             "service": {
                 "acronym": "service",
-                "name": "Typy zlecen",
+                "name": "Typy zleceń",
                 "service": {
                     "acronym": "service",
                     "name": "Serwisowe"
@@ -130,19 +130,19 @@
                 },
                 "disconnection": {
                     "acronym": "disconnection",
-                    "name": "Odlaczeniowe"
+                    "name": "Odłczeniowe"
                 }
             }
         },
         "dictionary": {
             "acronym": "dictionary",
-            "name": "Slowniki",
+            "name": "Słowniki",
             "warehouse": {
                 "acronym": "warehouse",
-                "name": "Slowniki dla magazynu",
+                "name": "Słowniki dla magazynu",
                 "type": {
                     "acronym": "type",
-                    "name": "Typy magazynow",
+                    "name": "Typy magazynów",
                     "INST": {
                         "acronym": "INST",
                         "name": "Instalacje"
@@ -154,7 +154,7 @@
                 },
                 "area": {
                     "acronym": "area",
-                    "name": "Regiony magazynow",
+                    "name": "Regiony magazynów",
                     "LBL": {
                         "acronym": "LBL",
                         "name": "Lublin"
@@ -169,13 +169,13 @@
                     },
                     "mb": {
                         "acronym": "mb",
-                        "name": "metr biezacy"
+                        "name": "metr bieżacy"
                     }
                 }
             },
             "service": {
                 "acronym": "service",
-                "name": "Slowniki dla zlecen",
+                "name": "Słowniki dla zleceń",
                 "region": {
                     "acronym": "region",
                     "name": "Obszar dyspozytorski"
@@ -210,7 +210,7 @@
                 },
                 "errorcode": {
                     "acronym": "errorcode",
-                    "name": "Kod bledu"
+                    "name": "Kod blędu"
                 },
                 "solutioncode": {
                     "acronym": "solutioncode",
@@ -226,7 +226,7 @@
                 },
                 "cancellationcode": {
                     "acronym": "cancellationcode",
-                    "name": "Kod odwolania"
+                    "name": "Kod odwołania"
                 },
                 "installationcode": {
                     "acronym": "installationcode",
@@ -234,12 +234,12 @@
                 },
                 "installationcancelcode": {
                     "acronym": "installationcancelcode",
-                    "name": "Kod odwolania instalacji"
+                    "name": "Kod odwołania instalacji"
                 }
             },
             "system": {
                 "acronym": "system",
-                "name": "Slowniki systemowe",
+                "name": "Słowniki systemowe",
                 "region": {
                     "acronym": "region",
                     "name": "Region",

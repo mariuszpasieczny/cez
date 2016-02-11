@@ -1019,7 +1019,6 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     $error = 0;
                     foreach ($rows as $i => $row) {
                         try {
-                            $i++;
                             $line = array();
                             $columnNo = 0;
                             $column = Application_Model_Services_XLS_Service::COLUMN_NUMBER;
@@ -1212,8 +1211,11 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             Zend_Db_Table::getDefaultAdapter()->commit();
                         } catch (Exception $e) {
                             $error++;
+                            //var_dump($e->getMessage(), 
+                            //        $e->getTraceAsString(),
+                            //        Zend_Db_Table::getDefaultAdapter()->getProfiler()->getLastQueryProfile()->getQuery(),
+                            //        Zend_Db_Table::getDefaultAdapter()->getProfiler()->getLastQueryProfile()->getQueryParams());exit;
                             Zend_Db_Table::getDefaultAdapter()->rollBack();
-                            //var_dump($e->getMessage(), $area->toArray(), $e->getTraceAsString());
                             //exit;
                             //array_unshift($line, $e->getMessage());
                             $line[] = $e->getMessage();
@@ -1237,6 +1239,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $columnNo++;
                         }
                         $lines[] = $line;
+                        $i++;
                     }//return;
                     //$this->view->success = 'Zaimportowano ' . $rows->key() . ' pozycji';
 

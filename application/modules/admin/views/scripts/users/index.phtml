@@ -6,6 +6,7 @@
         echo $this->url(
                 array('module' => 'admin', 'controller' => 'users', 'action' => 'list'), 'default', true)
         ?>">
+            <?php if (in_array($this->auth->role, array('superadmin'))): ?>
             <div class="form-group">
                 <select class="form-control chosen-select" name="region[]" multiple placeholder="Wybierz region">
                     <option value="">Wybierz region</option>
@@ -16,6 +17,7 @@
                     <?php endforeach; ?>
                 </select>
             </div>
+            <?php endif; ?>
             <div class="form-group">
                 <select class="form-control chosen-select" name="role[]" multiple placeholder="Wybierz rolę">
                     <option value="">Wybierz rolę</option>

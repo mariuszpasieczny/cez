@@ -1010,7 +1010,6 @@ class Services_ServicesController extends Application_Controller_Abstract {
 
                         $service = $this->_services->createRow();
                         $service->setFromArray($params);
-                        $i++;
                         $line = array();
                         $columnNo = 0;
 
@@ -1201,6 +1200,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $columnNo++;
                         }
                         $lines[] = $line;
+                        $i++;
                     }//return;
                     //$this->view->success = 'Zaimportowano ' . $rows->key() . ' pozycji';
 

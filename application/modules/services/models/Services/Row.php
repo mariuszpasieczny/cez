@@ -157,8 +157,8 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         if (!$this->_technician && !empty($this->technicianid)) {
             //$this->_technician = parent::findParentRow('Application_Model_Users_Table');
             $users = new Application_Model_Users_Table();
-            //$users->setLazyLoading(false);
-            $users->setSchema($this->getTable()->getSchema());
+            $users->setLazyLoading(false);
+            //$users->setSchema($this->getTable()->getSchema());
             return $users->getAll(array('id' => $this->technicianid))->current();
         }
         return $this->_technician;

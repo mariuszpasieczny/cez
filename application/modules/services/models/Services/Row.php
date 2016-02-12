@@ -109,9 +109,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
             $codes->setOrderBy(array('codeacronym ASC'));
             $codes->setSchema($this->getTable()->getSchema());
             $params = array('serviceid' => $this->id);
-            if ($this->getTable()->getSchema()) {
-                $params['instance'] = $this->instance;
-            }
+            $params['instance'] = $this->instance;
             $this->_servicecodes = $codes->getAll($params);
         }
         return $this->_servicecodes;

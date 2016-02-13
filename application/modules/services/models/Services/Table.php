@@ -90,14 +90,15 @@ class Application_Model_Services_Table extends Application_Db_Table {
             return parent::select();
         }
         $tableName = ($this->_schema ? ($this->_schema . '.') : '') . 'servicecodesview';
+        $where = empty($this->_schema) ? (' AND sc.instance = s.instance') : '';
         $select = parent::select()->setIntegrityCheck(false)
                 ->from(array('s' => 'servicesview'), array('*',
-            'installationcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'installationcode')"),
-            'installationcancelcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'installationcancelcode')"),
-            'solutioncode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'solutioncode')"),
-            'cancellationcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'cancellationcode')"),
-            'modeminterchangecode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'modeminterchangecode')"),
-            'decoderinterchangecode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName where serviceid = s.id and attributeacronym = 'decoderinterchangecode')")));
+            'installationcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName sc where serviceid = s.id and attributeacronym = 'installationcode'$where)"),
+            'installationcancelcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName sc where serviceid = s.id and attributeacronym = 'installationcancelcode'$where)"),
+            'solutioncode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName sc where serviceid = s.id and attributeacronym = 'solutioncode'$where)"),
+            'cancellationcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName sc where serviceid = s.id and attributeacronym = 'cancellationcode'$where)"),
+            'modeminterchangecode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName sc where serviceid = s.id and attributeacronym = 'modeminterchangecode'$where)"),
+            'decoderinterchangecode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName sc where serviceid = s.id and attributeacronym = 'decoderinterchangecode'$where)")));
         return $select;
     }
 

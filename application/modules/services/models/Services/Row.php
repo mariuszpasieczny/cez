@@ -84,7 +84,9 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         $options = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getApplication()->getOptions();
         try {
             $products->setSchema($options['regions'][$this->instance]);
-        } catch (Exception $ex) {}
+        } catch (Exception $ex) {
+            
+        }
         return $products->getAll(array('serviceid' => $this->id));
     }
 
@@ -97,7 +99,9 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         $options = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getApplication()->getOptions();
         try {
             $products->setSchema($options['regions'][$this->instance]);
-        } catch (Exception $ex) {}
+        } catch (Exception $ex) {
+            
+        }
         return $products->getAll(array('serviceid' => $this->id));
     }
 
@@ -108,13 +112,51 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
             $codes->setLazyLoading(false);
             $codes->setOrderBy(array('codeacronym ASC'));
             $codes->setSchema($this->getTable()->getSchema());
-            $params = array('serviceid' => $this->id);
-            $params['instance'] = $this->instance;
-            $this->_servicecodes = $codes->getAll($params);
+            $options = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getApplication()->getOptions();
+            try {
+                $codes->setSchema($options['regions'][$this->instance]);
+            } catch (Exception $ex) {
+                
+            }
+            $this->_servicecodes = $codes->getAll(array('serviceid' => $this->id));
         }
         return $this->_servicecodes;
     }
-        
+
+    public function getClient() {
+        if (!$this->_client && !empty($this->clientid)) {
+            //$this->_client = parent::findParentRow('Application_Model_Clients_Table');
+            $clients = new Application_Model_Clients_Table();
+            //$clients->setLazyLoading(false);
+            $clients->setSchema($this->getTable()->getSchema());
+            $options = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getApplication()->getOptions();
+            try {
+                $clients->setSchema($options['regions'][$this->instance]);
+            } catch (Exception $ex) {
+                
+            }
+            return $clients->getAll(array('id' => $this->clientid))->current();
+        }
+        return $this->_client;
+    }
+
+    public function getTechnician() {
+        if (!$this->_technician && !empty($this->technicianid)) {
+            //$this->_technician = parent::findParentRow('Application_Model_Users_Table');
+            $users = new Application_Model_Users_Table();
+            $users->setLazyLoading(false);
+            $users->setSchema($this->getTable()->getSchema());
+            $options = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getApplication()->getOptions();
+            try {
+                $users->setSchema($options['regions'][$this->instance]);
+            } catch (Exception $ex) {
+                
+            }
+            return $users->getAll(array('id' => $this->technicianid))->current();
+        }
+        return $this->_technician;
+    }
+
     public function getWarehouse() {
         if (empty($this->warehouseid)) {
             return null;
@@ -142,28 +184,6 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
 
     public function getStatus() {
         return parent::findParentRow('Application_Model_Dictionaries_Table', 'Status');
-    }
-
-    public function getClient() {
-        if (!$this->_client && !empty($this->clientid)) {
-            //$this->_client = parent::findParentRow('Application_Model_Clients_Table');
-            $clients = new Application_Model_Clients_Table();
-            //$clients->setLazyLoading(false);
-            $clients->setSchema($this->getTable()->getSchema());
-            return $clients->getAll(array('id' => $this->clientid))->current();
-        }
-        return $this->_client;
-    }
-
-    public function getTechnician() {
-        if (!$this->_technician && !empty($this->technicianid)) {
-            //$this->_technician = parent::findParentRow('Application_Model_Users_Table');
-            $users = new Application_Model_Users_Table();
-            $users->setLazyLoading(false);
-            //$users->setSchema($this->getTable()->getSchema());
-            return $users->getAll(array('id' => $this->technicianid))->current();
-        }
-        return $this->_technician;
     }
 
     public function getDeadline($format = null) {
@@ -319,7 +339,7 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         }
         return false;
     }
-    
+
     public function update() {
         $row = $this->getTable()->find($this->id)->current();
         $row->setFromArray($this->toArray());
@@ -328,4 +348,6 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
 
 }
 
-class Application_Model_ServicesRowExist extends Exception {}
+class Application_Model_ServicesRowExist extends Exception {
+    
+}

@@ -188,4 +188,27 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $db->query("SET CHARACTER SET 'utf8'");
     }
 
+    public function _initSystemLog() {
+        $options = $this->getOptions();
+        if (!isset($options['resources']['frontController']['params']['systemLog']) ||
+                !$options['resources']['frontController']['params']['systemLog']) {
+            return false;
+        }
+        $columnMapping = array(
+            'usage' => 'usage',
+            'timestamp' => 'timestamp',
+            'message' => 'message',
+            'url' => 'url',
+            'userid' => 'userid'
+        );
+        $writer = new Zend_Log_Writer_Db($this->bootstrap('db')->getResource('db'), 'systemlogs', $columnMapping);
+        $log = new Zend_Log($writer);
+        $plugin = new Application_Controller_Plugin_SystemLog($log);
+        $front = Zend_Controller_Front::getInstance();
+
+        $front->registerPlugin($plugin);
+        
+        return $plugin;
+    }
+
 }

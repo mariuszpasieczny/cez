@@ -101,10 +101,10 @@ class Admin_UsersController extends Application_Controller_Abstract
                 $form->setDefault('region', $schema);
             //$form->getElement('region')->setAttrib('disabled', 'disabled');
             foreach ($roles as $key => $value) {
-                if ($value == 'admin' && !($value == $user->role || !in_array($this->_auth->getIdentity()->role, array('admin','superadmin')))) {
+                if ($value == 'admin' && !($value == $user->role || in_array($this->_auth->getIdentity()->role, array('superadmin')))) {
                     unset($roles[$key]);
                 }
-                if ($value == 'superadmin' && !($value == $user->role || !in_array($this->_auth->getIdentity()->role, array('superadmin')))) {
+                if ($value == 'superadmin' && !($value == $user->role || in_array($this->_auth->getIdentity()->role, array('superadmin')))) {
                     unset($roles[$key]);
                 }
             }

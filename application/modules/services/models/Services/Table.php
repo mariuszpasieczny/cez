@@ -121,10 +121,10 @@ class Application_Model_Services_Table extends Application_Db_Table {
 
     public function getAll($params = array(), $rows = null, $root = null) {
         if (!empty($params['planneddatefrom'])) {
-            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') >= ?", $params['planneddatefrom']));
+            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d %H:%M') >= ?", $params['planneddatefrom']));
         }
         if (!empty($params['planneddatetill'])) {
-            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d') <= ?", $params['planneddatetill']));
+            $this->setWhere($this->getAdapter()->quoteInto("DATE_FORMAT(planneddate, '%Y-%m-%d %H:%M') <= ?", $params['planneddatetill']));
         }
         if (!empty($params['client'])) {
             $this->setWhere($this->getAdapter()->quoteInto("UPPER(client) LIKE UPPER(?)", "%{$params['client']}%"));

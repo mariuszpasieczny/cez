@@ -27,7 +27,7 @@ DELIMITER $$
 CREATE TRIGGER servicecodesinsert AFTER INSERT 
 ON servicecodes
 FOR EACH ROW BEGIN  
-INSERT INTO cez_dbdev.servicecodesview select s.*,'lublin' from servicecodesview s where serviceid = NEW.serviceid;
+INSERT INTO cez_dbdev.servicecodesview select s.*,'lublin' from servicecodesview s where id = NEW.id;
 END$$
 DELIMITER ;
 
@@ -35,8 +35,8 @@ DELIMITER $$
 CREATE TRIGGER servicecodesupdate AFTER UPDATE 
 ON servicecodes
 FOR EACH ROW BEGIN  
-DELETE FROM cez_dbdev.servicecodesview WHERE serviceid = NEW.serviceid and instance = 'lublin';
-INSERT INTO cez_dbdev.servicecodesview select s.*,'lublin' from servicecodesview s where serviceid = NEW.serviceid;
+DELETE FROM cez_dbdev.servicecodesview WHERE id = NEW.id and instance = 'lublin';
+INSERT INTO cez_dbdev.servicecodesview select s.*,'lublin' from servicecodesview s where id = NEW.id;
 END$$
 DELIMITER ;
 
@@ -44,6 +44,6 @@ DELIMITER $$
 CREATE TRIGGER servicecodesdelete AFTER DELETE 
 ON servicecodes
 FOR EACH ROW BEGIN  
-DELETE FROM cez_dbdev.servicecodesview WHERE serviceid = OLD.serviceid and instance = 'lublin';
+DELETE FROM cez_dbdev.servicecodesview WHERE id = OLD.id and instance = 'lublin';
 END$$
 DELIMITER ;

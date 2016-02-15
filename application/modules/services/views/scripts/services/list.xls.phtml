@@ -40,10 +40,12 @@ foreach ($vars['services'] as $service) {
     if ($vars['typeid'] == $vars['types']->find('installation', 'acronym')->id) {
         if ($technician = $service->getTechnician()) {
             $value = $service->getTechnician()->symbol;
-            $column = 'COLUMN_TECHNICIANCODE';
-            $key = constant("Application_Model_Services_XLS_Installation::$column");
-            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        } else {
+            $value = '';
         }
+        $column = 'COLUMN_TECHNICIANCODE';
+        $key = constant("Application_Model_Services_XLS_Installation::$column");
+        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         if ($value = $service->datefinished) {
             $value = date('Y-m-d', strtotime($value));
             $key = Application_Model_Services_XLS_Installation::COLUMN_DATEFINISHED;
@@ -90,10 +92,12 @@ foreach ($vars['services'] as $service) {
     if ($vars['typeid'] == $vars['types']->find('service', 'acronym')->id) {
         if ($technician = $service->getTechnician()) {
             $value = $service->getTechnician()->symbol;
-            $column = 'COLUMN_TECHNICIANCODE';
-            $key = constant("Application_Model_Services_XLS_Export::$column");
-            $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
+        } else {
+            $value = '';
         }
+        $column = 'COLUMN_TECHNICIANCODE';
+        $key = constant("Application_Model_Services_XLS_Export::$column");
+        $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         if ($value = $service->datefinished) {
             $value = date('H:i', strtotime($value));
             $key = Application_Model_Services_XLS_Export::COLUMN_DATEFINISHED;

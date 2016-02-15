@@ -18,6 +18,7 @@ defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 set_include_path('.' 
    . PATH_SEPARATOR . APPLICATION_PATH . '/../library'
+   . PATH_SEPARATOR . APPLICATION_PATH . '/../library/PEAR'
    . PATH_SEPARATOR . './application/models/'
    . PATH_SEPARATOR . get_include_path());
 //var_dump($_SERVER);exit;
@@ -30,7 +31,7 @@ require_once 'Zend/Application.php';
 
 // Create application, bootstrap, and run
 $application = new Zend_Application(
-    APPLICATION_ENV,
+    APPLICATION_ENV,    
     APPLICATION_PATH . '/configs/application.ini'
 );
 

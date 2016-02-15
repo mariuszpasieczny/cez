@@ -195,7 +195,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
             return false;
         }
         $columnMapping = array(
-            'usage' => 'usage',
+            'time' => 'time',
+            'memory' => 'memory',
             'timestamp' => 'timestamp',
             'message' => 'message',
             'url' => 'url',

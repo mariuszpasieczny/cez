@@ -89,8 +89,9 @@ class Application_Model_Services_Table extends Application_Db_Table {
         if ($this->_lazyLoading === true) {
             return parent::select();
         }
+        $metadata = $this->info(Zend_Db_Table::METADATA);
         $tableName = ($this->_schema ? ($this->_schema . '.') : '') . 'servicecodesview';
-        $where = empty($this->_schema) ? (' AND sc.instance = s.instance') : '';
+        $where = $metadata['instance'] ? (' AND sc.instance = s.instance') : '';
         $select = parent::select()->setIntegrityCheck(false)
                 ->from(array('s' => 'servicesview'), array('*',
             'installationcode' => new Zend_Db_Expr("(select GROUP_CONCAT(codeacronym order by codeacronym SEPARATOR ', ') from $tableName sc where serviceid = s.id and attributeacronym = 'installationcode'$where)"),

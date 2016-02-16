@@ -15,6 +15,7 @@ class Application_Controller_Plugin_SystemLog extends Zend_Controller_Plugin_Abs
         }
         $this->_timer = new Benchmark_Timer(TRUE);
         $this->_timer->start();
+        $this->_profiler = array();
     }
 
     public function mark($marker) {

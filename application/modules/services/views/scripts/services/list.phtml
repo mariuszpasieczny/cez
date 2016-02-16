@@ -19,9 +19,9 @@
                     <select style="width:150px;" class="form-control chosen-select" name="instance[]" multiple placeholder="Wybierz region">
                         <option value="">Wybierz region</option>
                         <?php
-                        foreach ($this->regions as $region):
+                        foreach ($this->instances as $instance):
                             ?>
-                            <option value="<?php echo $region; ?>" <?php if (!empty($this->request['instance']) && in_array($region, (array) $this->request['instance'])): ?>selected<?php endif; ?>><?php echo $region; ?></option>
+                            <option value="<?php echo $instance; ?>" <?php if (!empty($this->request['instance']) && in_array($region, (array) $this->request['instance'])): ?>selected<?php endif; ?>><?php echo $instance; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

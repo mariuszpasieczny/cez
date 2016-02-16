@@ -285,74 +285,188 @@
                         "name": "A&Bmedia"
                     }
                 },
+                "territory": {
+                    "acronym": "territory",
+                    "name": "Obszar dyspozytorski",
+                    "GD2": {
+                        "acronym": "GD2",
+                        "name": "GD2"
+                    },
+                    "GD5": {
+                        "acronym": "GD5",
+                        "name": "GD5"
+                    },
+                    "GD6": {
+                        "acronym": "GD6",
+                        "name": "GD6"
+                    },
+                    "GD1": {
+                        "acronym": "GD1",
+                        "name": "GD1"
+                    },
+                    "L20": {
+                        "acronym": "L20",
+                        "name": "L20"
+                    },
+                    "L50": {
+                        "acronym": "L50",
+                        "name": "L50"
+                    },
+                    "L04": {
+                        "acronym": "L04",
+                        "name": "L04"
+                    },
+                    "L00": {
+                        "acronym": "L00",
+                        "name": "L00"
+                    },
+                    "L03": {
+                        "acronym": "L03",
+                        "name": "L03"
+                    },
+                    "L02": {
+                        "acronym": "L02",
+                        "name": "L02"
+                    },
+                    "P97": {
+                        "acronym": "P97",
+                        "name": "P97"
+                    },
+                    "P99": {
+                        "acronym": "P99",
+                        "name": "P99"
+                    },
+                    "P98": {
+                        "acronym": "P98",
+                        "name": "P98"
+                    },
+                    "WSC": {
+                        "acronym": "WSC",
+                        "name": "WSC"
+                    },
+                    "WCC": {
+                        "acronym": "WCC",
+                        "name": "WCC"
+                    },
+                    "WWW": {
+                        "acronym": "WWW",
+                        "name": "WWW"
+                    },
+                    "WSM": {
+                        "acronym": "WSM",
+                        "name": "WSM"
+                    },
+                    "WSO": {
+                        "acronym": "WSO",
+                        "name": "WSO"
+                    },
+                    "WYY": {
+                        "acronym": "WYY",
+                        "name": "WYY"
+                    },
+                    "WGG": {
+                        "acronym": "WGG",
+                        "name": "WGG"
+                    },
+                    "WHH": {
+                        "acronym": "WHH",
+                        "name": "WHH"
+                    },
+                    "WJJ": {
+                        "acronym": "WJJ",
+                        "name": "WJJ"
+                    }
+                },
                 "calendar": {
                     "acronym": "calendar",
                     "name": "Kalendarz",
                     "DCH": {
-                        "acronym": "DCH"
+                        "acronym": "DCH",
+                        "name": "DCH"
                     },
                     "DSV": {
-                        "acronym": "DSV"
+                        "acronym": "DSV",
+                        "name": "DSV"
                     },
                     "DTT": {
-                        "acronym": "DTT"
+                        "acronym": "DTT",
+                        "name": "DTT"
                     },
                     "DZU": {
-                        "acronym": "DZU"
+                        "acronym": "DZU",
+                        "name": "DZU"
                     },
                     "LSN": {
-                        "acronym": "LSN"
+                        "acronym": "LSN",
+                        "name": "LSN"
                     },
                     "LSR": {
-                        "acronym": "LSR"
+                        "acronym": "LSR",
+                        "name": "LSR"
                     },
                     "LSL": {
-                        "acronym": "LSL"
+                        "acronym": "LSL",
+                        "name": "LSL"
                     },
                     "LSV": {
-                        "acronym": "LSV"
+                        "acronym": "LSV",
+                        "name": "LSV"
                     },
                     "LSC": {
-                        "acronym": "LSC"
+                        "acronym": "LSC",
+                        "name": "LSC"
                     },
                     "LKR": {
-                        "acronym": "LKR"
+                        "acronym": "LKR",
+                        "name": "LKR"
                     },
                     "USC": {
-                        "acronym": "USC"
+                        "acronym": "USC",
+                        "name": "USC"
                     },
                     "PSC": {
-                        "acronym": "PSC"
+                        "acronym": "PSC",
+                        "name": "PSC"
                     },
                     "WSC": {
-                        "acronym": "WSC"
+                        "acronym": "WSC",
+                        "name": "WSC"
                     },
                     "WCP": {
-                        "acronym": "WCP"
+                        "acronym": "WCP",
+                        "name": "WCP"
                     },
                     "WSX": {
-                        "acronym": "WSX"
+                        "acronym": "WSX",
+                        "name": "WSX"
                     },
                     "WSD": {
-                        "acronym": "WSD"
+                        "acronym": "WSD",
+                        "name": "WSD"
                     },
                     "WSN": {
-                        "acronym": "WSN"
+                        "acronym": "WSN",
+                        "name": "WSN"
                     },
                     "WSQ": {
-                        "acronym": "WSQ"
+                        "acronym": "WSQ",
+                        "name": "WSQ"
                     },
                     "WSY": {
-                        "acronym": "WSY"
+                        "acronym": "WSY",
+                        "name": "WSY"
                     },
                     "WSG": {
-                        "acronym": "WSG"
+                        "acronym": "WSG",
+                        "name": "WSG"
                     },
                     "WSH": {
-                        "acronym": "WSH"
+                        "acronym": "WSH",
+                        "name": "WSH"
                     },
                     "WSJ": {
-                        "acronym": "WSJ"
+                        "acronym": "WSJ",
+                        "name": "WSJ"
                     }
                 }
             }

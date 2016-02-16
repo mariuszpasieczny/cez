@@ -190,9 +190,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $this->view->clients = $this->_clients->getAllStreets();
         $this->view->cities = $this->_clients->getAllCities();
         if ($regions = $this->_config->get('production')->get('regions'))
-            $this->view->regions = array_keys($regions->toArray());
+            $this->view->instances = array_keys($regions->toArray());
         $this->view->calendars = $this->_services->getCalendarList();
-        $this->view->servicetypes = $this->_services->getServicetypeList();
+        $this->view->regions = $this->_services->getRegionsList();
         $this->view->servicetypes = $this->_services->getServicetypeList();
     }
 
@@ -937,7 +937,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         $this->_dictionaries->setCacheInClass(false);
         $this->_dictionaries->clearCache();
         if (in_array($this->_auth->getIdentity()->role, array('superadmin','supercoordinator'))) {
-            $calendars = $this->_dictionaries->getDictionaryList('system')->find('calendar', 'acronym')->getChildren();
+            $territories = $this->_dictionaries->getDictionaryList('system')->find('territory', 'acronym')->getChildren();
         }
         switch ($typeid) {
             // zlecenie instalacyjne
@@ -1032,9 +1032,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $cellIterator->setIterateOnlyExistingCells(true);
 
                             if (in_array($this->_auth->getIdentity()->role, array('superadmin','supercoordinator'))) {
-                                $column = Application_Model_Services_XLS_Service::COLUMN_CALENDAR;
-                                $calendar = $calendars->find($sheet->getCell("$column$i")->getValue(), 'acronym');
-                                $schema = $this->_config->get('production')->get('regions')->get($calendar->instanceacronym);
+                                $column = Application_Model_Services_XLS_Service::COLUMN_REGION;
+                                $territory = $territories->find($sheet->getCell("$column$i")->getValue(), 'acronym');
+                                $schema = $this->_config->get('production')->get('regions')->get($territory->instanceacronym);
                                 if (Application_Db_Table::checkSchema($schema) === false) {
                                     throw new Exception('Nie znaleziono instancji dla wybranego kalendarza serwisowego');
                                 }

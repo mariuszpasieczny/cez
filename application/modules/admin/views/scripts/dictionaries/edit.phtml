@@ -61,7 +61,7 @@
                             $('.chosen-container').width('100%');
                             break;
                     }
-                } else if (jQuery.inArray(selected, ['<?php echo $this->escape($this->calendar);?>']) != -1) {
+                } else if (jQuery.inArray(selected, ['<?php echo $this->escape($this->calendar);?>', '<?php echo $this->escape($this->territory);?>']) != -1) {
                     switch ($(value).attr('id')) {
                         case 'instanceid':
                             $('#' + $(value).attr('id') + '-element').show();

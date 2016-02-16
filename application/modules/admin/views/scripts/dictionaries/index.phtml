@@ -42,7 +42,7 @@
                     <th>Data do</th>
                 <?php elseif (@in_array($this->parent->id, array($this->solutionCode))):; ?>
                     <th>Nazwa błędu</th>
-                <?php elseif (@in_array($this->parent->id, array($this->calendar))):; ?>
+                <?php elseif (@in_array($this->parent->id, array($this->calendar, $this->territory))):; ?>
                     <th>Instancja</th>
                 <?php elseif (@in_array($this->parent->id, array($this->instance))):; ?>
                     <th>Region</th>
@@ -60,7 +60,7 @@
                     <th><?php echo $this->escape($dictionary->datetill); ?></th>
                 <?php elseif (@in_array($this->parent->id, array($this->solutionCode))):; ?>
                     <th><?php echo $this->escape($dictionary->errorcodename); ?></th>
-                <?php elseif (@in_array($this->parent->id, array($this->calendar))):; ?>
+                <?php elseif (@in_array($this->parent->id, array($this->calendar, $this->territory))):; ?>
                     <th><?php echo $this->escape($dictionary->instancename); ?></th>
                 <?php elseif (@in_array($this->parent->id, array($this->instance))):; ?>
                     <th><?php echo $this->escape($dictionary->regionacronym); ?></th>

@@ -80,6 +80,8 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
             $this->view->modeminterchangeCode = $code->id;
         if ($code = $this->_dictionaries->getDictionaryList('system')->find('calendar', 'acronym'))
             $this->view->calendar = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('system')->find('territory', 'acronym'))
+            $this->view->territory = $code->id;
         if ($code = $this->_dictionaries->getDictionaryList('system')->find('instance', 'acronym'))
             $this->view->instance = $code->id;
         $this->_dictionaries->setWhere("system != '1'");
@@ -189,6 +191,8 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
             $this->view->modeminterchangeCode = $code->id;
         if ($code = $this->_dictionaries->getDictionaryList('system')->find('calendar', 'acronym'))
             $this->view->calendar = $code->id;
+        if ($code = $this->_dictionaries->getDictionaryList('system')->find('territory', 'acronym'))
+            $this->view->territory = $code->id;
         if ($code = $this->_dictionaries->getDictionaryList('system')->find('instance', 'acronym')) {
             $this->view->instance = $code->id;
             $form->setOptions(array('instances' => $code->getChildren()));

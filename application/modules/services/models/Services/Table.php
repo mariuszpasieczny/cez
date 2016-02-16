@@ -108,7 +108,7 @@ class Application_Model_Services_Table extends Application_Db_Table {
         $fields[] = 'technician';
         $fields[] = 'status';
         $fields[] = 'instance';
-        $fields[] = 'servicetype';
+        $fields[] = 'type';
         $fields[] = 'calendar';
         $fields[] = 'region';
         $fields[] = 'servicetype';

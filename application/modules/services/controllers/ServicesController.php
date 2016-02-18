@@ -1176,10 +1176,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                     $service->areaid = $area->id;
                                 }
 
-                                $service->description = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('I') - 1, $i - 1)->getValue();
-                                $service->parameters = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('J') - 1, $i - 1)->getValue();
-                                $service->equipment = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('G') - 1, $i - 1)->getValue();
-                                $date = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('F') - 1, $i - 1)->getValue();
+                                $service->description = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('I') - 1, $i)->getValue();
+                                $service->parameters = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('J') - 1, $i)->getValue();
+                                $service->equipment = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('G') - 1, $i)->getValue();
+                                $date = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('F') - 1, $i)->getValue();
                                 if (!strtotime($date)) {
                                     $date = date('Y-m-d', PHPExcel_Shared_Date::ExcelToPHP($date));
                                 }
@@ -1241,7 +1241,6 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $columnNo++;
                         }
                         $lines[] = $line;
-                        $i++;
                     }//return;
                     //$this->view->success = 'Zaimportowano ' . $rows->key() . ' pozycji';
 

@@ -983,11 +983,13 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         case $types->find('installation', 'acronym')->id:
                             $rowNumber = 2;
                             $this->_services->setRowClass('Application_Model_Services_XLS_Installation');
+                            $columnNumber = Application_Model_Services_XLS_Installation::COLUMN_NUMBER;
                             break;
                         // zlecenie serwisowe
                         case $types->find('service', 'acronym')->id:
                             $rowNumber = 3;
                             $this->_services->setRowClass('Application_Model_Services_XLS_Service');
+                            $columnNumber = Application_Model_Services_XLS_Service::COLUMN_NUMBER;
                             break;
                         default:
                             throw new Exception('Nieprawidłowy typ zlecenia');
@@ -1021,8 +1023,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         try {
                             $line = array();
                             $columnNo = 0;
-                            $column = Application_Model_Services_XLS_Service::COLUMN_NUMBER;
-                            if (!$sheet->getCell("$column$i")->getValue()) {
+                            
+                            if (!$sheet->getCell("$columnNumber$i")->getValue()) {
                                 continue;
                             }
                             Zend_Db_Table::getDefaultAdapter()->beginTransaction();
@@ -1031,7 +1033,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             // By default, only cells that are set will be iterated.
                             $cellIterator->setIterateOnlyExistingCells(true);
 
-                            if (in_array($this->_auth->getIdentity()->role, array('superadmin','supercoordinator'))) {
+                            if ($types->find('service', 'acronym')->id == $typeid && in_array($this->_auth->getIdentity()->role, array('superadmin','supercoordinator'))) {
                                 $column = Application_Model_Services_XLS_Service::COLUMN_REGION;
                                 $territory = $territories->find($sheet->getCell("$column$i")->getValue(), 'acronym');
                                 $schema = $this->_config->get('production')->get('regions')->get($territory->instanceacronym);

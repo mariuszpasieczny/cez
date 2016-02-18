@@ -956,6 +956,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
 
                 $upload = new Zend_File_Transfer_Adapter_Http();
                 $upload->setDestination(APPLICATION_PATH . "/../data/pliki/import/");
+                $logger = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('log');
 
                 try {
                     $userStatus = $this->_dictionaries->getStatusList('users')->find('active', 'acronym');
@@ -1139,18 +1140,20 @@ class Services_ServicesController extends Application_Controller_Abstract {
                                     $service->areaid = $area->id;
                                 }
 
-                                $service->description = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('I') - 1, $i - 1)->getValue();
-                                $service->parameters = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('J') - 1, $i - 1)->getValue();
-                                $service->equipment = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('G') - 1, $i - 1)->getValue();
-                                $date = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('F') - 1, $i - 1)->getValue();
+                                $service->description = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('I') - 1, $i)->getValue();
+                                $service->parameters = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('J') - 1, $i)->getValue();
+                                $service->equipment = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('G') - 1, $i)->getValue();
+                                $date = $additionalData->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('F') - 1, $i)->getValue();
                                 if (!strtotime($date)) {
                                     $date = date('Y-m-d', PHPExcel_Shared_Date::ExcelToPHP($date));
                                 }
                                 $service->modifieddate = date('Y-m-d', strtotime($date));
+                                //var_dump("$i: {$service->number}");
                                 //$service->technicalcommentsrequired = $additionalData1->getCellByColumnAndRow(PHPExcel_Cell::columnIndexFromString('P') - 1, $i-2)->getValue();
                                 foreach ($additionalData1->toArray() as $r) {
                                     if ($r[3] == $service->number) {
                                         $service->technicalcommentsrequired = 1;
+                                        //var_dump("$i: {$service->number}/{$service->technicalcommentsrequired}/{$service->description}");exit;
                                         break;
                                     }
                                 }
@@ -1177,9 +1180,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                         } catch (Exception $e) {
                             $error++;
                             Zend_Db_Table::getDefaultAdapter()->rollBack();
-                            //var_dump($e->getMessage(), $area->toArray(), $e->getTraceAsString());
+                            //var_dump($e->getMessage(), $e->getTraceAsString(), $service->toArray(), Zend_Db_Table::getDefaultAdapter());
                             //exit;
-                            //array_unshift($line, $e->getMessage());
+                            $logger->err($e->getMessage());
+                            $logger->debug($e->getTraceAsString());
                             $line[] = $e->getMessage();
                         }
                         if (!empty($values['report'])) {
@@ -1199,7 +1203,6 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $columnNo++;
                         }
                         $lines[] = $line;
-                        $i++;
                     }//return;
                     //$this->view->success = 'Zaimportowano ' . $rows->key() . ' pozycji';
 

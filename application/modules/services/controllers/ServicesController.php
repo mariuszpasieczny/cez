@@ -102,7 +102,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->view->codeTypes = array('error', 'solution', 'cancellation', 'modeminterchange', 'decoderinterchange');
                 if ($this->_auth->getIdentity()->role == 'technician') {
                     $status = $statuses->find('new', 'acronym');
-                    $this->_services->setWhere($this->_services->getAdapter()->quoteInto("(technician = ? OR status = {$status->name})", $this->_auth->getIdentity()->lastname . ' ' . $this->_auth->getIdentity()->firstname));
+                    $this->_services->setWhere($this->_services->getAdapter()->quoteInto("(technician = ? OR status = '{$status->name}')", $this->_auth->getIdentity()->lastname . ' ' . $this->_auth->getIdentity()->firstname));
                 }
                 $this->_services->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : array('planneddate', 'timefrom', new Zend_Db_Expr('clientstreet COLLATE utf8_polish_ci'), 'clientstreetno', 'clientapartment'));
                 break;

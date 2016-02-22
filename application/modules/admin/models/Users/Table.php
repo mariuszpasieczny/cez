@@ -24,7 +24,7 @@ class Application_Model_Users_Table extends Application_Db_Table
         if ($this->_lazyLoading === true) {
             return parent::select();
         }
-        return parent::select()->setIntegrityCheck(false)->from($this->_from ? $this->_from : array('users' => 'usersview'));
+        return parent::select()->setIntegrityCheck(false)->from($this->_from ? $this->_from : array('users' => ($this->_schema ? ($this->_schema . '.') : '') . 'usersview'));
     }
     
     public function getAll($params = array(), $rows = null, $root = null) {

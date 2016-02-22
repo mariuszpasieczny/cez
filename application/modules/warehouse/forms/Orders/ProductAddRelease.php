@@ -48,7 +48,7 @@ class Application_Form_Orders_ProductAddRelease extends Application_Form
             $element = $this->getElement('unitid-' . $i);
             $element->setValue($product->unitid);
             $element = $this->getElement('quantity-' . $i);
-            $element->setValue($product->quantity);
+            $element->setValue($product->qtyavailable);
         }
     }
     

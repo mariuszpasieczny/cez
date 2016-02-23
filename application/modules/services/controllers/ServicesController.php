@@ -87,7 +87,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 $this->view->filename = 'Zestawienie_instalacyjne-' . date('YmdHis') . '.xlsx';
                 $this->view->template = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/zlecenia instalacyjne.xls';
                 $this->view->rowNo = 2;
-                $columns = array('planneddate', 'timefrom', 'servicetype', 'calendar', 'number', 'clientid', 'city', /*'clientcity',*/ 'technician', 'documentspassed', 'closedupc', 'status', 'performed');
+                $columns = array('planneddate', 'timefrom', 'servicetype', 'calendar', 'number', 'clientid', 'client', /*'clientcity',*/ 'technician', 'documentspassed', 'closedupc', 'status', 'performed');
                 $this->view->codeTypes = array('installation', 'installationcancel');
                 if ($this->_auth->getIdentity()->role == 'technician') {
                     $this->_services->setWhere($this->_services->getAdapter()->quoteInto("(technician = ?)", $this->_auth->getIdentity()->lastname . ' ' . $this->_auth->getIdentity()->firstname));

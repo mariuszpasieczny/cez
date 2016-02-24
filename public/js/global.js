@@ -305,7 +305,7 @@ $(function() {
 })();
 
 function checkBasket() {
-    if (!$('.fa-shopping-cart').length) {
+    if (!$('.fa-shopping-cart').length || 1) {
         return;
     }
     $.get('/warehouse/orders/products-check/format/json', function(data) {

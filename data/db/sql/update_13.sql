@@ -34,3 +34,5 @@ alter table servicecodesview ADD INDEX `id` (`id`,`instance`);
 alter table servicecodesview ADD INDEX `serviceid` (`serviceid`);
 alter table servicecodesview ADD INDEX `attributeacronym` (`attributeacronym`);
 alter table servicecodesview ADD INDEX `codeacronym` (`codeacronym`);
+
+ALTER TABLE services ADD COLUMN instance varchar(64);

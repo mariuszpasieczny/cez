@@ -35,7 +35,7 @@ class Application_Form_Orders_ProductAddRelease extends Application_Form
         $element = $this->getElement('technicianid');
         $element->addMultiOption(null, 'Wybierz opcję...');
         foreach ($config as $parent) {
-            $element->addMultiOption($parent['id'], $parent['firstname'] . ' ' . $parent['lastname']);
+            $element->addMultiOption($parent['id'], $parent['firstname'] . ' ' . $parent['lastname'] . ' ( ' . $parent['symbol'] . ' )');
         }
     }
 

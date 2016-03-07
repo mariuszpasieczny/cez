@@ -250,8 +250,8 @@
                 <?php endif; ?>
             <!--<td><?php echo $i + 1; ?></td>-->
     <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>
-                    <td><?php echo $this->escape($service->getPlanneddate()); ?></td>
-                    <td><?php echo $this->escape($service->getPlannedtime()); ?></td>
+                    <td style="white-space:nowrap"><?php echo $this->escape($service->getPlanneddate()); ?></td>
+                    <td style="white-space:nowrap"><?php echo $this->escape($service->getPlannedtime()); ?></td>
                     <td><?php echo $this->escape($service->servicetype); ?></td>
                     <td><?php echo $this->escape($service->calendar); ?></td>
                     <!--<td><?php echo $this->escape($service->region); ?></td>-->

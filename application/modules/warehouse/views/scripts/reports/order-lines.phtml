@@ -20,7 +20,7 @@
                 <select class="form-control chosen-select" name="technicianid[]" multiple data-placeholder="Wybierz technika">
                     <option value="">Wybierz technika</option>
                     <?php foreach ($this->technicians as $technician): ?>
-                        <option value="<?php echo $technician->id; ?>" <?php if (!empty($this->request['technicianid']) && in_array($technician->id, (array) $this->request['technicianid'])): ?>selected<?php endif; ?>><?php echo $technician->lastname . ' ' . $technician->firstname; ?></option>
+                        <option value="<?php echo $technician->id; ?>" <?php if (!empty($this->request['technicianid']) && in_array($technician->id, (array) $this->request['technicianid'])): ?>selected<?php endif; ?>><?php echo $technician; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

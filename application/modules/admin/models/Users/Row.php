@@ -24,7 +24,7 @@ class Application_Model_Users_Row extends Application_Db_Table_Row
     }
     
     public function __toString() {
-        return $this->lastname . ' ' . $this->firstname;
+        return $this->lastname . ' ' . $this->firstname . ' ( ' . $this->symbol . ' )';
     }
     
 }

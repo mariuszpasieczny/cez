@@ -45,7 +45,7 @@ class Application_Form_Services_Assign extends Application_Form
         }
         $element->addMultiOption(null, 'Wybierz opcję...');
         foreach ($config as $parent) {
-            $element->addMultiOption($parent['id'], $parent['lastname'] . ' ' . $parent['firstname']);
+            $element->addMultiOption($parent['id'], $parent['lastname'] . ' ' . $parent['firstname'] . ' ( ' . $parent['symbol'] . ' )');
         }
     }
     

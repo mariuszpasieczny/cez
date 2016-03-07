@@ -8,7 +8,7 @@
 
 class Application_Db_Table extends Zend_Db_Table_Abstract {
 
-    const ITEMS_PER_PAGE = 50;
+    const ITEMS_PER_PAGE = 100;
     const ITEMS_ORDER_BY = 'id DESC';
     const CACHE_IN_CLASS = 'cacheInClass';
 

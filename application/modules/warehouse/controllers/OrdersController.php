@@ -157,6 +157,7 @@ class Warehouse_OrdersController extends Application_Controller_Abstract {
         $status = $this->_dictionaries->getStatusList('users')->find('active', 'acronym');
         $params['statusid'] = $status->id;
         $params['role'] = 'technician';
+        $this->_users->setOrderBy(array('lastname', 'firstname'));
         $technicians = $this->_users->getAll($params);
         $form->setOptions(array('units' => $units, 'technicians' => $technicians));
         $form->setProducts($product);

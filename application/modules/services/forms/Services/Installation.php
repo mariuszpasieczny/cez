@@ -527,53 +527,6 @@ class Application_Form_Services_Installation extends Application_Form {
                     'class' => 'form-control chosen-select ',
                 ))->setAttribs(array('placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
         $this->addElement($element);
-        
-        $element = new Application_Form_Element_SelectAttribs('productid-0', array(
-                    'label' => 'Sprzęt wydany:',
-                    //'required'   => true,
-                    //'filters'    => array('StringTrim'),
-                    //'validators' => array(
-                    //    array('lessThan', true, array('score')),
-                    //),
-                    'belongsTo' => 'productid',
-                    'class' => 'form-control chosen-select',
-                ));
-        $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
-        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
-        $this->addElement($element);
-        $element = $this->createElement('text', 'quantity-0', array(
-            'belongsTo' => 'quantity',
-            'class' => 'form-group input-sm',
-        ))->setAttribs(array('style' => 'width: 50px;'));
-        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
-        $element->addDecorator('Label', array('tag' => ''));
-        $this->addElement($element);
-        $this->addDisplayGroup(array('productid-0', 'quantity-0'), 'product-0')->setAttribs(array('id' => 'product-0'));
-        
-        for ($i = 1; $i <= $this->_productsCount; $i++) {
-            $element = new Application_Form_Element_SelectAttribs('productid-' . $i, array(
-                    //'label' => 'Produkty:',
-                    //'required'   => true,
-                    //'filters'    => array('StringTrim'),
-                    //'validators' => array(
-                    //    array('lessThan', true, array('score')),
-                    //),
-                    'belongsTo' => 'productid',
-                    'class' => 'form-control chosen-select',
-                ));
-            $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
-            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
-            $element->addDecorator('Label', array('tag' => ''));
-            $this->addElement($element);
-            $element = $this->createElement('text', 'quantity-' . $i, array(
-                'belongsTo' => 'quantity',
-                'class' => 'form-group input-sm',
-            ))->setAttribs(array('style' => 'width: 50px;'));
-            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
-            $element->addDecorator('Label', array('tag' => ''));
-            $this->addElement($element);
-            $this->addDisplayGroup(array('productid-' . $i, 'quantity-' . $i), 'product-' . $i)->setAttribs(array('id' => 'product-' . $i));
-        }
 
         /*$element = $this->createElement('select', 'productreturnedid', array(
                     'label' => 'Produkty odebrane:',
@@ -677,6 +630,53 @@ class Application_Form_Services_Installation extends Application_Form {
             $element->removeDecorator('Label');
             $this->addElement($element);
             $this->addDisplayGroup(array('catalogid-' . $i, 'productreturnedid-' . $i, 'demaged-' . $i, 'demagecodeid-' . $i), 'return-' . $i)->setAttribs(array('id' => 'return-' . $i));
+        }
+        
+        $element = new Application_Form_Element_SelectAttribs('productid-0', array(
+                    'label' => 'Sprzęt wydany:',
+                    //'required'   => true,
+                    //'filters'    => array('StringTrim'),
+                    //'validators' => array(
+                    //    array('lessThan', true, array('score')),
+                    //),
+                    'belongsTo' => 'productid',
+                    'class' => 'form-control chosen-select',
+                ));
+        $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
+        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+        $this->addElement($element);
+        $element = $this->createElement('text', 'quantity-0', array(
+            'belongsTo' => 'quantity',
+            'class' => 'form-group input-sm',
+        ))->setAttribs(array('style' => 'width: 50px;'));
+        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+        $element->addDecorator('Label', array('tag' => ''));
+        $this->addElement($element);
+        $this->addDisplayGroup(array('productid-0', 'quantity-0'), 'product-0')->setAttribs(array('id' => 'product-0'));
+        
+        for ($i = 1; $i <= $this->_productsCount; $i++) {
+            $element = new Application_Form_Element_SelectAttribs('productid-' . $i, array(
+                    //'label' => 'Produkty:',
+                    //'required'   => true,
+                    //'filters'    => array('StringTrim'),
+                    //'validators' => array(
+                    //    array('lessThan', true, array('score')),
+                    //),
+                    'belongsTo' => 'productid',
+                    'class' => 'form-control chosen-select',
+                ));
+            $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
+            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+            $element->addDecorator('Label', array('tag' => ''));
+            $this->addElement($element);
+            $element = $this->createElement('text', 'quantity-' . $i, array(
+                'belongsTo' => 'quantity',
+                'class' => 'form-group input-sm',
+            ))->setAttribs(array('style' => 'width: 50px;'));
+            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+            $element->addDecorator('Label', array('tag' => ''));
+            $this->addElement($element);
+            $this->addDisplayGroup(array('productid-' . $i, 'quantity-' . $i), 'product-' . $i)->setAttribs(array('id' => 'product-' . $i));
         }
 
         $element = $this->createElement('textarea', 'technicalcomments', array(

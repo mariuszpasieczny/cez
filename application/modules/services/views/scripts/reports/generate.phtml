@@ -10,6 +10,7 @@
 <?php if ($this->success): ?>
     <div class="alert alert-success"><?php echo $this->success; ?></div> 
     <button type="button" class="btn btn-success">Powrót</button>
+    <button type="button" class="btn btn-link" href="/services/reports/list/format/html">Zestawienia</button>
 <?php else: ?> 
 
     <?php if ($this->form->getDescription()): ?>

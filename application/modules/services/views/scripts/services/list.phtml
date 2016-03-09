@@ -54,7 +54,7 @@
                 <input type="text" class="form-control" name="client" placeholder="Adres" value="<?php if (!empty($this->request['client'])) echo $this->request['client']; ?>">
             </div>-->
             <div class="form-group">
-                <select style="width:150px;" class="form-control chosen-select" name="clientcity" data-placeholder="Wybierz miasto">
+                <select style="width:150px;" class="form-control chosen-select" name="clientcity[]" multiple data-placeholder="Wybierz miasto">
                     <option value="">Wybierz miasto</option>
                     <?php foreach ($this->cities as $client): ?>
                         <option value="<?php echo $client['city']; ?>" <?php if (!empty($this->request['clientcity']) && $client['city'] == $this->request['clientcity']): ?>selected<?php endif; ?>><?php echo $client['city']; ?></option>
@@ -62,7 +62,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <select style="width:150px;" class="form-control chosen-select" name="clientstreet" data-placeholder="Wybierz ulicę">
+                <select style="width:150px;" class="form-control chosen-select" name="clientstreet[]" multiple data-placeholder="Wybierz ulicę">
                     <option value="">Wybierz ulicę</option>
                     <?php foreach ($this->clients as $client): ?>
                         <option value="<?php echo $client['street']; ?>" <?php if (!empty($this->request['clientstreet']) && $client['street'] == $this->request['clientstreet']): ?>selected<?php endif; ?>><?php echo $client['street']; ?></option>
@@ -466,7 +466,8 @@
             //$(this).data("bs.popover").tip().css("max-width", width + 'px').css("width", width + 'px');
         });
         $('[name=clientid]').outerWidth(200);
-        $('.chosen-select').chosen({allow_single_deselect: true});
+        $('.chosen-select').not('[name^=client]').chosen({allow_single_deselect: true});
+        $('.chosen-select[name^=client]').chosen({max_selected_options: 1});
         $("select[name=clientstreet].chosen-select");
     });
 <?php if ($this->request['typeid'] == $this->types->find('installation', 'acronym')->id): ?>

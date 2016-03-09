@@ -43,7 +43,7 @@
             placeholder_text_multiple: 'dodaj',
             max_selected_options: 1
         }).change(function(e) {
-            
+
         });
         onInstallationCodeChange();
         function onInstallationCodeChange() {
@@ -75,7 +75,8 @@
                     }
                 }
             });
-        };
+        }
+        ;
         $('.chosen-select[multiple=multiple][name^=productreturnedid]').chosen({
             search_contains: true,
             allow_single_deselect: true,
@@ -83,7 +84,7 @@
             placeholder_text_multiple: 'dodaj',
             max_selected_options: 1
         }).change(function(e) {
-            
+
         });
         onProductReturnedChange();
         function onProductReturnedChange() {
@@ -94,6 +95,15 @@
                         return false;
                     }
                     $(e.currentTarget).parents('div.form-group').remove();
+                    selectedValues = $('.chosen-select[multiple=multiple][name^=productreturnedid]').map(function(i,n){return $(n).val();}).toArray();
+                    $('.chosen-select[multiple=multiple][name^=productreturnedid]').each(function(k,v) {
+                        $(v).find('option:disabled').each(function(i,n) {
+                            if (selectedValues.indexOf($(n).val()) == -1) {console.log(n);
+                                $(n).removeAttr('disabled');
+                                $(v).trigger("chosen:updated");
+                            }
+                        });
+                    });
                 } else {
                     div = $(e.currentTarget).parents('div.form-group').clone();
                     if (div.size()) {
@@ -138,20 +148,22 @@
                         });
                         onProductReturnedChange();
                     }
+                    var selectedValue = $(this).find('option:selected').text();
+                    $('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').parents('.form-group.inline').find('option:contains("' + selectedValue + '")').attr('disabled','disabled');
+                    $('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').trigger("chosen:updated");
                 }
             });
-        };
-        $('select[disabled=disabled]').each(function (i, e) {
+        }
+        ;
+        $('select[disabled=disabled]').each(function(i, e) {
             $($(e).parents('dd')).append($('<input type="hidden" name="' + e.name + '" value="' + e.value + '">'));
         });
-	$('.chosen-select[multiple=multiple][name^=productid]').chosen({
+        $('.chosen-select[multiple=multiple][name^=productid]').chosen({
             search_contains: true,
             allow_single_deselect: true,
             multiple: false,
             placeholder_text_multiple: 'dodaj',
             max_selected_options: 1
-        }).change(function(e) {
-            
         });
         onProductChange();
         function onProductChange() {
@@ -162,6 +174,15 @@
                         return false;
                     }
                     $(e.currentTarget).parents('div.form-group').remove();
+                    selectedValues = $('.chosen-select[multiple=multiple][name^=productid]').map(function(i,n){return $(n).val();}).toArray();
+                    $('.chosen-select[multiple=multiple][name^=productid]').each(function(k,v) {
+                        $(v).find('option:disabled').each(function(i,n) {
+                            if (selectedValues.indexOf($(n).val()) == -1) {console.log(n);
+                                $(n).removeAttr('disabled');
+                                $(v).trigger("chosen:updated");
+                            }
+                        });
+                    });
                 } else {
                     div = $(e.currentTarget).parents('div.form-group').clone();
                     if (div.size()) {
@@ -186,9 +207,13 @@
                         });
                         onProductChange();
                     }
+                    var selectedValue = $(this).find('option:selected').text();
+                    $('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').parents('.form-group.inline').find('option:contains("' + selectedValue + '")').attr('disabled','disabled');
+                    $('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').trigger("chosen:updated");
                 }
             });
-        };
+        }
+        ;
         $("#planneddate").datepicker({
             dateFormat: "yy-mm-dd"
         });
@@ -342,7 +367,8 @@
                         $('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
                     }
                 }
-            };
+            }
+            ;
             function onDecoderCodeChange() {
                 if ($("#decoderinterchangecodeid-element").is(':visible') && $("#decoderinterchangecodeid").val()) {
                     if ($("#decoderinterchangecodeid").val()) {
@@ -351,18 +377,19 @@
                         $('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
                     }
                 }
-            };
+            }
+            ;
             $("#solutioncodeid,#performed,#decoderinterchangecodeid,#modeminterchangecodeid").on("change", function(e) {
                 $('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
                 onModemCodeChange();
                 onDecoderCodeChange();
             });
             /*setTimeout(function() {
-                $('[name^=demagecodeid]').each(function(index, element) {
-                    $(element).val($(element).find('option[selected=selected]').attr('value'));
-                    $(element).trigger("chosen:updated");
-                });
-            }, 100);*/
+             $('[name^=demagecodeid]').each(function(index, element) {
+             $(element).val($(element).find('option[selected=selected]').attr('value'));
+             $(element).trigger("chosen:updated");
+             });
+             }, 100);*/
             //$('[name^=demagecodeid]').first().val(0).trigger("chosen:updated");
             //onModemCodeChange();
             //onDecoderCodeChange();
@@ -391,8 +418,8 @@
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                         } else {
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('dd').prev().hide();
                         }
                         break;
                     case 'installationcodeid':
@@ -403,8 +430,8 @@
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                         } else {
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('dd').prev().hide();
                         }
                         break;
                     case 'productid':
@@ -416,7 +443,7 @@
                             $('#return-label').show();
                             $('#product-label').show();
                         } else {
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('div.form-group').hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('div.form-group').hide();
                             //$('[name^=' + value + ']').attr('disabled','disabled').parents('div.form-group').prev().hide();
                             $('#return-label').hide();
                             $('#product-label').hide();
@@ -428,8 +455,8 @@
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                         } else {
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('dd').prev().hide();
                         }
                         break;
                     case 'datefinished':
@@ -437,14 +464,14 @@
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').prev().show();
                         } else {
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').prev().hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('dd').prev().hide();
                         }
                     case 'catalogid':
                         if (performed !== '') {
                             $('[name^=' + value + ']').removeAttr('disabled').parents('dd').show();
                         } else {
-                            $('[name^=' + value + ']').attr('disabled','disabled').parents('dd').hide();
+                            $('[name^=' + value + ']').attr('disabled', 'disabled').parents('dd').hide();
                         }
                 }
             });

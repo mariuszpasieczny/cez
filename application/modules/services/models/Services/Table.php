@@ -133,6 +133,14 @@ class Application_Model_Services_Table extends Application_Db_Table {
         if (!empty($params['clientaddress'])) {
             $this->setWhere($this->getAdapter()->quoteInto("UPPER(client) LIKE UPPER(?)", "{$params['clientaddress']}%"));
         }
+        if (!empty($params['technician'])) {
+            $where = array();
+            foreach ($params['technician'] as $technician) {
+                $where[] = $this->getAdapter()->quoteInto("UPPER(?) LIKE UPPER(CONCAT(technician,'%'))", "$technician");
+            }
+            $this->setWhere(join(' OR ', $where));
+            unset($params['technician']);
+        }
         return parent::getAll($params, $rows, $root);
     }
     

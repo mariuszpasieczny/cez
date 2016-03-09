@@ -172,6 +172,15 @@ $(function() {
         $('.navbar-form').trigger('submit');
     });
 
+    $(document).on('click', '.btn-link', function(event) {
+        var url = $(this).attr('href');
+        var target = $(this).attr('data-target') || '#content';
+        ajaxLoad(url, target);
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    });
+
     $(document).on('keyup', 'input:not([autocomplete=off])', function(event) {
         //console.log(event.target);
         if (event.which == 13) {

@@ -80,9 +80,22 @@ class Warehouse_ReportsController extends Application_Controller_Abstract {
         $this->_products->setLazyLoading(false);
         $statusDeleted = $this->_dictionaries->getStatusList('products', 'deleted')->current();
         $statusReturned = $this->_dictionaries->getStatusList('orders', 'returned')->find('returned','acronym');
-        $this->view->products = $this->_products->select()
-                ->where($this->_products->getAdapter()->quoteInto("statusid != ?", $statusDeleted->id))
-                ->group(array('name','unitacronym'))->query()->fetchAll();
+        $select = $this->_products->select()
+                ->where($this->_products->getAdapter()->quoteInto("statusid != ?", $statusDeleted->id));
+        $group = array('name','unitacronym');
+        if ($params['serial']) {
+            $where[] = $this->_products->getAdapter()->quoteInto('serial = ?', $params['serial']);
+            $group[] = 'serial';
+        }
+        if ($params['name']) {
+            $where[] = $this->_products->getAdapter()->quoteInto('name = ?', $params['name']);
+            $group[] = 'name';
+        }
+        //if ($where)
+        //    $select->where(join(' AND ', $where));
+        $select->group($group);
+        $products = $select->query()->fetchAll();
+        $this->view->products = $products;
         $this->view->request = $request->getParams();
         $this->view->filepath = '/../data/temp/';
         $this->view->filename = 'Raport_wydan-' . date('YmdHis') . '.xls';
@@ -100,6 +113,8 @@ class Warehouse_ReportsController extends Application_Controller_Abstract {
         $model->setItemCountPerPage(null);
         $model->setOrderBy($this->_hasParam('orderBy') ? $this->_getParam('orderBy') : 'technicianid');
         $model->setWhere($this->_products->getAdapter()->quoteInto("statusid != ?", $statusReturned->id));
+        //if ($where)
+        //    $model->setWhere(join(' AND ', $where));
 
         $reports = array();
         foreach ($model->getAll($request->getParams()) as $stats) {

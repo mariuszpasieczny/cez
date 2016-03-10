@@ -57,7 +57,7 @@
                 <select style="width:150px;" class="form-control chosen-select" name="clientcity[]" multiple data-placeholder="Wybierz miasto">
                     <option value="">Wybierz miasto</option>
                     <?php foreach ($this->cities as $client): ?>
-                        <option value="<?php echo $client['city']; ?>" <?php if (!empty($this->request['clientcity']) && $client['city'] == $this->request['clientcity']): ?>selected<?php endif; ?>><?php echo $client['city']; ?></option>
+                        <option value="<?php echo $client['city']; ?>" <?php if (!empty($this->request['clientcity']) && in_array($client['city'], $this->request['clientcity'])): ?>selected<?php endif; ?>><?php echo $client['city']; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -65,7 +65,7 @@
                 <select style="width:150px;" class="form-control chosen-select" name="clientstreet[]" multiple data-placeholder="Wybierz ulicę">
                     <option value="">Wybierz ulicę</option>
                     <?php foreach ($this->clients as $client): ?>
-                        <option value="<?php echo $client['street']; ?>" <?php if (!empty($this->request['clientstreet']) && $client['street'] == $this->request['clientstreet']): ?>selected<?php endif; ?>><?php echo $client['street']; ?></option>
+                        <option value="<?php echo $client['street']; ?>" <?php if (!empty($this->request['clientstreet']) && in_array($client['street'], $this->request['clientstreet'])): ?>selected<?php endif; ?>><?php echo $client['street']; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

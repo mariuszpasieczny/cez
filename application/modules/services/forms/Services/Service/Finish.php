@@ -329,6 +329,9 @@ class Application_Form_Services_Service_Finish extends Application_Form {
                     'class' => 'form-control chosen-select',
                 ))->setAttribs(array(/*'multiple' => 'multiple', */'placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
         $this->addElement($element);
+        
+        $element = $this->createElement('hidden','hidden');
+        $this->addElement($element);
 
         /*$element = $this->createElement('select', 'productreturnedid', array(
                     'label' => 'Produkty odebrane:',

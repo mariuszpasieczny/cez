@@ -114,7 +114,8 @@ class Services_ReportsController extends Application_Controller_Abstract {
 
         $this->view->form = $form;
         $this->view->types = $types;
-        $this->view->serviceCode = $this->_config->get(APPLICATION_ENV)->reports->servicecode->toArray();
+        $serviceode = $this->_config->get(APPLICATION_ENV)->reports->servicecode;//var_dump($serviceode);exit;
+        $this->view->serviceCode = $serviceode instanceof Zend_Config ? $serviceode->toArray() : $serviceode;
 
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($request->getPost())) {

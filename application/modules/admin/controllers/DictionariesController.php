@@ -78,12 +78,16 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
             $this->view->installationCode = $code->id;
         if ($code = $this->_dictionaries->getDictionaryList('service')->find('modeminterchangecode', 'acronym'))
             $this->view->modeminterchangeCode = $code->id;
-        if ($code = $this->_dictionaries->getDictionaryList('system')->find('calendar', 'acronym'))
-            $this->view->calendar = $code->id;
-        if ($code = $this->_dictionaries->getDictionaryList('system')->find('territory', 'acronym'))
-            $this->view->territory = $code->id;
-        if ($code = $this->_dictionaries->getDictionaryList('system')->find('instance', 'acronym'))
-            $this->view->instance = $code->id;
+        try {
+            if ($code = $this->_dictionaries->getDictionaryList('system')->find('calendar', 'acronym'))
+                $this->view->calendar = $code->id;
+            if ($code = $this->_dictionaries->getDictionaryList('system')->find('territory', 'acronym'))
+                $this->view->territory = $code->id;
+            if ($code = $this->_dictionaries->getDictionaryList('system')->find('instance', 'acronym'))
+                $this->view->instance = $code->id;
+        } catch (Exception $ex) {
+
+        }
         $this->_dictionaries->setWhere("system != '1'");
         if (!in_array($this->_auth->getIdentity()->role, array('admin','superadmin'))) {
             $parents = $this->_dictionaries->getDictionaryList()->find('service', 'acronym')->getChildren();
@@ -189,17 +193,21 @@ class Admin_DictionariesController extends Application_Controller_Abstract {
             $this->view->installationCode = $code->id;
         if ($code = $this->_dictionaries->getDictionaryList('service')->find('modeminterchangecode', 'acronym'))
             $this->view->modeminterchangeCode = $code->id;
-        if ($code = $this->_dictionaries->getDictionaryList('system')->find('calendar', 'acronym'))
-            $this->view->calendar = $code->id;
-        if ($code = $this->_dictionaries->getDictionaryList('system')->find('territory', 'acronym'))
-            $this->view->territory = $code->id;
-        if ($code = $this->_dictionaries->getDictionaryList('system')->find('instance', 'acronym')) {
-            $this->view->instance = $code->id;
-            $form->setOptions(array('instances' => $code->getChildren()));
-        }
-        if ($code = $this->_dictionaries->getDictionaryList('system')->find('region', 'acronym')) {
-            $this->view->region = $code->id;
-            $form->setOptions(array('regions' => $code->getChildren()));
+        try {
+            if ($code = $this->_dictionaries->getDictionaryList('system')->find('calendar', 'acronym'))
+                $this->view->calendar = $code->id;
+            if ($code = $this->_dictionaries->getDictionaryList('system')->find('territory', 'acronym'))
+                $this->view->territory = $code->id;
+            if ($code = $this->_dictionaries->getDictionaryList('system')->find('instance', 'acronym')) {
+                $this->view->instance = $code->id;
+                $form->setOptions(array('instances' => $code->getChildren()));
+            }
+            if ($code = $this->_dictionaries->getDictionaryList('system')->find('region', 'acronym')) {
+                $this->view->region = $code->id;
+                $form->setOptions(array('regions' => $code->getChildren()));
+            }
+        } catch (Exception $ex) {
+
         }
         $this->view->parent = $parent;//var_dump($parents);exit;
         $form->setOptions(array('parents' => $parents));

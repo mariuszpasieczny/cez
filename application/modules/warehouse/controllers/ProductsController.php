@@ -27,6 +27,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                 ->addActionContext('edit', 'html')
                 ->addActionContext('delete', 'html')
                 ->addActionContext('accept', 'html')
+                ->addActionContext('move', 'html')
                 ->addActionContext('import', 'html')
                 ->setSuffix('html', '')
                 ->initContext();
@@ -433,7 +434,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
             if ($form->isValid($request->getPost())) {
                 $values = $form->getValues();
                 if (!$product) {
-                    $form->setDescription('Nie zaznaczono produktów do usunięcia');
+                    $form->setDescription('Nie zaznaczono produktów do zaakceptowania');
                     return;
                 }
                 Zend_Db_Table::getDefaultAdapter()->beginTransaction();
@@ -447,6 +448,41 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
                 }
                 Zend_Db_Table::getDefaultAdapter()->commit();
                 $this->view->success = 'Produkt zaakceptowany';
+            }
+        }
+    }
+
+    public function moveAction() {
+        $request = $this->getRequest();
+        $id = (array) $request->getParam('id');
+        $typeid = $request->getParam('typeid');
+        //$id = array_unique((array)$id);
+        $product = $this->_products->get($id);
+        if (!$product) {
+            throw new Exception('Nie znaleziono produktu');
+        }
+        $form = new  Application_Form_Products_Move(array('productsCount' => $product->count()));
+        $form->setProducts($product);
+        $warehouses = $this->_warehouses->getAll();
+        $form->setOptions(array('warehouses' => $warehouses));
+        $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
+        $this->view->form = $form;
+        $this->view->product = $product;
+
+        if ($this->getRequest()->isPost()) {
+            if ($form->isValid($request->getPost())) {
+                $values = $form->getValues();
+                if (!$product) {
+                    $form->setDescription('Nie zaznaczono produktów do przeniesienia');
+                    return;
+                }
+                Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                foreach ($product as $i => $item) {
+                    $item->warehouseid = $values['warehouseid'];
+                    $item->save();
+                }
+                Zend_Db_Table::getDefaultAdapter()->commit();
+                $this->view->success = 'Produkt przeniesiony';
             }
         }
     }

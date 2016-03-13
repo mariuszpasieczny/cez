@@ -76,9 +76,8 @@
             allow_single_deselect: true,
             multiple: false,
             placeholder_text_multiple: 'dodaj',
-            max_selected_options: 1
-        }).change(function(e) {
-            
+            max_selected_options: 1,
+            display_disabled_options: false
         });
         onProductReturnedChange();
         function onProductReturnedChange() {
@@ -89,7 +88,7 @@
                         return false;
                     }
                     $(e.currentTarget).parents('div.form-group').remove();
-                    selectedValues = $('.chosen-select[multiple=multiple][name^=productreturnedid]').map(function(i,n){return $(n).val();}).toArray();
+                    /*selectedValues = $('.chosen-select[multiple=multiple][name^=productreturnedid]').map(function(i,n){return $(n).val();}).toArray();
                     $('.chosen-select[multiple=multiple][name^=productreturnedid]').each(function(k,v) {
                         $(v).find('option:disabled').each(function(i,n) {
                             if (selectedValues.indexOf($(n).val()) == -1) {console.log(n);
@@ -97,7 +96,7 @@
                                 $(v).trigger("chosen:updated");
                             }
                         });
-                    });
+                    });*/
                 } else {
                     div = $(e.currentTarget).parents('div.form-group').clone();
                     if (div.size()) {
@@ -124,7 +123,8 @@
                             allow_single_deselect: true,
                             multiple: false,
                             placeholder_text_multiple: 'dodaj',
-                            max_selected_options: 1
+                            max_selected_options: 1,
+                            display_disabled_options: false
                         });
                         $('.chosen-select[name^="demagecodeid[demagecodeid-' + length + ']"]').chosen({
                             search_contains: true,
@@ -142,11 +142,26 @@
                         });
                         onProductReturnedChange();
                     }
-                    var selectedValue = $(this).find('option:selected').text();
-                    $('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').parents('.form-group.inline').find('option:contains("' + selectedValue + '")').attr('disabled','disabled');
-                    $('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').trigger("chosen:updated");
+                    //var selectedValue = $(this).find('option:selected').text();
+                    //$('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').parents('.form-group.inline').find('option:contains("' + selectedValue + '")').attr('disabled','disabled');
+                    //$('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').trigger("chosen:updated");
                 }
             });
+            setTimeout(function () {
+                $('.chosen-select[multiple=multiple][name^=productreturnedid]').next('.chosen-container').on('mousedown keydown', function(event) {
+                    products = $('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').map(function(i, n) {
+                        return $(n).find('option:selected').val();
+                    }).toArray();
+                    select = $(this).parents('div.form-group').find('select[name^=productreturnedid]');
+                    select.find('option').each(function(i, n) {
+                        if (products.indexOf($(n).val()) === -1)
+                            $(n).removeAttr('disabled');
+                        else 
+                            $(n).attr('disabled', 'disabled');
+                    });
+                    $(select).trigger("chosen:updated");
+                });
+            }, 1000);
         };
         $('select[disabled=disabled]').each(function (i, e) {
             $($(e).parents('dd')).append($('<input type="hidden" name="' + e.name + '" value="' + e.value + '">'));
@@ -156,9 +171,8 @@
             allow_single_deselect: true,
             multiple: false,
             placeholder_text_multiple: 'dodaj',
-            max_selected_options: 1
-        }).change(function(e) {
-            
+            max_selected_options: 1,
+            display_disabled_options: false
         });
         onProductChange();
         function onProductChange() {
@@ -169,15 +183,15 @@
                         return false;
                     }
                     $(e.currentTarget).parents('div.form-group').remove();
-                    selectedValues = $('.chosen-select[multiple=multiple][name^=productid]').map(function(i,n){return $(n).val();}).toArray();
+                    /*selectedValues = $('.chosen-select[multiple=multiple][name^=productid]').map(function(i,n){return $(n).val();}).toArray();
                     $('.chosen-select[multiple=multiple][name^=productid]').each(function(k,v) {
                         $(v).find('option:disabled').each(function(i,n) {
-                            if (selectedValues.indexOf($(n).val()) == -1) {console.log(n);
+                            if (selectedValues.indexOf($(n).val()) == -1) {
                                 $(n).removeAttr('disabled');
                                 $(v).trigger("chosen:updated");
                             }
                         });
-                    });
+                    });*/
                 } else {
                     div = $(e.currentTarget).parents('div.form-group').clone();
                     if (div.size()) {
@@ -186,27 +200,64 @@
                         div.find('.chosen-container').remove();
                         div.find('select').show();
                         div.find('select').val([]);
+                        div.find('select[name^=productwarehouseid]').attr('name', 'productwarehouseid[productwarehouseid-' + length + '][]');
+                        div.find('select[name^=productwarehouseid]').attr('id', 'productwarehouseid-productwarehouseid-' + length + '');
                         div.find('select[name^=productid]').attr('name', 'productid[productid-' + length + '][]');
                         div.find('select[name^=productid]').attr('id', 'productid-productid-' + length + '');
                         div.find('input').attr('name', 'quantity[quantity-' + length + ']');
                         div.find('input').attr('id', 'quantity-quantity-' + length + '');
+                        div.find('input').val('');
+                        div.find('input').removeAttr('disabled');
                         div.attr('id', 'demaged-' + length + '-label');
                         div.find('label').attr('for', 'quantity-quantity-' + length + '');
                         $(div).insertAfter($(e.currentTarget).parents('div.form-group'));
+                        $('.chosen-select[name^="productwarehouseid[productwarehouseid-' + length + ']"]').chosen({
+                            search_contains: true,
+                            allow_single_deselect: true,
+                            multiple: false,
+                            placeholder_text_multiple: 'Magazyn',
+                            max_selected_options: 1
+                        });
                         $('.chosen-select[name^="productid[productid-' + length + ']"]').chosen({
                             search_contains: true,
                             allow_single_deselect: true,
                             multiple: false,
                             placeholder_text_multiple: 'dodaj',
-                            max_selected_options: 1
+                            max_selected_options: 1,
+                            display_disabled_options: false
                         });
                         onProductChange();
                     }
-                    var selectedValue = $(this).find('option:selected').text();
-                    $('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').parents('.form-group.inline').find('option:contains("' + selectedValue + '")').attr('disabled','disabled');
-                    $('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').trigger("chosen:updated");
+                    //var selectedValue = $(this).find('option:selected').text();
+                    //$('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').parents('.form-group.inline').find('option:contains("' + selectedValue + '")').attr('disabled','disabled');
+                    //$('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').trigger("chosen:updated");
                 }
             });
+            setTimeout(function () {
+                $('.chosen-select[multiple=multiple][name^=productid]').next('.chosen-container').on('mousedown keydown', function(event) {
+                    warehouseid = $(this).parents('div.form-group').find('[name^=productwarehouseid]').val();
+                    products = $('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').map(function(i, n) {
+                        return $(n).find('option:selected').val();
+                    }).toArray();
+                    select = $(this).parents('div.form-group').find('select[name^=productid]');
+                    select.find('option').each(function(i, n) {
+                        if ($(n).attr('data-warehouseid') == warehouseid && products.indexOf($(n).val()) === -1)
+                            $(n).removeAttr('disabled');
+                        else 
+                            $(n).attr('disabled', 'disabled');
+                    });
+                    $(select).trigger("chosen:updated");
+                });
+                $('.chosen-select[name^=productwarehouseid]').on('change', function(event) {
+                    if ($(this).find('option:selected').attr('data-type') == 'EQP') {
+                        $(this).parents('div.form-group').find('[name^=quantity]').val('1');
+                        $(this).parents('div.form-group').find('[name^=quantity]').attr('disabled', 'disabled');
+                    } else {
+                        $(this).parents('div.form-group').find('[name^=quantity]').removeAttr('disabled');
+                        $(this).parents('div.form-group').find('[name^=quantity]').val('');
+                    }
+                });
+            }, 1000);
         };
     <?php if ($this->request['typeid'] == $this->types->find('service', 'acronym')->id): ?>
             $("#datefinished").timepicker({

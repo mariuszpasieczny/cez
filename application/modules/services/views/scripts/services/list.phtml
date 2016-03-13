@@ -439,6 +439,8 @@
 <script>
     params = <?php echo Zend_Json::encode($this->request); ?>;
     $("#planneddatefrom").datetimepicker({
+        lang: 'pl',
+        format:	'Y/m/d H:i',
         dateFormat: "yy-mm-dd",
         timeFormat: 'HH:mm',
         hourGrid: 4,
@@ -446,11 +448,14 @@
         //stepMinute: 15
     });
     $("#planneddatetill").datetimepicker({
+        lang: 'pl',
+        format:	'Y/m/d H:i',
         dateFormat: "yy-mm-dd",
         timeFormat: 'HH:mm',
         hourGrid: 4,
         minuteGrid: 10,
-        //stepMinute: 15
+        //stepMinute: 15,
+        defaultTime: '23:59'
     });
     $(document).ready(function() {
         $('[data-toggle="tooltip"]').tooltip({

@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-class Application_Form_Products_Accept extends Application_Form
+class Application_Form_Products_Move extends Application_Form
 {
     
     protected $_productsCount = 1;
@@ -23,6 +23,15 @@ class Application_Form_Products_Accept extends Application_Form
             $element->setLabel($product->name . ' (' . $product->serial . ')');
             //$element->setChecked(true);
             //$element->setAttrib('disabled', 'disabled');
+        }
+    }
+
+    public function setWarehouses($config) {
+        //$config = $config->toArray();
+        $element = $this->getElement('warehouseid');
+        $element->addMultiOption(null, 'Wybierz opcję...');
+        foreach ($config as $parent) {
+            $element->addMultiOption($parent->id, $parent->name . ' (' . $parent->getType() . ')');
         }
     }
     
@@ -43,6 +52,18 @@ class Application_Form_Products_Accept extends Application_Form
 
             //$this->addDisplayGroup(array('id-' . $i), 'product-' . $i);
         }
+        
+        $element = $this->createElement('select', 'warehouseid', array(
+            'label' => 'Magazyn:',
+            'required' => true,
+            'filters' => array('StringTrim'),
+            'validators' => array(
+                array('lessThan', true, array('score')),
+            ),
+            'class' => 'form-control chosen-select'
+        ));
+        $element->addDecorator('Label', array('tag' => 'label', 'placement' => 'prepend', 'style' => 'margin-top: 25px;'));
+        $this->addElement($element);
     }
     
 }

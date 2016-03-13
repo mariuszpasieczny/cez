@@ -325,7 +325,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
             'statuses' => $statuses->toArray(),
             'servicetypes' => $servicetypes->toArray(),
             'technicians' => $technicians->toArray(),
-            'catalog' => $catalog->toArray());
+            'catalog' => $catalog->toArray(),
+            'productwarehouses' => $warehouses);
         switch ($typeid) {
             // zlecenie instalacyjne
             case $types->find('installation', 'acronym')->id:
@@ -435,6 +436,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 foreach ($defaults['catalogid'] as $i => $item) {
                     $defaults['catalogid-' . $i] = $item;
                 }
+            if (!empty($defaults['productwarehouseid']))
+                foreach ($defaults['productwarehouseid'] as $i => $item) {
+                    $defaults['productwarehouseid-' . $i] = $item;
+                }
         } else {
             $defaults = array('warehouseid' => $warehouseid,
                 'clientid' => $clientid,
@@ -506,6 +511,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
             if (!empty($data['catalogid']))
                 foreach ($data['catalogid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+            if (!empty($data['productwarehouseid']))
+                foreach ($data['productwarehouseid'] as $key => $value) {
                     $data[$key] = $value;
                 }
             $form->setDefaults($data);
@@ -730,10 +739,6 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $params['productname'] = $orderLineId;
                             $params['quantity'] = 1;
                             $form->getElement('productid-' . $ix)->addMultiOption($orderLineId, $orderLineId);
-                        }
-                        if ($serviceProduct->quantity < 0) {
-                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
-                            return;
                         }
                         $serviceProduct = $table->createRow($params);
                         //var_dump($serviceProduct->toArray());//exit;
@@ -1396,6 +1401,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if ($request->getParam('performed') !== null) {
             //$defaults['performed'] = $request->getParam('performed');
         }
+        $warehouses = $this->_warehouses->getAll();
+        $options['productwarehouses'] = $warehouses;
         $productsReturned = explode(',', $service->productsreturned);
         $productsReturned = array_combine($productsReturned, $productsReturned);
         $defaults['productreturnedid'] = $productsReturned;
@@ -1460,6 +1467,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if (!empty($defaults['catalogid']))
             foreach ($defaults['catalogid'] as $i => $item) {
                 $defaults['catalogid-' . $i] = $item;
+            }
+        if (!empty($defaults['productwarehouseid']))
+            foreach ($defaults['productwarehouseid'] as $i => $item) {
+                $defaults['productwarehouseid-' . $i] = $item;
             }
         if ($types->find('installation', 'acronym')->id == $typeid /* && !in_array($this->_auth->getIdentity(), array('admin', 'coordinator')) */) {
             $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate)); //$service->timetill;
@@ -1526,6 +1537,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
             if (!empty($data['catalogid']))
                 foreach ($data['catalogid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+            if (!empty($data['productwarehouseid']))
+                foreach ($data['productwarehouseid'] as $key => $value) {
                     $data[$key] = $value;
                 }
             $form->setDefaults($data);
@@ -1722,10 +1737,6 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $params['productname'] = $orderLineId;
                             $params['quantity'] = 1;
                             $form->getElement('productid-' . $ix)->addMultiOption($orderLineId, $orderLineId);
-                        }
-                        if ($serviceProduct->quantity < 0) {
-                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
-                            return;
                         }
                         $serviceProduct = $table->createRow($params);
                         //var_dump($serviceProduct->toArray());//exit;
@@ -1928,6 +1939,8 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if ($request->getParam('performed') !== null) {
             //$defaults['performed'] = $request->getParam('performed');
         }
+        $warehouses = $this->_warehouses->getAll();
+        $options['productwarehouses'] = $warehouses;
         $productsReturned = explode(',', $service->productsreturned);
         $productsReturned = array_combine($productsReturned, $productsReturned);
         $defaults['productreturnedid'] = $productsReturned;
@@ -1993,6 +2006,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if (!empty($defaults['catalogid']))
             foreach ($defaults['catalogid'] as $i => $item) {
                 $defaults['catalogid-' . $i] = $item;
+            }
+        if (!empty($defaults['productwarehouseid']))
+            foreach ($defaults['productwarehouseid'] as $i => $item) {
+                $defaults['productwarehouseid-' . $i] = $item;
             }
         if ($types->find('installation', 'acronym')->id == $typeid /* && !in_array($this->_auth->getIdentity(), array('admin', 'coordinator')) */) {
             $service->datefinished = date('Y-m-d', strtotime($service->datefinished ? $service->datefinished : $service->planneddate)); //$service->timetill;
@@ -2064,6 +2081,10 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
             if (!empty($data['catalogid']))
                 foreach ($data['catalogid'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+            if (!empty($data['productwarehouseid']))
+                foreach ($data['productwarehouseid'] as $key => $value) {
                     $data[$key] = $value;
                 }
             $form->setDefaults($data);
@@ -2263,10 +2284,6 @@ class Services_ServicesController extends Application_Controller_Abstract {
                             $params['productname'] = $orderLineId;
                             $params['quantity'] = 1;
                             $form->getElement('productid-' . $ix)->addMultiOption($orderLineId, $orderLineId);
-                        }
-                        if ($serviceProduct->quantity < 0) {
-                            $form->getElement('quantity-' . $ix)->setErrors(array('quantity-' . $ix => 'Wystąpił problem z dodaniem produktu'));
-                            return;
                         }
                         $serviceProduct = $table->createRow($params);
                         //var_dump($serviceProduct->toArray());//exit;

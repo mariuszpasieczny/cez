@@ -41,7 +41,7 @@ class Application_Form_Services_Service_Close extends Application_Form {
                 $desc .= max(0, $product->qtyavailable) . ' ' . $product->unitacronym;
                 $element->addMultiOption($product->id, 
                         $desc ? $product->product . ' (' . $desc . ')' : $desc, 
-                        array('data-serial' => $product->serial));
+                        array('data-serial' => $product->serial, 'data-warehouseid' => $product->warehouseid));
             }
         }
         $element->addMultiOption(null, 'Wybierz opcję...');
@@ -54,7 +54,21 @@ class Application_Form_Services_Service_Close extends Application_Form {
             $desc .= max(0, $product->qtyavailable) . ' ' . $product->unitacronym;
             $element->addMultiOption($product->id, 
                     $desc ? $product->product . ' (' . $desc . ')' : $desc, 
-                    array('data-serial' => $product->serial));
+                    array('data-serial' => $product->serial, 'data-warehouseid' => $product->warehouseid));
+        }
+    }
+
+    public function setProductwarehouses($config) {
+        for ($i = 0; $i <= $this->_productsCount; $i++) {
+            $element = $this->getElement('productwarehouseid-' . $i);
+            if (!$element) {
+                return;
+            }
+            $element->addMultiOption(null, 'Magazyn');
+            foreach ($config as $parent) {
+                $element->addMultiOption($parent->id, $parent->name . ' (' . $parent->getType() . ')',
+                        array('data-type' => $parent->getType()->acronym));
+            }
         }
     }
 
@@ -158,10 +172,13 @@ class Application_Form_Services_Service_Close extends Application_Form {
                 $selectedIds[] = $value['name'];
             }
             preg_match("/\d+/", $name, $found);
-            $this->getElement('demaged-' . $found[0])->setValue($value['demaged']);
-            $this->getElement('demagecodeid-' . $found[0])->setValue($value['demagecodeid']);
-            $this->getElement('catalogid-' . $found[0])->setValue($value['catalogid']);
-            if ($value['statusacronym'] && $value['statusacronym'] != 'new') {
+            if (!empty($value['demaged']))
+                $this->getElement('demaged-' . $found[0])->setValue($value['demaged']);
+            if (!empty($value['demagecodeid']))
+                $this->getElement('demagecodeid-' . $found[0])->setValue($value['demagecodeid']);
+            if (!empty($value['catalogid']))
+                $this->getElement('catalogid-' . $found[0])->setValue($value['catalogid']);
+            if (!empty($value['statusacronym']) && $value['statusacronym'] != 'new') {
                 $this->getElement('demaged-' . $found[0])->setAttrib('disabled', 'disabled')->setAttrib('readonly', 'readonly');
                 $this->getElement('productreturnedid-' . $found[0])->setAttrib('disabled', 'disabled')->setAttrib('readonly', 'readonly');
                 $this->getElement('demagecodeid-' . $found[0])->setAttrib('disabled', 'disabled')->setAttrib('readonly', 'readonly');
@@ -185,14 +202,17 @@ class Application_Form_Services_Service_Close extends Application_Form {
                 $selectedIds[] = $value['productid'] < 0 ? $value['name'] : $value['productid'];
             }
             preg_match("/\d+/", $name, $found);
-            $this->getElement('quantity-' . $found[0])->setValue($value['quantity']);
+            if (!empty($value['quantity']))
+                $this->getElement('quantity-' . $found[0])->setValue($value['quantity']);
+            if (!empty($value['warehouseid']))
+                $this->getElement('productwarehouseid-' . $found[0])->setValue($value['warehouseid']);
             $value = array_unique($selectedIds);
         }
         switch ($name) {
             case 'productid':
                 $selectedIds = array();
                 if (!empty($value))
-                    foreach ($value as $row) {
+                    foreach ((array)$value as $row) {
                         $selectedIds[] = $row['productid'];
                         $attribs = $this->getElement($name)->getAttribs();
                         $options = $attribs['options'];
@@ -211,7 +231,7 @@ class Application_Form_Services_Service_Close extends Application_Form {
             case 'decoderinterchangecodeid':
                 $selectedIds = array();
                 if (!empty($value))
-                    foreach ($value as $row) {
+                    foreach ((array)$value as $row) {
                         $selectedIds[] = $row['codeid'];
                     }
                 $value = $selectedIds;
@@ -219,7 +239,7 @@ class Application_Form_Services_Service_Close extends Application_Form {
             case 'productreturnedid':
                 $selectedIds = array();
                 if (!empty($value))
-                    foreach ($value as $row) {
+                    foreach ((array)$value as $row) {
                         $selectedIds[] = trim($row);
                     }
                 $value = $selectedIds;
@@ -329,9 +349,6 @@ class Application_Form_Services_Service_Close extends Application_Form {
                     'class' => 'form-control chosen-select',
                 ))->setAttribs(array(/*'multiple' => 'multiple', */'placeholder' => 'Choose product'))->setRegisterInArrayValidator(false);
         $this->addElement($element);
-        
-        $element = $this->createElement('hidden','hidden');
-        $this->addElement($element);
 
         /*$element = $this->createElement('select', 'productreturnedid', array(
                     'label' => 'Produkty odebrane:',
@@ -437,8 +454,19 @@ class Application_Form_Services_Service_Close extends Application_Form {
             $this->addDisplayGroup(array('catalogid-' . $i, 'productreturnedid-' . $i, 'demaged-' . $i, 'demagecodeid-' . $i), 'return-' . $i)->setAttribs(array('id' => 'return-' . $i));
         }
         
+        $element = $this->createElement('hidden','product',array('label' => 'Sprzęt wydany:'));
+        $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
+        $this->addElement($element);
+        $element = new Application_Form_Element_SelectAttribs('productwarehouseid-0', array(
+                    'belongsTo' => 'productwarehouseid',
+                    'class' => 'form-control chosen-select',
+                ));
+        $element->setAttribs(array('style' => 'max-width: 25%;'))->setRegisterInArrayValidator(false);
+        $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+        $element->removeDecorator('Label');
+        $this->addElement($element);
         $element = new Application_Form_Element_SelectAttribs('productid-0', array(
-                    'label' => 'Sprzęt wydany:',
+                    //'label' => 'Sprzęt wydany:',
                     //'required'   => true,
                     //'filters'    => array('StringTrim'),
                     //'validators' => array(
@@ -447,18 +475,29 @@ class Application_Form_Services_Service_Close extends Application_Form {
                     'belongsTo' => 'productid',
                     'class' => 'form-control chosen-select',
                 ));
-        $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
+        $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 45%;'))->setRegisterInArrayValidator(false);
         $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+        $element->removeDecorator('Label');
         $this->addElement($element);
         $element = $this->createElement('text', 'quantity-0', array(
             'belongsTo' => 'quantity',
             'class' => 'form-group input-sm',
+            'label' => 'Ilość:',
         ))->setAttribs(array('style' => 'width: 50px;'));
         $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
-        $element->addDecorator('Label', array('tag' => ''));
+        $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
         $this->addElement($element);
+        $this->addDisplayGroup(array('productwarehouseid-0', 'productid-0', 'quantity-0'), 'product-0')->setAttribs(array('id' => 'product-0'));
         
         for ($i = 1; $i <= $this->_productsCount; $i++) {
+            $element = new Application_Form_Element_SelectAttribs('productwarehouseid-' . $i, array(
+                    'belongsTo' => 'productwarehouseid',
+                    'class' => 'form-control chosen-select',
+                ));
+            $element->setAttribs(array('style' => 'max-width: 25%;'))->setRegisterInArrayValidator(false);
+            $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
+            $element->removeDecorator('Label');
+            $this->addElement($element);
             $element = new Application_Form_Element_SelectAttribs('productid-' . $i, array(
                     //'label' => 'Produkty:',
                     //'required'   => true,
@@ -469,17 +508,19 @@ class Application_Form_Services_Service_Close extends Application_Form {
                     'belongsTo' => 'productid',
                     'class' => 'form-control chosen-select',
                 ));
-            $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 75%;'))->setRegisterInArrayValidator(false);
+            $element->setAttribs(array('multiple' => 'multiple', 'style' => 'max-width: 45%;'))->setRegisterInArrayValidator(false);
             $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
             $element->addDecorator('Label', array('tag' => ''));
             $this->addElement($element);
             $element = $this->createElement('text', 'quantity-' . $i, array(
                 'belongsTo' => 'quantity',
                 'class' => 'form-group input-sm',
+                'label' => 'Ilość:'
             ))->setAttribs(array('style' => 'width: 50px;'));
             $element->addDecorator('HtmlTag', array('tag' => 'dd', 'class' => 'form-group inline'));
-            $element->addDecorator('Label', array('tag' => ''));
+            $element->addDecorator('Label', array('tag' => 'span', 'placement' => 'prepend'));
             $this->addElement($element);
+            $this->addDisplayGroup(array('productwarehouseid-' . $i, 'productid-' . $i, 'quantity-' . $i), 'product-' . $i)->setAttribs(array('id' => 'product-' . $i));
         }
 
         $element = $this->createElement('textarea', 'technicalcomments', array(

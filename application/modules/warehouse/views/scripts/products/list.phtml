@@ -69,6 +69,11 @@
                 <th style="max-width: 75px !important;">Sprzęt sparowany</th>
                 <th style="max-width: 75px !important;">Status</th>
                 <th style="max-width: 55px !important;">
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'products', 'move')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/warehouse/products/move" data-target=".modal-body" class="popup-load multi" title="Przenieś na magazyn">
+                            <span class="glyphicon glyphicon-random" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
                     <?php if ($this->auth && $this->HasAccess($this->auth->role, 'orders', 'product-add')): ?>
                         <a href="<?php echo $this->baseUrl; ?>/warehouse/orders/product-add" data-target=".modal-body" class="popup-load multi" title="Dodaj do koszyka">
                             <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
@@ -115,6 +120,11 @@
                 <td><?php echo $product->pairedcard ? $this->escape($product->pairedcard) : '&nbsp;'; ?></td>
                 <td><?php echo $this->escape($product->status); ?></td>
                 <td>
+                    <?php if ($this->auth && $this->HasAccess($this->auth->role, 'products', 'move')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/warehouse/products/move/id/<?php echo $product->id; ?>" data-target=".modal-body" class="popup-load" title="Przenieś na magazyn">
+                            <span class="glyphicon glyphicon-random" aria-hidden="true"></span>
+                        </a>
+                    <?php endif; ?>
                     <?php if ($product->qtyreleased): ?>
                     <a href="<?php echo $this->baseUrl; ?>/warehouse/products/details/id/<?php echo $product->id; ?>" data-target=".modal-body" class="popup-load" title="Wydania">
                         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>

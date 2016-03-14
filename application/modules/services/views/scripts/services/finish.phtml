@@ -79,6 +79,12 @@
             max_selected_options: 1,
             display_disabled_options: false
         });
+        $('.chosen-select[name^=productreturnedid]').each(function(i, n) {
+            $(n).find('option').not(':selected').each(function(k, v) {
+                $(v).attr('disabled', 'disabled');
+            });
+            $(n).trigger('chosen:updated');
+        });
         onProductReturnedChange();
         function onProductReturnedChange() {
             //$(".chosen-select[name^=productreturnedid]").off();
@@ -88,15 +94,6 @@
                         return false;
                     }
                     $(e.currentTarget).parents('div.form-group').remove();
-                    /*selectedValues = $('.chosen-select[multiple=multiple][name^=productreturnedid]').map(function(i,n){return $(n).val();}).toArray();
-                    $('.chosen-select[multiple=multiple][name^=productreturnedid]').each(function(k,v) {
-                        $(v).find('option:disabled').each(function(i,n) {
-                            if (selectedValues.indexOf($(n).val()) == -1) {console.log(n);
-                                $(n).removeAttr('disabled');
-                                $(v).trigger("chosen:updated");
-                            }
-                        });
-                    });*/
                 } else {
                     div = $(e.currentTarget).parents('div.form-group').clone();
                     if (div.size()) {
@@ -142,19 +139,16 @@
                         });
                         onProductReturnedChange();
                     }
-                    //var selectedValue = $(this).find('option:selected').text();
-                    //$('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').parents('.form-group.inline').find('option:contains("' + selectedValue + '")').attr('disabled','disabled');
-                    //$('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').trigger("chosen:updated");
                 }
             });
             setTimeout(function () {
-                $('.chosen-select[multiple=multiple][name^=productreturnedid]').next('.chosen-container').on('mousedown keydown', function(event) {
+                $('.chosen-select[name^=catalogid]').on('change', function(event) {
                     products = $('.chosen-select[multiple=multiple][name^=productreturnedid]').not('[name="' + $(this).attr('name') + '"]').map(function(i, n) {
                         return $(n).find('option:selected').val();
                     }).toArray();
                     select = $(this).parents('div.form-group').find('select[name^=productreturnedid]');
                     select.find('option').each(function(i, n) {
-                        if (products.indexOf($(n).val()) === -1)
+                        if ($(this).val() && products.indexOf($(n).val()) === -1)
                             $(n).removeAttr('disabled');
                         else 
                             $(n).attr('disabled', 'disabled');
@@ -174,6 +168,12 @@
             max_selected_options: 1,
             display_disabled_options: false
         });
+        $('.chosen-select[name^=productid]').each(function(i, n) {
+            $(n).find('option').not(':selected').each(function(k, v) {
+                $(v).attr('disabled', 'disabled');
+            });
+            $(n).trigger('chosen:updated');
+        });
         onProductChange();
         function onProductChange() {
             //$(".chosen-select[name^=productid]").off();
@@ -183,15 +183,6 @@
                         return false;
                     }
                     $(e.currentTarget).parents('div.form-group').remove();
-                    /*selectedValues = $('.chosen-select[multiple=multiple][name^=productid]').map(function(i,n){return $(n).val();}).toArray();
-                    $('.chosen-select[multiple=multiple][name^=productid]').each(function(k,v) {
-                        $(v).find('option:disabled').each(function(i,n) {
-                            if (selectedValues.indexOf($(n).val()) == -1) {
-                                $(n).removeAttr('disabled');
-                                $(v).trigger("chosen:updated");
-                            }
-                        });
-                    });*/
                 } else {
                     div = $(e.currentTarget).parents('div.form-group').clone();
                     if (div.size()) {
@@ -228,26 +219,9 @@
                         });
                         onProductChange();
                     }
-                    //var selectedValue = $(this).find('option:selected').text();
-                    //$('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').parents('.form-group.inline').find('option:contains("' + selectedValue + '")').attr('disabled','disabled');
-                    //$('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').trigger("chosen:updated");
                 }
             });
             setTimeout(function () {
-                $('.chosen-select[multiple=multiple][name^=productid]').next('.chosen-container').on('mousedown keydown', function(event) {
-                    warehouseid = $(this).parents('div.form-group').find('[name^=productwarehouseid]').val();
-                    products = $('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').map(function(i, n) {
-                        return $(n).find('option:selected').val();
-                    }).toArray();
-                    select = $(this).parents('div.form-group').find('select[name^=productid]');
-                    select.find('option').each(function(i, n) {
-                        if ($(n).attr('data-warehouseid') == warehouseid && products.indexOf($(n).val()) === -1)
-                            $(n).removeAttr('disabled');
-                        else 
-                            $(n).attr('disabled', 'disabled');
-                    });
-                    $(select).trigger("chosen:updated");
-                });
                 $('.chosen-select[name^=productwarehouseid]').on('change', function(event) {
                     if ($(this).find('option:selected').attr('data-type') == 'EQP') {
                         $(this).parents('div.form-group').find('[name^=quantity]').val('1');
@@ -255,7 +229,19 @@
                     } else {
                         $(this).parents('div.form-group').find('[name^=quantity]').removeAttr('disabled');
                         $(this).parents('div.form-group').find('[name^=quantity]').val('');
-                    }
+                    };
+                    products = $('.chosen-select[multiple=multiple][name^=productid]').not('[name="' + $(this).attr('name') + '"]').map(function(i, n) {
+                        return $(n).find('option:selected').val();
+                    }).toArray();
+                    select = $(this).parents('div.form-group').find('select[name^=productid]');
+                    warehouseid = $(this).val();
+                    select.find('option').each(function(i, n) {
+                        if ($(this).val() && $(n).attr('data-warehouseid') == warehouseid && products.indexOf($(n).val()) === -1)
+                            $(n).removeAttr('disabled');
+                        else 
+                            $(n).attr('disabled', 'disabled');
+                    });
+                    $(select).trigger("chosen:updated");
                 });
             }, 1000);
         };

@@ -199,6 +199,7 @@
                         div.find('select').val([]);
                         div.find('select[name^=productwarehouseid]').attr('name', 'productwarehouseid[productwarehouseid-' + length + '][]');
                         div.find('select[name^=productwarehouseid]').attr('id', 'productwarehouseid-productwarehouseid-' + length + '');
+                        div.find('select[name^=productwarehouseid]').removeAttr('disabled');
                         div.find('select[name^=productid]').attr('name', 'productid[productid-' + length + '][]');
                         div.find('select[name^=productid]').attr('id', 'productid-productid-' + length + '');
                         div.find('input').attr('name', 'quantity[quantity-' + length + ']');
@@ -228,6 +229,15 @@
                 }
             });
             setTimeout(function () {
+                $('.chosen-select[name^=productwarehouseid]').each(function (k, v) {
+                    if ($(this).parents('div.form-group').find('select[name^=productid]').val()) {
+                        $(v).attr('disabled', 'disabled');
+                        $(this).trigger("chosen:updated");
+                    }
+                });
+                $('.chosen-select[name^=productid]').on('change', function(event) {
+                    $(this).parents('div.form-group').find('select[name^=productwarehouseid]').attr('disabled', 'disabled').trigger("chosen:updated");
+                });
                 $('.chosen-select[name^=productwarehouseid]').on('change', function(event) {
                     if ($(this).find('option:selected').attr('data-type') == 'EQP') {
                         $(this).parents('div.form-group').find('[name^=quantity]').val('1');

@@ -70,10 +70,17 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
             $warehouse = $this->_warehouses->get($warehouseid);
             $this->view->warehouse = $warehouse;
         }
+        $params = array('dateadd', 'warehouse', 'name', 'quantity', 'qtyavailable', 'unit', 'serial', 'pairedcard', 'status');
+        $params = array_filter(array_intersect_key($request->getParams(), array_flip($params)));
+        $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
+        if (empty($params)) {
+            $request->setParam('statusid', array($status->id));
+        }
         $status = $this->_dictionaries->getStatusList('products')->find('deleted', 'acronym');
         if (!$request->getParam('statusid')) {
             $this->_products->setWhere($this->_products->getAdapter()->quoteInto("statusid != {$status->id}", null));
         }
+        $this->view->request = $request->getParams();
         $this->view->filepath = '/../data/temp/';
         $this->view->filename = 'Zestawienie_produktow-' . date('YmdHis') . '.xlsx';
         $this->_products->setLazyLoading(false);

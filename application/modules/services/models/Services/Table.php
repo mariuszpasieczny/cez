@@ -135,7 +135,7 @@ class Application_Model_Services_Table extends Application_Db_Table {
         }
         if (!empty($params['technician'])) {
             $where = array();
-            foreach ($params['technician'] as $technician) {
+            foreach ((array)$params['technician'] as $technician) {
                 $where[] = $this->getAdapter()->quoteInto("UPPER(?) LIKE UPPER(CONCAT(technician,'%'))", "$technician");
             }
             $this->setWhere(join(' OR ', $where));

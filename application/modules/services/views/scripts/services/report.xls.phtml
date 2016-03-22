@@ -109,7 +109,7 @@ foreach ($vars['services'] as $service) {
             $key = Application_Model_Services_XLS_Service::COLUMN_TIMETILL;
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }
-        if ($value = $service->getProductsreleased()) {
+        if ($value = $service->getProductsreleased(array('warehousetype' => 'EQP'))) {
             $key = Application_Model_Services_XLS_Service::COLUMN_PRODUCTSRELEASED;
             $objPHPExcel->getActiveSheet()->SetCellValue($key . $rowNo, $value);
         }

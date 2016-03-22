@@ -49,10 +49,17 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         return parent::__call($method, $arguments);
     }
 
-    public function getProductsreleased() {
+    public function getProductsreleased($params) {
         if (!$this->_productsreleased) {
             $products = array();
             foreach ($this->getProducts(false) as $product) {
+                if (!empty($params)) {
+                    foreach ($params as $key => $value) {
+                        if (!empty($product->{$key}) && $product->{$key} != $value) {
+                            continue 2;
+                        }
+                    }
+                }
                 $products[] = $product->serial ? $product->serial : $product->name;
             }
             $this->_productsreleased = @join(',', array_filter($products));

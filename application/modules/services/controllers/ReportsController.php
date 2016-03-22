@@ -165,7 +165,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
         $types = $this->_dictionaries->getTypeList('service');
         $this->view->filepath = $_SERVER['DOCUMENT_ROOT'] . '/../data/pliki/';
         //$defaults = array('recipient' => 'koordynatorzy.lublin@nplay.pl;Lublin.Dispatchers@upc.com.pl');
-        $defaults = array('recipient' => $this->_config->get(APPLICATION_ENV)->reports->mail->recipients, 'content' => "\n");
+        $defaults = array('recipient' => $this->_config->get(APPLICATION_ENV)->reports->mail->recipients, 'content' => "\n\n");
         switch ($this->_getParam('typeid')) {
             case $types->find('installation', 'acronym')->id:
                 $defaults['subject'] = basename($report->file);//'Zestawienie instalacyjne za dzień ' . $report->planneddate;
@@ -177,7 +177,7 @@ class Services_ReportsController extends Application_Controller_Abstract {
                 throw new Exception('Nieprawidłowy typ zlecenia');
         }
         $form = new Application_Form_Services_Reports_Send();
-        $defaults['content'] .= "\nPozdrawiam, {$this->_auth->getIdentity()->firstname} {$this->_auth->getIdentity()->lastname}\n";
+        $defaults['content'] .= "\n\n\nPozdrawiam, {$this->_auth->getIdentity()->firstname} {$this->_auth->getIdentity()->lastname}\n";
         $form->setDefaults($defaults);
 
         $this->view->form = $form;

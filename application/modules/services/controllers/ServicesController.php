@@ -2723,7 +2723,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
         if ($service->technicalcomments) {
             $defaults['content'] .= $service->technicalcomments . "\n";
         }
-        $defaults['content'] .= "\nPozdrawiam, {$this->_auth->getIdentity()->firstname} {$this->_auth->getIdentity()->lastname}\n";
+        $defaults['content'] .= "\n\n\nPozdrawiam, {$this->_auth->getIdentity()->firstname} {$this->_auth->getIdentity()->lastname}\n";
         $form = new Application_Form_Services_Comments_Send();
         $form->setDefaults($defaults);
         if ($this->_auth->getIdentity()->role == 'technician') {

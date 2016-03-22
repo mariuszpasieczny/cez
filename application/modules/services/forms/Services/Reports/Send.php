@@ -50,7 +50,7 @@ class Application_Form_Services_Reports_Send extends Application_Form {
         $element = $this->createElement('textarea', 'content', array(
             'label' => 'Treść:',
             //'required'   => true,
-            'filters' => array('StringTrim'),
+            //'filters' => array('StringTrim'),
             'validators' => array(
             //'NotEmpty',
             ),

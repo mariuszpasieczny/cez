@@ -75,7 +75,7 @@
         <th style="max-width: 155px !important;">Klient</th>
         <th style="max-width: 55px !important;">Status</th>
         <?php if ($this->auth->role != 'technician'): ?>
-        <th style="max-width: 15px !important;">
+        <th style="max-width: 15px !important; white-space: nowrap;">
             <?php if (/* $product->qtyreleased >= 0 && */$this->auth && $this->HasAccess($this->auth->role, 'orders', 'product-return')): ?>
                 <a href="<?php echo $this->baseUrl; ?>/warehouse/orders/product-return" data-target=".modal-body" class="popup-load multi" title="Zwrot">
                     <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>

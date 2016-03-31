@@ -62,7 +62,7 @@
         <?php endif; ?>
         <th style="max-width: 55px !important;">Nr listu</th>
         <th style="max-width: 55px !important;">Status</th>
-        <th style="max-width: 55px !important;">
+        <th style="max-width: 55px !important; white-space: nowrap;">
             <?php if ($this->auth && $this->HasAccess($this->auth->role, 'returns', 'accept')): ?>
                 <a href="<?php echo $this->baseUrl; ?>/warehouse/returns/accept" data-target=".modal-body" class="popup-load multi" title="Potwierdź zwrot">
                     <span class="glyphicon glyphicon-check" aria-hidden="true"></span>

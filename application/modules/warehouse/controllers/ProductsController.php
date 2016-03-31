@@ -70,7 +70,7 @@ class Warehouse_ProductsController extends Application_Controller_Abstract {
             $warehouse = $this->_warehouses->get($warehouseid);
             $this->view->warehouse = $warehouse;
         }
-        $params = array('dateadd', 'warehouse', 'name', 'quantity', 'qtyavailable', 'unit', 'serial', 'pairedcard', 'statusid');
+        $params = array('datefrom', 'datetill', 'warehouseid', 'name', 'quantity', 'qtyavailable', 'unit', 'serial', 'pairedcard', 'statusid');
         $params = array_filter(array_intersect_key($request->getParams(), array_flip($params)));
         $status = $this->_dictionaries->getStatusList('products')->find('instock', 'acronym');
         if (empty($params)) {

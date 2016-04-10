@@ -130,6 +130,18 @@ INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2982', 'WYY', 'WYY')
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2982', 'WGG', 'WGG');
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2982', 'WHH', 'WHH');
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2982', 'WJJ', 'WJJ');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'BY1', 'BY1');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'BY2', 'BY2');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'BY3', 'BY3');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'BY5', 'BY5');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'E94', 'E94');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'E95', 'E95');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'E96', 'E96');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'E97', 'E97');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'E98', 'E98');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'G05', 'G05');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'G06', 'G06');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2890', 'G07', 'G07');
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2889', 'calendar', 'Kalendarz serwisowy');
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2898', 'region', 'Region');
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2914', 'R1', 'R1');
@@ -142,5 +154,9 @@ INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2918', 'consys', 'Ko
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2918', 'edar', 'EDAR');
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2918', 'lublin', 'Nplay Lublin');
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2918', 'tav', 'Tav');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2918', 'abmedia', 'A&B Media');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2918', 'wawrzyniak', 'PW Wawrzyniak');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2918', 'net2b', 'Net2b');
+INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2918', 'lucjad', 'Lucjad Bydgoszcz');
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2', 'regionid', 'Region');
 INSERT INTO dictionaries (parentid, acronym, name) VALUES ('2', 'instanceid', 'Instancja');

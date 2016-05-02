@@ -577,7 +577,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     }
                     $status = $this->_dictionaries->getStatusList('service')->find('finished', 'acronym');
                     $service->technicalcomments = $values['technicalcomments'];
-                    $service->coordinatorcomments = $values['coordinatorcomments'];
+                    if (isset($values['coordinatorcomments'])) {
+                        $service->coordinatorcomments = $values['coordinatorcomments'];
+                    }
                     //$service->statusid = $status->id;
                     if (!strlen($values['performed'])) {
                         $service->performed = null;
@@ -1584,7 +1586,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 }
                 $status = $this->_dictionaries->getStatusList('service')->find('finished', 'acronym');
                 $service->technicalcomments = $values['technicalcomments'];
-                $service->coordinatorcomments = $values['coordinatorcomments'];
+                if (isset($values['coordinatorcomments'])) {
+                    $service->coordinatorcomments = $values['coordinatorcomments'];
+                }
                 if (!empty($values['datefinished'])) {
                     if ($types->find('service', 'acronym')->id == $typeid) {
                         $service->datefinished = date('Y-m-d H:i', strtotime($service->planneddate . ' ' . $values['datefinished']));
@@ -2131,7 +2135,9 @@ class Services_ServicesController extends Application_Controller_Abstract {
                     //return;
                 }
                 $service->technicalcomments = $values['technicalcomments'];
-                $service->coordinatorcomments = $values['coordinatorcomments'];
+                if (isset($values['coordinatorcomments'])) {
+                    $service->coordinatorcomments = $values['coordinatorcomments'];
+                }
                 if (!empty($values['datefinished'])) {
                     if ($types->find('service', 'acronym')->id == $typeid) {
                         $service->datefinished = date('Y-m-d H:i', strtotime($service->planneddate . ' ' . $values['datefinished']));

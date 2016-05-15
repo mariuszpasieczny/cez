@@ -430,6 +430,13 @@
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </a>
     <?php endif; ?>
+            <?php if ($service->isNew() && $this->auth && $this->HasAccess($this->auth->role, 'services', 'move')): ?>
+                        <a href="<?php echo $this->baseUrl; ?>/services/services/move/id/<?php echo $service->id; ?><?php if (in_array($this->auth->role, array('superadmin', 'supercoordinator'))): echo '/instance/' . $service->instance;
+                endif;
+                ?>/typeid/<?php echo $service->typeid; ?>" data-target=".modal-body" class="popup-load" title="Przenieś">
+                            <span class="glyphicon glyphicon-move" aria-hidden="true"></span>
+                        </a>
+    <?php endif; ?>
                 </td>
             </tr>
 <?php endforeach; ?> 

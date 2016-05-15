@@ -52,6 +52,7 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 ->addActionContext('send-comments', 'html')
                 ->addActionContext('check-solution-code', 'json')
                 ->addActionContext('get-solution-code-list', 'json')
+                ->addActionContext('move', 'html')
                 ->setSuffix('html', '')
                 ->initContext();
 
@@ -3236,6 +3237,180 @@ class Services_ServicesController extends Application_Controller_Abstract {
                 } catch (Zend_File_Transfer_Exception $e) {
                     echo $e->message();
                 }
+            }
+        }
+    }
+
+    public function moveAction() {
+        $request = $this->getRequest();
+        $id = (array) $request->getParam('id');
+        $typeid = $request->getParam('typeid');
+        //$id = array_unique((array)$id);
+        $types = $this->_dictionaries->getTypeList('service');
+        if ($schema = $request->getParam('instance')) {
+            $this->_services->setSchema($this->_config->get('production')->get('regions')->get($schema));
+            $this->_clients->setSchema($this->_config->get('production')->get('regions')->get($schema));
+        }
+        switch ($this->_getParam('typeid')) {
+            case $types->find('installation', 'acronym')->id:
+                $this->_services->setRowClass('Application_Model_Services_Installation');
+                break;
+            case $types->find('service', 'acronym')->id:
+                $this->_services->setRowClass('Application_Model_Services_Service');
+                break;
+            default:
+                throw new Exception('Nieprawidłowy typ zlecenia');
+        }
+        $this->_services->setLazyLoading(false);
+        $service = $this->_services->getAll(array('id' => $id));
+        if (!$service) {
+            throw new Exception('Nie znaleziono zgłoszenia');
+        }
+        $form = new Application_Form_Services_Move(array('servicesCount' => $service->count()));
+        $form->setServices($service);
+        $form->setOptions(array('instances' => $this->_config->get('production')->get('regions')->toArray()));
+        $status = $this->_dictionaries->getStatusList('service')->find('deleted', 'acronym');
+        $this->view->form = $form;
+        $this->view->service = $service;
+        $this->view->types = $types;
+
+        if ($this->getRequest()->isPost()) {
+            if ($form->isValid($request->getPost())) {
+                $services = new Application_Model_Services_Table();
+                $clients = new Application_Model_Clients_Table();
+                $dictionaries = new Application_Model_Dictionaries_Table();
+                if ($schema = $request->getParam('dst')) {
+                    $services->setSchema($this->_config->get('production')->get('regions')->get($schema));
+                    $clients->setSchema($this->_config->get('production')->get('regions')->get($schema));
+                    $dictionaries->setSchema($this->_config->get('production')->get('regions')->get($schema));
+                }
+                $dictionaries->setCacheInClass(false);
+                $dictionary = $dictionaries->getDictionaryList('service');
+                $types = $dictionaries->getTypeList('service');
+                $values = $form->getValues();
+                Zend_Db_Table::getDefaultAdapter()->beginTransaction();
+                $this->_services->setLazyLoading(true);
+                foreach ($service as $i => $item) {
+                    $row = $this->_services->find($item->id)->current();
+                    $data = $row->toArray();
+                    unset($data['id']);
+                    if (!$row->isNew()) {
+                        $form->getElement('id-' . $i)->setErrors(array('id-' . $i => 'Nieprawidłowy status zlecenia'));
+                        return;
+                    }
+                    $row->coordinatorcomments = 'Przeniesione na ' . $schema;
+                    if (isset($values['coordinatorcomments'])) {
+                        $row->coordinatorcomments .= "\n" . $values['coordinatorcomments'];
+                    }
+                    $row->statusid = $status->id;
+                    $row->save();
+                    
+                    $new = $services->createRow($data);
+                    $servicetype = $dictionary->find('type', 'acronym')->getChildren()->find(strtoupper($item->servicetype), 'acronym');
+                    if (!$servicetype) {
+                        $servicetype = $this->_dictionaries->createRow(array('parentid' => $dictionary->find('type', 'acronym')->id, 'acronym' => $item->servicetype));
+                        $servicetype->save();
+                    }
+                    $new->servicetypeid = $servicetype->id;
+                    $client = null;
+                    $addressId = 1;
+                    $clientOrg = $this->_clients->find($item->clientid)->current();
+                    foreach ($clients->getAll(array('number' => $item->clientnumber)) as $c) {
+                        if ($c->city == $clientOrg->city && $c->street == $clientOrg->street && $c->apartmentno == $clientOrg->apartmentno && $c->streetno == $clientOrg->streetno) {
+                            $client = $c;
+                            $client->setFromArray(array_intersect_key($clientOrg->toArray(), array_flip(array('homephone', 'cellphone', 'workphone'))));
+                            if ($client->isModified()) {
+                                $client->save();
+                            }
+                            break;
+                        }
+                        $addressId++;
+                    }
+                    $data['addressid'] = $addressId;
+                    if (!$client) {
+                        $d = $clientOrg->toArray();
+                        unset($d['id']);
+                        $client = $clients->createRow($d);
+                        $client->save();
+                    }
+                    $new->clientid = $client->id;
+                    $new->addressid = $client->addressid;
+                    if ($typeid == $types->find('service', 'acronym')->id) {
+                        if ($data = $item->calendar) {
+                            $calendar = $dictionary->find('calendar', 'acronym')->getChildren()->find($data, 'acronym');
+                            if (!$calendar) {
+                                $calendar = $dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => $data));
+                                $calendar->save();
+                            }
+                            $new->calendarid = $calendar->id;
+                        }
+                        if ($data = $item->system) {
+                            $system = $dictionary->find('system', 'acronym')->getChildren()->find($data, 'acronym');
+                            if (!$system) {
+                                $system = $dictionaries->createRow(array('parentid' => $dictionary->find('system', 'acronym')->id, 'acronym' => $data));
+                                $system->save();
+                            }
+                            $new->systemid = $system->id;
+                        }
+                        if ($data = $item->region) {
+                            $region = $dictionary->find('region', 'acronym')->getChildren()->find($data, 'acronym');
+                            if (!$region) {
+                                $region = $dictionaries->createRow(array('parentid' => $dictionary->find('region', 'acronym')->id, 'acronym' => $data));
+                                $region->save();
+                            }
+                            $new->regionid = $region->id;
+                        }
+                        if ($data = $item->blockadecode) {
+                            $blockadecode = $dictionary->find('blockadecode', 'acronym')->getChildren()->find($data, 'acronym');
+                            if (!$blockadecode) {
+                                $blockadecode = $dictionaries->createRow(array('parentid' => $dictionary->find('blockadecode', 'acronym')->id, 'acronym' => $data));
+                                $blockadecode->save();
+                            }
+                            $new->blockadecodeid = $blockadecode->id;
+                        }
+                        if ($data = $item->laborcode) {
+                            $laborcode = $dictionary->find('laborcode', 'acronym')->getChildren()->find($data, 'acronym');
+                            if (!$laborcode) {
+                                $laborcode = $dictionaries->createRow(array('parentid' => $dictionary->find('laborcode', 'acronym')->id, 'acronym' => $data));
+                                $laborcode->save();
+                            }
+                            $new->laborcodeid = $laborcode->id;
+                        }
+                        if ($data = $item->complaintcode) {
+                            $complaintcode = $dictionary->find('complaintcode', 'acronym')->getChildren()->find($data, 'acronym');
+                            if (!$complaintcode) {
+                                $complaintcode = $dictionaries->createRow(array('parentid' => $dictionary->find('complaintcode', 'acronym')->id, 'acronym' => $data));
+                                $complaintcode->save();
+                            }
+                            $new->complaintcodeid = $complaintcode->id;
+                        }
+                        if ($data = $item->region) {
+                            $area = $dictionary->find('area', 'acronym')->getChildren()->find($data, 'acronym');
+                            if (!$area) {
+                                $area = $dictionaries->createRow(array('parentid' => $dictionary->find('area', 'acronym')->id, 'acronym' => $data));
+                                $area->save();
+                            }
+                            $new->areaid = $area->id;
+                        }
+                    } else {
+                        if ($data = $item->calendar) {
+                            $calendar = $dictionary->find('calendar', 'acronym')->getChildren()->find($data, 'acronym');
+                            if (!$calendar) {
+                                $calendar = $dictionaries->createRow(array('parentid' => $dictionary->find('calendar', 'acronym')->id, 'acronym' => $data));//var_dump($data,$calendar->toArray());
+                                $calendar->save();
+                            }
+                            $new->calendarid = $calendar->id;
+                        }
+                    }
+                    $new->dateadd = date('Y-m-d H:i:s');
+                    $new->coordinatorcomments = 'Przeniesione z ' . $request->getParam('instance');
+                    if (isset($values['coordinatorcomments'])) {
+                        $new->coordinatorcomments .= "\n" . $values['coordinatorcomments'];
+                    }
+                    $new->save();//var_dump($new->toArray());exit;
+                }
+                Zend_Db_Table::getDefaultAdapter()->commit();
+                $this->view->success = 'Zgłoszenie przesunięte';
             }
         }
     }

@@ -41,7 +41,7 @@ CREATE OR REPLACE
 VIEW `orderlinesview` AS
     SELECT 
         `p`.`warehouseid` AS `warehouseid`,
-        `p`.`warehouse` AS `warehouse`,
+        `w`.`name` AS `warehouse`,
         `ol`.`id` AS `id`,
         `ol`.`orderid` AS `orderid`,
         `ol`.`productid` AS `productid`,
@@ -50,7 +50,7 @@ VIEW `orderlinesview` AS
         `ol`.`qtyreturned` AS `qtyreturned`,
         `ol`.`qtyavailable` AS `qtyavailable`,
         `ol`.`qtyavailable` AS `qtyreleased`,
-        `p`.`unitacronym` AS `unitacronym`,
+        `d`.`acronym` AS `unitacronym`,
         `p`.`unitid` AS `unitid`,
         `ol`.`dateadd` AS `dateadd`,
         `ol`.`releasedate` AS `releasedate`,
@@ -87,14 +87,16 @@ VIEW `orderlinesview` AS
         NULL AS `clientnumber`,
         `o`.`userid` AS `userid`
     FROM
-        (((((((`orderlines` `ol`
+        (((((((((`orderlines` `ol`
         LEFT JOIN `users` `u` ON ((`ol`.`technicianid` = `u`.`id`)))
         LEFT JOIN `dictionaries` `ds` ON ((`ol`.`statusid` = `ds`.`id`)))
-        LEFT JOIN `productsview` `p` ON ((`ol`.`productid` = `p`.`id`)))
+        LEFT JOIN `products` `p` ON ((`ol`.`productid` = `p`.`id`)))
         LEFT JOIN `serviceproducts` `sp` ON ((`sp`.`productid` = `ol`.`id`)))
         LEFT JOIN `services` `s` ON ((`sp`.`serviceid` = `s`.`id`)))
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
         LEFT JOIN `clients` `c` ON ((`c`.`id` = `s`.`clientid`)))
+        LEFT JOIN `warehouses` `w` ON ((`w`.`id` = `p`.`warehouseid`)))
+        LEFT JOIN `dictionaries` `d` ON ((`d`.`id` = `p`.`unitid`)))
     WHERE
         ((`ol`.`qtyavailable` = 0)
             AND (`ol`.`qtyreturned` = 0)
@@ -108,7 +110,7 @@ VIEW `orderlinesview` AS
                     AND (`d`.`acronym` = 'new'))))) 
     UNION SELECT 
         `p`.`warehouseid` AS `warehouseid`,
-        `p`.`warehouse` AS `warehouse`,
+        `w`.`name` AS `warehouse`,
         `ol`.`id` AS `id`,
         `ol`.`orderid` AS `orderid`,
         `ol`.`productid` AS `productid`,
@@ -117,7 +119,7 @@ VIEW `orderlinesview` AS
         `ol`.`qtyreturned` AS `qtyreturned`,
         `ol`.`qtyavailable` AS `qtyavailable`,
         `ol`.`qtyavailable` AS `qtyreleased`,
-        `p`.`unitacronym` AS `unitacronym`,
+        `d`.`acronym` AS `unitacronym`,
         `p`.`unitid` AS `unitid`,
         `ol`.`dateadd` AS `dateadd`,
         `ol`.`releasedate` AS `releasedate`,
@@ -154,17 +156,19 @@ VIEW `orderlinesview` AS
         NULL AS `clientnumber`,
         `o`.`userid` AS `userid`
     FROM
-        ((((`orderlines` `ol`
+        ((((((`orderlines` `ol`
         LEFT JOIN `users` `u` ON ((`ol`.`technicianid` = `u`.`id`)))
         LEFT JOIN `dictionaries` `ds` ON ((`ol`.`statusid` = `ds`.`id`)))
-        LEFT JOIN `productsview` `p` ON ((`ol`.`productid` = `p`.`id`)))
+        LEFT JOIN `products` `p` ON ((`ol`.`productid` = `p`.`id`)))
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
+        LEFT JOIN `warehouses` `w` ON ((`w`.`id` = `p`.`warehouseid`)))
+        LEFT JOIN `dictionaries` `d` ON ((`d`.`id` = `p`.`unitid`)))
     WHERE
         ((`ol`.`qtyavailable` > 0)
             AND (`ol`.`technicianid` > 0)) 
     UNION SELECT 
         `p`.`warehouseid` AS `warehouseid`,
-        `p`.`warehouse` AS `warehouse`,
+        `w`.`name` AS `warehouse`,
         `ol`.`id` AS `id`,
         `ol`.`orderid` AS `orderid`,
         `ol`.`productid` AS `productid`,
@@ -173,7 +177,7 @@ VIEW `orderlinesview` AS
         `ol`.`qtyreturned` AS `qtyreturned`,
         `ol`.`qtyavailable` AS `qtyavailable`,
         `sp`.`quantity` AS `qtyreleased`,
-        `p`.`unitacronym` AS `unitacronym`,
+        `d`.`acronym` AS `unitacronym`,
         `p`.`unitid` AS `unitid`,
         `ol`.`dateadd` AS `dateadd`,
         `ol`.`releasedate` AS `releasedate`,
@@ -216,17 +220,19 @@ VIEW `orderlinesview` AS
         `c`.`number` AS `clientnumber`,
         `o`.`userid` AS `userid`
     FROM
-        (((((((`orderlines` `ol`
+        (((((((((`orderlines` `ol`
         LEFT JOIN `users` `u` ON ((`ol`.`technicianid` = `u`.`id`)))
         LEFT JOIN `dictionaries` `ds` ON ((`ol`.`statusid` = `ds`.`id`)))
-        LEFT JOIN `productsview` `p` ON ((`ol`.`productid` = `p`.`id`)))
+        LEFT JOIN `products` `p` ON ((`ol`.`productid` = `p`.`id`)))
         JOIN `serviceproducts` `sp` ON ((`sp`.`productid` = `ol`.`id`)))
         LEFT JOIN `services` `s` ON ((`sp`.`serviceid` = `s`.`id`)))
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
-        LEFT JOIN `clients` `c` ON ((`c`.`id` = `s`.`clientid`))) 
+        LEFT JOIN `clients` `c` ON ((`c`.`id` = `s`.`clientid`)))
+        LEFT JOIN `warehouses` `w` ON ((`w`.`id` = `p`.`warehouseid`)))
+        LEFT JOIN `dictionaries` `d` ON ((`d`.`id` = `p`.`unitid`))) 
     UNION SELECT 
         `p`.`warehouseid` AS `warehouseid`,
-        `p`.`warehouse` AS `warehouse`,
+        `w`.`name` AS `warehouse`,
         `ol`.`id` AS `id`,
         `ol`.`orderid` AS `orderid`,
         `ol`.`productid` AS `productid`,
@@ -235,7 +241,7 @@ VIEW `orderlinesview` AS
         `ol`.`qtyreturned` AS `qtyreturned`,
         `ol`.`qtyavailable` AS `qtyavailable`,
         `ol`.`qtyreturned` AS `qtyreleased`,
-        `p`.`unitacronym` AS `unitacronym`,
+        `d`.`acronym` AS `unitacronym`,
         `p`.`unitid` AS `unitid`,
         `ol`.`dateadd` AS `dateadd`,
         `ol`.`releasedate` AS `releasedate`,
@@ -272,12 +278,14 @@ VIEW `orderlinesview` AS
         NULL AS `clientnumber`,
         `o`.`userid` AS `userid`
     FROM
-        (((((`orderlines` `ol`
+        (((((((`orderlines` `ol`
         LEFT JOIN `users` `u` ON ((`ol`.`technicianid` = `u`.`id`)))
         LEFT JOIN `dictionaries` `ds` ON ((`ol`.`statusid` = `ds`.`id`)))
-        LEFT JOIN `productsview` `p` ON ((`ol`.`productid` = `p`.`id`)))
+        LEFT JOIN `products` `p` ON ((`ol`.`productid` = `p`.`id`)))
         LEFT JOIN `servicereturns` `sr` ON ((`sr`.`productid` = `ol`.`id`)))
         LEFT JOIN `orders` `o` ON ((`ol`.`orderid` = `o`.`id`)))
+        LEFT JOIN `warehouses` `w` ON ((`w`.`id` = `p`.`warehouseid`)))
+        LEFT JOIN `dictionaries` `d` ON ((`d`.`id` = `p`.`unitid`)))
     WHERE
         ((`ol`.`qtyreturned` > 0)
             AND (`ol`.`technicianid` IS NOT NULL)

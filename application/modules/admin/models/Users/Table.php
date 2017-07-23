@@ -11,7 +11,7 @@ class Application_Model_Users_Table extends Application_Db_Table
     protected $_name = 'users';// table name
     protected $_primary = 'id'; // primary column name
     protected $_rowClass = 'Application_Model_Users_Row';
-    
+
     protected $_referenceMap = array(
         'Role' => array(
             'columns' => 'roleid',
@@ -19,6 +19,8 @@ class Application_Model_Users_Table extends Application_Db_Table
             'refColumns' => 'id'
         )
     );
+    
+    protected $_dependentTables = array('Application_Model_Services_Table');
     
     public function select() {
         if ($this->_lazyLoading === true) {

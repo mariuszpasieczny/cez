@@ -49,21 +49,35 @@ class Application_Model_Services_Row extends Application_Db_Table_Row {
         return parent::__call($method, $arguments);
     }
 
-    public function getProductsreleased($params) {
-        if (!$this->_productsreleased) {
+    public function getProductsreleased($service = null) {
+        if (!$this->_productsreleased || 1) {
             $products = array();
             foreach ($this->getProducts(false) as $product) {
-                if (!empty($params)) {
-                    foreach ($params as $key => $value) {
-                        if (!empty($product->{$key}) && $product->{$key} != $value) {
-                            continue 2;
+//                if (isset($service)) {
+                    if ($service === null) {
+                        if ($product->productid > 0) {
+                            continue;
+                        }
+                    } else if ($service === true) {
+                        if ($product->productid < 0) {
+                            continue;
+                        }
+                        if ($product->serial === null) {
+                            continue;
+                        }
+                    } else if ($service === false) {
+                        if ($product->productid < 0) {
+                            continue;
+                        }
+                        if ($product->serial !== null) {
+                            continue;
                         }
                     }
-                }
-                $products[] = $product->serial ? $product->serial : $product->name;
+//                }
+                $products[] = ($product->serial ? $product->serial : $product->name) . ' x ' . $product->quantity . ' szt';
             }
             $this->_productsreleased = @join(',', array_filter($products));
-        }
+        }//var_dump($service,$products,$this->_productsreleased);
         return $this->_productsreleased;
     }
 

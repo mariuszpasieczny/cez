@@ -15,23 +15,45 @@ class Application_Model_Services_XLS_Export extends Application_Model_Services_S
     const COLUMN_TECHNICIAN = 'F';
     const COLUMN_CLIENT_NUMBER = 'G';
     const COLUMN_CALENDAR = 'H';
-    const COLUMN_SERVICETYPE = 'I';
-    const COLUMN_CLIENT_CITY = 'J';
-    const COLUMN_CLIENT_STREET = 'K';
-    const COLUMN_CLIENT_STREETNO = 'L';
-    const COLUMN_CLIENT_APARTMENTNO = 'M';
-    const COLUMN_TECHNICIANCODE = 'N';
-    const COLUMN_DATEFINISHED = 'O';
-    const COLUMN_SOLUTIONCODE = 'P';
-    const COLUMN_CANCELLATIONCODE = 'Q';
-    const COLUMN_MODEMINTERCHANGECODE = 'R';
-    const COLUMN_DECODERINTERCHANGECODE = 'S';
-    const COLUMN_PRODUCTSRELEASED = 'T';
-    const COLUMN_PRODUCTSRETURNED = 'U';
-    const COLUMN_TECHNICALCOMMENTS = 'V';
-    const COLUMN_COORDINATORCOMMENTS = 'W';
-    const COLUMN_PERFORMED = 'X';
-    const COLUMN_STATUS = 'Y';
+    const COLUMN_REGION = 'I';
+    const COLUMN_SERVICETYPE = 'J';
+    const COLUMN_CLIENT_CITY = 'K';
+    const COLUMN_CLIENT_STREET = 'L';
+    const COLUMN_CLIENT_STREETNO = 'M';
+    const COLUMN_CLIENT_APARTMENTNO = 'N';
+    const COLUMN_TECHNICIANCODE = 'O';
+    const COLUMN_DATEFINISHED = 'P';
+    const COLUMN_SOLUTIONCODE = 'Q';
+    const COLUMN_CANCELLATIONCODE = 'R';
+    const COLUMN_MODEMINTERCHANGECODE = 'S';
+    const COLUMN_DECODERINTERCHANGECODE = 'T';
+    const COLUMN_EQUIPMENTSRELEASED = 'U';
+    const COLUMN_MATERIALSRELEASED = 'V';
+    const COLUMN_PRODUCTSRELEASED = 'W';
+    const COLUMN_PRODUCTSRETURNED = 'X';
+    const COLUMN_TECHNICALCOMMENTS = 'Y';
+    const COLUMN_COORDINATORCOMMENTS = 'Z';
+    const COLUMN_PERFORMED = 'AA';
+    const COLUMN_STATUS = 'AB';
+    
+    const COLUMN_TECHNICIAN_PHONENO = 'AC';
+    const COLUMN_TECHNICIAN_EMAIL = 'AD';
+    const COLUMN_CLIENT_HOMEPHONE = 'AE';
+    const COLUMN_CLIENT_WORKPHONE = 'AF';
+    const COLUMN_CLIENT_CELLPHONE = 'AG';
+    const COLUMN_COMPLAINTCODE = 'AH';
+    const COLUMN_COMMENTS = 'AI';
+    const COLUMN_DESCRIPTION = 'AJ';
+    const COLUMN_MODIFIEDDATE = 'AK';
+    const COLUMN_PRODUCTS = 'AL';
+    const COLUMN_SERIALNUMBERS = 'AM';
+    const COLUMN_MACNUMBERS = 'AN';
+    const COLUMN_EQUIPMENT = 'AO';
+    const COLUMN_PARAMETERS = 'AP';
+    const COLUMN_COMMENTSREUIRED = 'AQ';
+    const COLUMN_ISHORIZON = 'AR';
+    const COLUMN_ISDCI = 'AS';
+
 
     public function toXlsArray() {//var_dump($this->toArray());exit;
         $array = array();
@@ -60,6 +82,15 @@ class Application_Model_Services_XLS_Export extends Application_Model_Services_S
                     break;
                 case 'clientapartment':
                     $array[self::COLUMN_CLIENT_APARTMENTNO] = $value;
+                    break;
+                case 'clienthomephone':
+                    $array[self::COLUMN_CLIENT_HOMEPHONE] = $value;
+                    break;
+                case 'clientworkphone':
+                    $array[self::COLUMN_CLIENT_WORKPHONE] = $value;
+                    break;
+                case 'clientcellphone':
+                    $array[self::COLUMN_CLIENT_CELLPHONE] = $value;
                     break;
             }
         }

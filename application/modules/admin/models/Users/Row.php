@@ -9,7 +9,9 @@
 class Application_Model_Users_Row extends Application_Db_Table_Row
 {
     
-    public function __get($columnName) {
+        protected $_services;
+
+        public function __get($columnName) {
         switch ($columnName) {
             //case 'role':
             //    return $this->getRole();
@@ -25,6 +27,10 @@ class Application_Model_Users_Row extends Application_Db_Table_Row
     
     public function __toString() {
         return $this->lastname . ' ' . $this->firstname . ' ( ' . $this->symbol . ' )';
+    }
+    
+    public function getServices() {
+        return $this->_services = $this->findDependentRowset('Application_Model_Services_Table', 'Technician');
     }
     
 }

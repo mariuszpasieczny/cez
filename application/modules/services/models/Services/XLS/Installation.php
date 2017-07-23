@@ -24,14 +24,32 @@ class Application_Model_Services_XLS_Installation extends Application_Model_Serv
     const COLUMN_DATEFINISHED = 'O';
     const COLUMN_INSTALLATIONCODE = 'P';
     const COLUMN_INSTALLATIONCANCELCODE = 'Q';
-    const COLUMN_PRODUCTSRELEASED = 'R';
-    const COLUMN_PRODUCTSRETURNED = 'S';
-    const COLUMN_TECHNICALCOMMENTS = 'T';
-    const COLUMN_COORDINATORCOMMENTS = 'U';
-    const COLUMN_DOCUMENTSPASSED = 'V';
-    const COLUMN_CLOSEDUPC = 'W';
-    const COLUMN_PERFORMED = 'X';
-    const COLUMN_STATUS = 'Y';
+    const COLUMN_EQUIPMENTSRELEASED = 'R';
+    const COLUMN_MATERIALSRELEASED = 'S';
+    const COLUMN_PRODUCTSRELEASED = 'T';
+    const COLUMN_PRODUCTSRETURNED = 'U';
+    const COLUMN_TECHNICALCOMMENTS = 'V';
+    const COLUMN_COORDINATORCOMMENTS = 'W';
+    const COLUMN_DOCUMENTSPASSED = 'X';
+    const COLUMN_CLOSEDUPC = 'Y';
+    const COLUMN_PERFORMED = 'Z';
+    const COLUMN_STATUS = 'AA';
+    
+    const COLUMN_TECHNICIAN_PHONENO = 'AB';
+    const COLUMN_TECHNICIAN_EMAIL = 'AC';
+    const COLUMN_CLIENT_HOMEPHONE = 'AD';
+    const COLUMN_CLIENT_WORKPHONE = 'AE';
+    const COLUMN_CLIENT_CELLPHONE = 'AF';
+    const COLUMN_COMPLAINTCODE = 'AG';
+    const COLUMN_COMMENTS = 'AH';
+    const COLUMN_DESCRIPTION = 'AI';
+    const COLUMN_MODIFIEDDATE = 'AJ';
+    const COLUMN_PRODUCTS = 'AK';
+    const COLUMN_SERIALNUMBERS = 'AL';
+    const COLUMN_MACNUMBERS = 'AM';
+    const COLUMN_EQUIPMENT = 'AN';
+    const COLUMN_PARAMETERS = 'AO';
+
 
     public function toXlsArray() {//var_dump($this->toArray());exit;
         $array = array();
@@ -60,6 +78,15 @@ class Application_Model_Services_XLS_Installation extends Application_Model_Serv
                     break;
                 case 'clientapartment':
                     $array[self::COLUMN_CLIENT_APARTMENTNO] = $value;
+                    break;
+                case 'clienthomephone':
+                    $array[self::COLUMN_CLIENT_HOMEPHONE] = $value;
+                    break;
+                case 'clientworkphone':
+                    $array[self::COLUMN_CLIENT_WORKPHONE] = $value;
+                    break;
+                case 'clientcellphone':
+                    $array[self::COLUMN_CLIENT_CELLPHONE] = $value;
                     break;
             }
         }

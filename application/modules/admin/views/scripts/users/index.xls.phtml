@@ -17,6 +17,7 @@ $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowNo, 'E-mail');
 $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, 'Telefon');
 $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, 'Rola');
 $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, 'Status');
+$objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowNo, 'Il. zleceń');
 $rowNo = 2;
 foreach ($vars['users'] as $user) {//var_dump($user);exit;
     try{
@@ -29,6 +30,7 @@ foreach ($vars['users'] as $user) {//var_dump($user);exit;
     $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowNo, $user->phoneno);
     $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowNo, $user->role);
     $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowNo, $user->status);
+    $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowNo, $user->getServices()->count());
     $rowNo++;
 }
 
